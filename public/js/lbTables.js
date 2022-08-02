@@ -27,10 +27,6 @@ jQuery(document).ready(function($){
         time: time,
       },
       success: function (data) {
-
-
-
-
         $("#lbTopTwenty").append(data.split("||")[0]);
         $("#lbBIS").append(data.split("||")[1]);
         $("#lbVarieties").append(data.split("||")[2]);
@@ -40,8 +36,7 @@ jQuery(document).ready(function($){
         chartColour = data.split("||")[4];
         legendData = data.split("||")[5];
 
-
-
+        $("#lbSectionLeaders").append(data.split("||")[6]);
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
         alert(errorThrown);

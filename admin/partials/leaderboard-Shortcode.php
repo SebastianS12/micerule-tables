@@ -77,10 +77,17 @@ function leaderBoard_results_varieties(){
 	return $html;
 }
 
+function leaderBoard_results_section_leaders(){
+	$html = '<div id="lbSectionLeaders" class="lbTables" style="width:100%;">';
+	$html .= '</div';
+	return $html;
+}
+
 add_shortcode('leaderBoard_results','leaderBoard_results');
 add_shortcode('leaderBoard_results_topTwenty','leaderBoard_results_topTwenty');
 add_shortcode('leaderBoard_results_bis','leaderBoard_results_bis');
 add_shortcode('leaderBoard_results_chart','leaderBoard_results_chart');
 add_shortcode('leaderBoard_results_varieties','leaderBoard_results_varieties');
+add_shortcode('leaderBoard_results_section_leaders', 'leaderBoard_results_section_leaders');
 
 ?>

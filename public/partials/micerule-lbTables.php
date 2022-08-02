@@ -43,6 +43,9 @@ $breedColourOption = array(array(),array());
 //array for judges
 $judgeCounter= array();
 
+//array for section leaders
+$sectionLeaders = array();
+
 //iterate through every ResultTable
 for ($j=0;$j<count($data);$j++) {
   //Check if Table is within time limit
@@ -80,6 +83,20 @@ for ($j=0;$j<count($data);$j++) {
     for($i=0; $i<12; $i++){
       if($table2['name'][$i] != ''){
         $results[$table2['name'][$i]] += $table2['points'][$i];
+
+        //update sectionLeaders array
+        if($i > 1){
+          $section = ($i % 2 == 0) ? explode(" ", $table2['awards'][$i])[1] : explode(" ", $table2['awards'][$i])[3];
+
+          if(array_key_exists($section, $sectionLeaders) && array_key_exists($table2['name'][$i], $sectionLeaders[$section])){
+            $sectionLeaders[$section][$table2['name'][$i]] += $table2['points'][$i];
+          }else{
+            $sectionLeaders[$section][$table2['name'][$i]] = $table2['points'][$i];
+          }
+        }
+
+
+
 
         //get Breed from Options with ID
         //normal breed option
@@ -377,6 +394,45 @@ $legendHtml .= "</div>";
 
 //---------------------------------End---------------------------
 
+//--------------------------------Section Leaders Table Html------------------------------
+$sectionLeadersHtml = "";
+
+foreach($sectionLeaders as $section => $leaders){
+  //start HTML
+  $sectionLeadersHtml .= "<div>";
+  $sectionLeadersHtml .= "<p1 class='sectionTitle'>".$section."</p1>";
+  $sectionLeadersHtml .= "<table id='micerule_section_resultTable'>";
+
+  //Create header rows
+  $sectionLeadersHtml .= "<thead><tr>";
+  $sectionLeadersHtml .= "<th class='sectionResultHeader'>Name</th>";
+  $sectionLeadersHtml .= "<th class='sectionResultHeader'>Points</th>";
+  $sectionLeadersHtml .= "</tr></thead><tbody>";
+
+  //table contents
+  arsort($leaders);
+  foreach($leaders as $name => $points){
+    $sectionLeadersHtml .= "<tr>";
+    if(is_user_logged_in()){
+      $sectionLeadersHtml .= "<td class='resultCell'>".$name."</td>";
+    }else{
+      $sectionLeadersHtml .= "<td class = 'resultCellBlur'>";
+      $sectionLeadersHtml .= "<div class ='blurDiv' style='width:".random_int(35,82)."px;background-image: url(".plugin_dir_url(__FILE__)."blur.png);height:20px ;display:inline-block;".random_int(0,500)."px 0'></div><span> </span>
+      <div class ='blurDiv' style='width:".random_int(35,90)."px;background-image: url(".plugin_dir_url(__FILE__)."blur.png);height:20px ;display:inline-block;".random_int(0,500)."px 0'></div>";
+      $sectionLeadersHtml .= "</td>";
+    }
+    $sectionLeadersHtml .= "<td class='resultCell2'>".$points."</td>";
+    $sectionLeadersHtml .= "</tr>";
+  }
+
+  //close HTML
+  $sectionLeadersHtml .= "</tbody>";
+  $sectionLeadersHtml .= "</table>";
+  $sectionLeadersHtml .= "</div>";
+}
+
+//--------------------------------End Section Leaders Table Html---------------------------
+
 
 echo $html;
 echo '||';
@@ -385,5 +441,7 @@ echo '||';
 echo utf8_decode(json_encode($breedColourOption));
 echo '||';
 echo ($legendHtml);
+echo '||';
+echo($sectionLeadersHtml);
 
 wp_die();
