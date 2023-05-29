@@ -1,33 +1,14 @@
 jQuery(document).ready(function($){
-    assignLocationSettingsListeners();
+  assignLocationSettingsListeners();
 });
 
 function assignLocationSettingsListeners(){
   $(".optionalSettings").on('change', function(){
-    updateOptionalSettings();
-
-    if($(this).hasClass("optionalClasses")){
-      console.log("class");
-      var optionalClassName = this.id.split("allow-")[1];
-      if(optionalClassName != null){
-        console.log($(this).prop('checked'));
-        if($(this).prop('checked')){
-          addClass("optional", optionalClassName);
-        }else{
-          var position = $("#"+optionalClassName+"-tr-location").find(".class-delete").prop("id").split("&-&")[0];
-          deleteClass("optional", position, optionalClassName);
-        }
-      }
-    }
-  });
-
-  $(".optionalSettings.optionalClasses").on('change', function(){
-
+    updateOptionalSettings($(this));
   });
 }
 
-
-function updateOptionalSettings(){
+function updateOptionalSettings(settingElement){
   jQuery.ajax({
     type: 'POST',
     url: my_ajax_obj.ajax_url,
@@ -45,10 +26,24 @@ function updateOptionalSettings(){
       thirdPrize : $("#prizeMoney-thirdPlace").val(),
     },
     success: function (data) {
-      console.log(data);
+      if(settingElement.hasClass("optionalClasses")){
+        addOptionalClass(settingElement);
+      }
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
       alert(errorThrown);
     }
   });
+}
+
+function addOptionalClass(element){
+  var optionalClassName = element.prop("id").split("allow-")[1];
+  if(optionalClassName != null){
+    if(element.prop('checked')){
+      addClass("optional", optionalClassName);
+    }else{
+      var position = $("#"+optionalClassName+"-tr-location").find(".class-delete").prop("id").split("&-&")[0];
+      deleteClass("optional", position, optionalClassName);
+    }
+  }
 }
