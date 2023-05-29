@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Ebene_10" data-name="Ebene 10" xmlns="http://www.w3.org/2000/svg" width="24" height="28" viewBox="0 0 24 28">
+  <path d="M21,13v12H3V13H21m0-2H3c-1.1,0-2,.9-2,2v12c0,1.1,.9,2,2,2H21c1.1,0,2-.9,2-2V13c0-1.1-.9-2-2-2h0Z"/>
+  <path d="M19,7H5c-1.1,0-2,.9-2,2H21c0-1.1-.9-2-2-2Z"/>
+  <path d="M17,3H7c-1.1,0-2,.9-2,2h14c0-1.1-.9-2-2-2Z"/>
+</svg>

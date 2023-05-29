@@ -1,0 +1,152 @@
+input[type=checkbox]{
+    margin: 0 2px 0 0;
+}
+
+#em-event-micerule-table div.inside label{
+    margin: 0 12px 0 0
+}
+
+
+
+
+/* Events Styling */
+
+/* Hide Text area */
+#et_pb_main_editor_wrap{
+    display:none !important;
+}
+
+/* Hide disclusure widgets */
+/* .postbox-header .handle-actions{
+    display:none;
+} */
+
+/* Hide Publish Details */
+#minor-publishing{
+    display:none;
+}
+
+/* Hide Divi Builder Button */
+.et_pb_toggle_builder_wrapper{
+    display:none;
+}
+
+/* Hide Map */
+#em-osm-map{
+    display:none;
+}
+
+/* Stop meta boxes collapsing */
+/* .ui-sortable-handle{
+    pointer-events:none;
+} */
+
+
+/* Adjust Events Filter margin */
+.tablenav.top{
+    margin-bottom:12px;
+}
+
+/* Hide Page options tab */
+/* #screen-options-link-wrap{
+    display:none;
+} */
+
+.acf-field input[type="text"]{
+    width:251px !important;
+}
+
+.partnership-judge{
+    margin-top:6px;
+    margin-bottom: 12px;
+    height:30px;
+    display: flex;
+    align-items: center;   
+}
+
+.partnership-judge input[type=checkbox]{
+    margin-right:6px;
+}
+
+.judges select{
+    margin-right:12px;
+}
+
+/* Fixed order for items in Events */
+/* #acf_after_title-sortables{
+    display: flex;
+} */
+
+/* 
+#normal-sortables{
+
+}
+
+#em-event-where{
+    order:1;
+    width: calc(25% - 6px);
+}
+
+#acf-group_5c63295147efb{
+    order:2;
+    align-self: flex-end;
+    position: absolute; 
+    right:-2px;
+    width: calc(25% - 6px);
+}
+
+#em-event-when{
+    order:3;
+    width: 50%;
+}
+
+#em-event-micerule-table{
+    width:100%;
+}
+ */
+/* #em-form-when > p.em-date-range{
+    width: calc(50% - 6px);
+    display: inline-flex;
+}
+
+#em-form-when > p.em-time-range{
+    width: calc(50% - 6px);
+    display: inline-flex;
+}
+ */
+
+ #em-event-micerule-table tr td:nth-child(5), #em-event-micerule-table th:nth-child(5){
+     text-align:center;
+ }
+ 
+ #tdBIS,#tdBSelf,#tdBM,#tdBT,#tdBS,#tdBAOV{
+     padding-left:15px;
+ }
+
+#acf-group_5c63295147efb label{
+    margin-bottom:-10px;
+    margin-top:5px;
+}
+
+#osm-location-data{
+    padding:0;
+    border:none;
+    height:51px;
+}
+
+#event-date-explanation{
+    display:none !important;
+}
+
+/* #titlediv{
+    margin-bottom:-33px;
+} */
+
+#post-body{
+    display: flex;
+    flex-direction: column;
+}
+
+#postbox-container-1{
+    order:3;
+}

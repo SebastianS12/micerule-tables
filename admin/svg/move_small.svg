@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Ebene_10" data-name="Ebene 10" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">
+  <path d="M4.93,4c-.46-.92-1.4-1.5-2.43-1.5H.67" fill="none" stroke="#1e2444" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.49"/>
+  <path d="M11.19,9.51h-1.82c-1.03,0-1.97-.58-2.43-1.5" fill="none" stroke="#1e2444" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.49"/>
+  <path d="M11.19,2.49h-1.82c-1.03,0-1.97,.58-2.43,1.5l-2,4c-.46,.92-1.4,1.5-2.43,1.5H.67" fill="none" stroke="#1e2444" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.49"/>
+  <polyline points="9.84 3.84 11.19 2.49 9.84 1.15" fill="none" stroke="#1e2444" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.49"/>
+  <polyline points="9.84 10.85 11.19 9.51 9.84 8.16" fill="none" stroke="#1e2444" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.49"/>
+</svg>
