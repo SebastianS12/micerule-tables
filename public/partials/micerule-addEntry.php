@@ -9,7 +9,7 @@ $className = $_POST['className'];
 $age = $_POST['age'];
 $userName = $_POST['userName'];
 
-$juvenileMember = EventUser::isJuvenileMember($userName);
+$juniorMember = EventUser::isJuniorMember($userName);
 $entryBookData = EntryBookData::create($event_id);
 $classData = $entryBookData->classes[$className];
 $absent = false;
@@ -21,7 +21,7 @@ $classData->setNextPenNumber($age, $classData->getNextPenNumber($age) + 1);
 
 $eventRegistrationData = EventRegistrationData::create($event_id);
 if($section != "optional"){
-  $eventRegistrationData->addClassRegistration($userName, $className, $age, $juvenileMember);
+  $eventRegistrationData->addClassRegistration($userName, $className, $age, $juniorMember);
 }else{
   $eventRegistrationData->addOptionalClassRegistration($userName, $className, $age);
 }

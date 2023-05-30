@@ -9,7 +9,7 @@
   $optionalClassRegistrations = $_POST['optionalClassRegistrations'];
   $userName = $_POST['userName'];
 
-  $isJuvenileMember = EventUser::isJuvenileMember($userName);
+  $isJuniorMember = EventUser::isJuniorMember($userName);
   $eventRegistrationData = EventRegistrationData::create($event_id);
 
   $userRegistrationData = $eventRegistrationData->getUserRegistrationData($userName);
@@ -23,13 +23,13 @@
     if($currentRegistrationCount < $registrationCount){
       //add
       for($i = $currentRegistrationCount; $i < $registrationCount; $i++){
-        $eventRegistrationData->addClassRegistration($userName, $className, $age, $isJuvenileMember);
+        $eventRegistrationData->addClassRegistration($userName, $className, $age, $isJuniorMember);
       }
     }
     if($currentRegistrationCount > $registrationCount){
       //remove
       for($i = $currentRegistrationCount; $i > $registrationCount; $i--){
-        $eventRegistrationData->removeClassRegistration($userName, $className, $age, $isJuvenileMember);
+        $eventRegistrationData->removeClassRegistration($userName, $className, $age, $isJuniorMember);
       }
     }
   }

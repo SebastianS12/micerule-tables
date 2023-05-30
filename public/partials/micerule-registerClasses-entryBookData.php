@@ -13,7 +13,7 @@ $adPenNumber = 1;
 $u8PenNumber = $adPenNumber + 20;
 $agePenNumbers = array('Ad' => $adPenNumber, 'U8' => $u8PenNumber);
 $classIndex = 1;
-$juvenileClassData = new ClassData("Juvenile");
+$juniorClassData = new ClassData("Junior");
 foreach(EventProperties::SECTIONNAMES as $sectionName){
   $sectionName = strtolower($sectionName);
   $sectionData = new SectionData($sectionName);
@@ -27,8 +27,8 @@ foreach(EventProperties::SECTIONNAMES as $sectionName){
       foreach($classAgeRegistrations as $classRegistration){
         $newEntry = new Entry($agePenNumbers[$age], $classRegistration->userName, $age, $className, $className, $sectionName);
         $entryBookData->addEntry($newEntry, $className);
-        if($classRegistration->juvenile)
-          $juvenileClassData->addPenNumber($agePenNumbers[$age]);
+        if($classRegistration->junior)
+          $juniorClassData->addPenNumber($agePenNumbers[$age]);
         $agePenNumbers[$age]++;
       }
     }
@@ -58,9 +58,9 @@ $classIndex += 2; // grand challenge
 
 $penNumber = (floor($agePenNumbers["Ad"] / 20) + 2) * 20 + 1;
 foreach($eventClasses->optionalClasses as $className){
-    if($className == 'Juvenile'){
-      $juvenileClassData->setClassIndex("AA", $eventClasses->getClassIndex($className, "AA"));
-      $entryBookData->addOptionalClassData($juvenileClassData);
+    if($className == 'Junior'){
+      $juniorClassData->setClassIndex("AA", $eventClasses->getClassIndex($className, "AA"));
+      $entryBookData->addOptionalClassData($juniorClassData);
     }else{
       $classData = new ClassData($className);
       $classData->setClassIndex("AA", $eventClasses->getClassIndex($className, "AA"));

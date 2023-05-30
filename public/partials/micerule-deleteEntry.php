@@ -8,14 +8,14 @@ $penNumber = $_POST['penNumber'];
 
 $entryBookData = EntryBookData::create($event_id);
 $entry = $entryBookData->entries[$penNumber];
-$juvenileMember = EventUser::isJuvenileMember($entry->userName);
+$juniorMember = EventUser::isJuniorMember($entry->userName);
 
 $entryBookData->removeEntry($entry);
 
 //TODO: remove registrationData
 $eventRegistrationData = EventRegistrationData::create($event_id);
 if($entry->sectionName != "optional"){
-  $eventRegistrationData->removeClassRegistration($entry->userName, $entry->className, $entry->age, $juvenileMember);
+  $eventRegistrationData->removeClassRegistration($entry->userName, $entry->className, $entry->age, $juniorMember);
 }else{
   $eventRegistrationData->removeOptionalClassRegistration($entry->userName, $entry->className, $entry->age);
 }

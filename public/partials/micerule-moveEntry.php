@@ -13,7 +13,7 @@ $penNumber = $_POST['penNumber'];
 $eventRegistrationData = EventRegistrationData::create($event_id);
 $entryBookData = EntryBookData::create($event_id);
 $entry = $entryBookData->entries[$penNumber];
-$juvenileMember = EventUser::isJuvenileMember($entry->userName);
+$juniorMember = EventUser::isJuniorMember($entry->userName);
 
 if($entry->sectionName != $newSection || $entry->className != $newClassName || $entry->age != $newAge){
   $newEntry = new Entry($entry->penNumber, $entry->userName, $newAge, $newClassName, $newClassName, $newSection, true, $entry->absent);
@@ -21,13 +21,13 @@ if($entry->sectionName != $newSection || $entry->className != $newClassName || $
   $entryBookData->addEntry($newEntry, $newClassName);
 
   if($entry->sectionName != "optional"){
-    $eventRegistrationData->removeClassRegistration($entry->userName, $entry->className, $entry->age, $juvenileMember);
+    $eventRegistrationData->removeClassRegistration($entry->userName, $entry->className, $entry->age, $juniorMember);
   }else{
     $eventRegistrationData->removeOptionalClassRegistration($entry->userName, $entry->className, $entry->age);
   }
 
   if($newSection != "optional"){
-    $eventRegistrationData->addClassRegistration($entry->userName, $newClassName, $newAge, $juvenileMember);
+    $eventRegistrationData->addClassRegistration($entry->userName, $newClassName, $newAge, $juniorMember);
   }else{
     $eventRegistrationData->addOptionalClassRegistration($entry->userName, $newClassName, $newAge);
   }

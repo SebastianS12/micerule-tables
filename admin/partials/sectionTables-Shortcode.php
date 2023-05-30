@@ -38,13 +38,13 @@ class LocationSectionTables{
       $html .= "<input type = 'number' min = '0' step= '0.1' value = '".$locationOptionalSettings->prizeMoney['thirdPrize']."' class = 'optionalSettings' id = 'prizeMoney-thirdPlace'></input>";
       $html .= "</div>";
 
-      //unstandardised + juvenile + auction checkboxes
+      //unstandardised + junior + auction checkboxes
       $html .= "<div class='schedule-option'>";
       $html .= "<input type = 'checkbox' class = 'optionalSettings optionalClasses' id = 'allow-Unstandardised' ".(($locationOptionalSettings->optionalClasses['unstandardised']) ? 'checked' : '')."><label for = 'allow-Unstandardised'>Allow Unstandardised</label>";
       $html .= "</div>";
 
       $html .= "<div class='schedule-option'>";
-      $html .= "<input type = 'checkbox' class = 'optionalSettings optionalClasses' id = 'allow-Juvenile' ".(($locationOptionalSettings->optionalClasses['juvenile']) ? 'checked' : '')."><label for = 'allow-Juvenile'>Allow Juvenile</label>";
+      $html .= "<input type = 'checkbox' class = 'optionalSettings optionalClasses' id = 'allow-Junior' ".(($locationOptionalSettings->optionalClasses['junior']) ? 'checked' : '')."><label for = 'allow-Junior'>Allow Junior</label>";
       $html .= "</div>";
 
       $html .= "<div class='schedule-option'>";
