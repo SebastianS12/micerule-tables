@@ -251,7 +251,7 @@ class SectionData implements JsonSerializable{
   public function challengeBISChecked($age){
     $challengeBISChecked = false;
     if($this->bestsChecked()){
-      $challengeBISChecked = $challengeBISChecked || $this->placementEntries[$age]->challengeBISChecked();
+      $challengeBISChecked = $challengeBISChecked || $this->getPlacementData($age)->challengeBISChecked();
     }
 
     return $challengeBISChecked;
