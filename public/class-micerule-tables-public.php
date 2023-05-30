@@ -365,7 +365,7 @@ class Micerule_Tables_Public {
 		$url     = wp_get_referer();
 		$event_id = url_to_postid( $url );
 
-		echo(AdminTabs::getAdminTabsHtml($event_id));
+		wp_send_json(AdminTabs::getAdminTabsHtml($event_id));
 	}
 
 }

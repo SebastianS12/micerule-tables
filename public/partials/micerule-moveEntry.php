@@ -35,6 +35,5 @@ if($entry->sectionName != $newSection || $entry->className != $newClassName || $
 
 update_post_meta($event_id, 'micerule_data_event_entry_book_test', json_encode($entryBookData, JSON_UNESCAPED_UNICODE));
 $eventRegistrationData->updatePostMeta($event_id);
-echo(AdminTabs::getAdminTabsHtml($event_id));
 
 wp_die();

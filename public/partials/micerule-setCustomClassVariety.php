@@ -17,6 +17,5 @@ if($selectValue != ""){
 }
 
 update_post_meta($event_id, 'micerule_data_event_entry_book_test', json_encode($entryBookData, JSON_UNESCAPED_UNICODE));
-echo(AdminTabs::getAdminTabsHtml($event_id));
 
 wp_die();
