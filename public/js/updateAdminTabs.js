@@ -9,7 +9,6 @@ function updateAdminTabs(/*adminTabsHtml, activeTabClass*/){
       action: 'getAdminTabsHtml',
     },
     success: function (data) {
-      console.log(data);
       $(".adminTabs").replaceWith(data);
       assignTabListeners();
       assignEntrySummaryListeners();
@@ -23,17 +22,6 @@ function updateAdminTabs(/*adminTabsHtml, activeTabClass*/){
       alert(errorThrown);
     }
   });
-
-
-  //updateLabelHtml(adminTabsHtml["Label"]);
-  //updateEntrySummaryHtml(adminTabsHtml["Entry Summary"]);
-  //updateJudgingSheetsHtml(adminTabsHtml["Judging Sheets"]);
-  //updateEntryBookHtml(adminTabsHtml["Entry Book"]);
-  //updateAbsenteesHtml(adminTabsHtml["Absentees"]);
-  //updatePrizeCardsHtml(adminTabsHtml["Prize Cards"]);
-  //updateJudgesReportsHtml(adminTabsHtml["Judges Reports"]);
-
-  //jQuery(activeTabClass).show();
 }
 
 function updateJudgingSheetsHtml(judgingSheetsHtml){
