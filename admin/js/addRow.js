@@ -15,14 +15,14 @@ jQuery(document).ready(function($){
         $("#uPoints").attr("name","");
       }
     }else{
-      if($("#juvenileRow").css("display")=="none"){
-        $("#juvenileRow").css("display","table-row");
+      if($("#juniorRow").css("display")=="none"){
+        $("#juniorRow").css("display","table-row");
         $("#jAward").attr("name","micerule_table_data[awards][]");
         $("#jName").attr("name","micerule_table_data[name][]");
         $("#jBreed").attr("name","micerule_table_data[breeds][]");
         $("#jPoints").attr("name","micerule_table_data[points][]");
       }else{
-        $("#juvenileRow").css("display","none");
+        $("#juniorRow").css("display","none");
         $("#jAward").attr("name","");
         $("#jName").attr("name","");
         $("#jBreed").attr("name","");

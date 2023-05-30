@@ -19,7 +19,7 @@ function updateOptionalSettings(settingElement){
       allowOnlineRegistrations: $("#enableOnlineRegistrations").prop('checked'),
       registrationFee: $("#registrationFeeInput").val(),
       allowUnstandardised: $("#allow-Unstandardised").prop('checked'),
-      allowJuvenile: $("#allow-Juvenile").prop('checked'),
+      allowJunior: $("#allow-Junior").prop('checked'),
       allowAuction: $("#allow-Auction").prop('checked'),
       firstPrize : $("#prizeMoney-firstPlace").val(),
       secondPrize : $("#prizeMoney-secondPlace").val(),

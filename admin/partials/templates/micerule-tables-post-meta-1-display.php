@@ -38,7 +38,7 @@ $breedsOAOVs=$wpdb->get_results("SELECT * FROM ".$wpdb->prefix."options WHERE op
     echo '0';
     }?>" >
 <button type="button" id="addRowU" class="addRow">Add/Hide Unstandardised Row</button>
-<button type="button" id="addRowJ" class="addRow">Add/Hide Juvenile Row</button>
+<button type="button" id="addRowJ" class="addRow">Add/Hide Junior Row</button>
 <br><br>
 <table style="width:100%">
   <tr style="text-align:left">
@@ -642,10 +642,10 @@ $breedsOAOVs=$wpdb->get_results("SELECT * FROM ".$wpdb->prefix."options WHERE op
 
   </tr>
 
-  <!------------Juvenile------------->
-  <tr id="juvenileRow" <?php if(isset($meta['breeds'][13])==false){echo' style="display:none"';} ?> >
+  <!------------Junior------------->
+  <tr id="juniorRow" <?php if(isset($meta['breeds'][13])==false){echo' style="display:none"';} ?> >
   <!--------------------------Anfang Awards----------------->
-    <td name="micerule_table_data[awards][]"><input type="hidden" id="jAward" <?php if(isset($meta['breeds'][13])){echo 'name="micerule_table_data[awards][]"';} ?> value="Best Juvenile"  >Best Juvenile</td>
+    <td name="micerule_table_data[awards][]"><input type="hidden" id="jAward" <?php if(isset($meta['breeds'][13])){echo 'name="micerule_table_data[awards][]"';} ?> value="Best Junior"  >Best Junior</td>
    <!--------------------------Ende Awards----------------->
 
    <!--------------------------Anfang Name----------------->

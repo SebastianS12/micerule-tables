@@ -167,7 +167,7 @@ function openEditModal(title, additionalHtml){
     $("#classSelect").empty();
     $("#"+$.escapeSelector($(this).val().toLowerCase() + "-registrationTable")).find(".classNameCell:visible").not(".challenge").each(function(){
       var className = $(this).parent().attr("id").split("-tr")[0];
-      if(className.toLowerCase() != "juvenile"){
+      if(className.toLowerCase() != "junior"){
         $("#classSelect").append($("<option></option>").attr("value", className).text($(this).text()));
       }
     })

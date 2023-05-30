@@ -11,17 +11,17 @@ class EventRegistrationData implements JsonSerializable {
     $this->userRegistrationData = array();
   }
 
-  public function addClassRegistration($userName, $className, $age, $juvenileMember){
+  public function addClassRegistration($userName, $className, $age, $juniorMember){
     if(!isset($this->classRegistrationData[$className]))
       $this->classRegistrationData[$className] = new ClassRegistrationData($className);
 
     $registrationIndex = $this->classRegistrationData[$className]->newRegistrationIndex;
-    $this->classRegistrationData[$className]->addRegistration($userName, $age, $juvenileMember);
+    $this->classRegistrationData[$className]->addRegistration($userName, $age, $juniorMember);
 
     if(!isset($this->userRegistrationData[$userName]))
       $this->userRegistrationData[$userName] = new UserRegistrationData($userName);
 
-    $this->userRegistrationData[$userName]->addRegistration($className, $age, $registrationIndex, $juvenileMember);
+    $this->userRegistrationData[$userName]->addRegistration($className, $age, $registrationIndex, $juniorMember);
   }
 
   public function addOptionalClassRegistration($userName, $className, $age){
@@ -37,9 +37,9 @@ class EventRegistrationData implements JsonSerializable {
     $this->userRegistrationData[$userName]->addRegistration($className, $age, $registrationIndex, false);
   }
 
-  public function removeClassRegistration($userName, $className, $age, $juvenileMember){
-    $classRegistrationIndex = $this->userRegistrationData[$userName]->removeRegistration($className, $age, $juvenileMember);
-    $this->classRegistrationData[$className]->removeRegistration($age, $classRegistrationIndex, $juvenileMember);
+  public function removeClassRegistration($userName, $className, $age, $juniorMember){
+    $classRegistrationIndex = $this->userRegistrationData[$userName]->removeRegistration($className, $age, $juniorMember);
+    $this->classRegistrationData[$className]->removeRegistration($age, $classRegistrationIndex, $juniorMember);
   }
 
   public function removeOptionalClassRegistration($userName, $className, $age){
@@ -68,12 +68,12 @@ class EventRegistrationData implements JsonSerializable {
     return $this->userRegistrationData[$userName];
   }
 
-  public function getJuvenileRegistrationCount(){
-    $juvenileRegistrationCount = 0;
+  public function getJuniorRegistrationCount(){
+    $juniorRegistrationCount = 0;
     foreach($this->classRegistrationData as $classRegistrationData){
-      $juvenileRegistrationCount += $classRegistrationData->juvenileRegistrationCount;
+      $juniorRegistrationCount += $classRegistrationData->juniorRegistrationCount;
     }
-    return $juvenileRegistrationCount;
+    return $juniorRegistrationCount;
   }
 
   public function getGrandChallengeRegistrationCount($age){
@@ -89,7 +89,7 @@ class EventRegistrationData implements JsonSerializable {
     foreach($this->classRegistrationData as $classRegistrationData){
       $entryCount += 3 * $classRegistrationData->getRegistrationCount("Ad");
       $entryCount += 3 * $classRegistrationData->getRegistrationCount("U8");
-      $entryCount += $classRegistrationData->juvenileRegistrationCount;
+      $entryCount += $classRegistrationData->juniorRegistrationCount;
     }
     foreach($this->optionalClassRegistrationData as $optionalClassRegistrationData){
       $entryCount += $optionalClassRegistrationData->getRegistrationCount("AA");
@@ -150,30 +150,30 @@ class EventRegistrationData implements JsonSerializable {
 class ClassRegistrationData implements JsonSerializable {
   public $className;
   public $classRegistrations;
-  public $juvenileRegistrationCount;
+  public $juniorRegistrationCount;
   public $newRegistrationIndex;
 
   public function __construct($className){
     $this->className = $className;
     $this->classRegistrations = array();
-    $this->juvenileRegistrationCount = 0;
+    $this->juniorRegistrationCount = 0;
     $this->newRegistrationIndex = 0;
   }
 
-  public function addRegistration($userName, $age, $juvenileMember){
+  public function addRegistration($userName, $age, $juniorMember){
     if(!isset($this->classRegistrations[$age]))
       $this->classRegistrations[$age] = array();
 
-    if($juvenileMember)
-      $this->juvenileRegistrationCount++;
+    if($juniorMember)
+      $this->juniorRegistrationCount++;
 
-    $this->classRegistrations[$age][$this->newRegistrationIndex] = new ClassRegistration($userName, $juvenileMember);
+    $this->classRegistrations[$age][$this->newRegistrationIndex] = new ClassRegistration($userName, $juniorMember);
     $this->newRegistrationIndex++;
   }
 
-  public function removeRegistration($age, $classRegistrationIndex, $juvenileMember){
-    if($juvenileMember)
-      $this->juvenileRegistrationCount--;
+  public function removeRegistration($age, $classRegistrationIndex, $juniorMember){
+    if($juniorMember)
+      $this->juniorRegistrationCount--;
 
     unset($this->classRegistrations[$age][$classRegistrationIndex]);
   }
@@ -209,7 +209,7 @@ class ClassRegistrationData implements JsonSerializable {
     }
 
     $classRegistrationData->newRegistrationIndex = $jsonObject->newRegistrationIndex;
-    $classRegistrationData->juvenileRegistrationCount = $jsonObject->juvenileRegistrationCount;
+    $classRegistrationData->juniorRegistrationCount = $jsonObject->juniorRegistrationCount;
 
     return $classRegistrationData;
   }
@@ -219,30 +219,30 @@ class ClassRegistrationData implements JsonSerializable {
 class UserRegistrationData implements JsonSerializable {
   public $userName;
   public $userRegistrations;
-  public $juvenileRegistrationCount;
+  public $juniorRegistrationCount;
 
   public function __construct($userName){
     $this->userName = $userName;
     $this->userRegistrations = array();
-    $this->juvenileRegistrationCount = 0;
+    $this->juniorRegistrationCount = 0;
   }
 
-  public function addRegistration($className, $age, $classRegistrationIndex, $juvenileMember){
+  public function addRegistration($className, $age, $classRegistrationIndex, $juniorMember){
     if(!isset($this->userRegistrations[$className]))
       $this->userRegistrations[$className] = array();
 
     if(!isset($this->userRegistrations[$className][$age]))
       $this->userRegistrations[$className][$age] = array();
 
-    if($juvenileMember)
-      $this->juvenileRegistrationCount++;
+    if($juniorMember)
+      $this->juniorRegistrationCount++;
 
     array_push($this->userRegistrations[$className][$age], $classRegistrationIndex);
   }
 
-  public function removeRegistration($className, $age, $juvenileMember){
-    if($juvenileMember)
-      $this->juvenileRegistrationCount--;
+  public function removeRegistration($className, $age, $juniorMember){
+    if($juniorMember)
+      $this->juniorRegistrationCount--;
 
     $removedClassIndex = array_pop($this->userRegistrations[$className][$age]);
     if(count($this->userRegistrations[$className][$age]) == 0)
@@ -261,7 +261,7 @@ class UserRegistrationData implements JsonSerializable {
         $entryCount += $this->getUserClassRegistrationCount($className, $age);
       }
     }
-    $entryCount += $this->juvenileRegistrationCount;
+    $entryCount += $this->juniorRegistrationCount;
 
     return $entryCount;
   }
@@ -283,8 +283,8 @@ class UserRegistrationData implements JsonSerializable {
         $userRegistrationOverviewHtml .= "<li><span class='class-entered'>".$eventClasses->getClassIndex($className, $age)."</span> ".$className." ".$age.": <span class='number-entered'>".count($classRegistrations)."</span></li>";
       }
     }
-    if($this->juvenileRegistrationCount > 0)
-      $userRegistrationOverviewHtml .= "<li><span class='class-entered'>".$eventClasses->getClassIndex("Juvenile", "AA")."</span> Juvenile AA: <span class='number-entered'>".$this->juvenileRegistrationCount."</span></li>";
+    if($this->juniorRegistrationCount > 0)
+      $userRegistrationOverviewHtml .= "<li><span class='class-entered'>".$eventClasses->getClassIndex("Junior", "AA")."</span> Junior AA: <span class='number-entered'>".$this->juniorRegistrationCount."</span></li>";
 
     $userRegistrationOverviewHtml .= "</ul>";
 
@@ -297,7 +297,7 @@ class UserRegistrationData implements JsonSerializable {
 
   public static function createFromJsonObject($jsonObject){
     $userRegistrationData = new UserRegistrationData($jsonObject->userName);
-    $userRegistrationData->juvenileRegistrationCount = $jsonObject->juvenileRegistrationCount;
+    $userRegistrationData->juniorRegistrationCount = $jsonObject->juniorRegistrationCount;
     foreach($jsonObject->userRegistrations as $className => $ageRegistrations){
       $userRegistrationData->userRegistrations[$className] = array();
       foreach($ageRegistrations as $age => $registrationIndices){
@@ -315,11 +315,11 @@ class UserRegistrationData implements JsonSerializable {
 
 class ClassRegistration implements JsonSerializable {
   public $userName;
-  public $juvenile;
+  public $junior;
 
-  public function __construct($userName, $juvenile = false){
+  public function __construct($userName, $junior = false){
     $this->userName = $userName;
-    $this->juvenile = $juvenile;
+    $this->junior = $junior;
   }
 
   public function jsonSerialize() {
@@ -327,6 +327,6 @@ class ClassRegistration implements JsonSerializable {
   }
 
   public static function createFromJsonObject($jsonObject){
-    return new ClassRegistration($jsonObject->userName, $jsonObject->juvenile);
+    return new ClassRegistration($jsonObject->userName, $jsonObject->junior);
   }
 }

@@ -25,8 +25,8 @@ class FancierEntries {
             }
           }
         }
-        if($userRegistrationData->juvenileRegistrationCount > 0){
-          $html .= "<p class='single-entry'><span>".$eventClasses->getClassIndex("Juvenile", "AA")." Juvenile AA: </span><span>".$userRegistrationData->juvenileRegistrationCount."</span></p>";
+        if($userRegistrationData->juniorRegistrationCount > 0){
+          $html .= "<p class='single-entry'><span>".$eventClasses->getClassIndex("Junior", "AA")." Junior AA: </span><span>".$userRegistrationData->juniorRegistrationCount."</span></p>";
         }
         $html .= "<p class='single-entry'><span>Total Entries:</span><span>".$userRegistrationData->getEntryCount()."</span></p>";
         $html .= "<p class='single-entry'><span>Prize Money:</span><span>£".number_format((float)$this->userPrizeData->getUserPrizeMoney($userName, $eventOptionalSettings->prizeMoney['firstPrize'], $eventOptionalSettings->prizeMoney['secondPrize'], $eventOptionalSettings->prizeMoney['thirdPrize']), 2, '.', '')."</span></p>";

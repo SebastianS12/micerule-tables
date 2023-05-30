@@ -166,8 +166,8 @@ class RegistrationTables {
     $html = "<table id = 'optional-registrationTable'>";
     $html .= "<tbody>";
     foreach($this->eventClasses->optionalClasses as $position => $className){
-        if($className == 'Juvenile'){
-          $html .= $this->getJuvenileRowHtml();
+        if($className == 'Junior'){
+          $html .= $this->getJuniorRowHtml();
         }else{
           $html .= $this->getOptionalClassRowHtml($className);
         }
@@ -178,11 +178,11 @@ class RegistrationTables {
     return $html;
   }
 
-  private function getJuvenileRowHtml(){
-    $html = "<tr class='classRowMobile'><td  colspan='5' class = 'classNameCell'>Juvenile</td></tr>";
-    $html .= "<tr class = 'classRow' id = 'juvenile-tr'>";
-    $html .= $this->getJuvenileRegistrationCellHtml();
-    $html .= "<td class = 'classNameCell'>Juvenile</td>";
+  private function getJuniorRowHtml(){
+    $html = "<tr class='classRowMobile'><td  colspan='5' class = 'classNameCell'>Junior</td></tr>";
+    $html .= "<tr class = 'classRow' id = 'junior-tr'>";
+    $html .= $this->getJuniorRegistrationCellHtml();
+    $html .= "<td class = 'classNameCell'>Junior</td>";
     $html .= "<td class='registrationInput-optionalClass'></td>";
     $html .= "<td></td>";
     $html .= "</tr>";
@@ -190,10 +190,10 @@ class RegistrationTables {
     return $html;
   }
 
-  private function getJuvenileRegistrationCellHtml(){
-    $html = "<td class = 'positionCell AA'>".$this->eventClasses->getClassIndex("Juvenile", "AA")."</td>";
+  private function getJuniorRegistrationCellHtml(){
+    $html = "<td class = 'positionCell AA'>".$this->eventClasses->getClassIndex("Junior", "AA")."</td>";
     if($this->eventOptionalSettings->allowOnlineRegistrations){
-      $html .= (time() > strtotime($this->eventDeadline)) ? "<td id = 'entries-count-AA'>(".$this->eventRegistrationData->getJuvenileRegistrationCount().")</td>" : "<td></td>";
+      $html .= (time() > strtotime($this->eventDeadline)) ? "<td id = 'entries-count-AA'>(".$this->eventRegistrationData->getJuniorRegistrationCount().")</td>" : "<td></td>";
     }else{
       $html .= "<td class = 'registrationsDisabled'></td>";
     }

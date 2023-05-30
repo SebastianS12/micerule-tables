@@ -52,16 +52,16 @@ class EntryBookData implements JsonSerializable {
     $this->entries[$entry->penNumber] = $entry;
     $this->classes[$className]->addPenNumber($entry->penNumber);
 
-    if(EventUser::isJuvenileMember($entry->userName)  && isset($this->classes['juvenile']))
-      $this->classes['juvenile']->addPenNumber($penNumber);
+    if(EventUser::isJuniorMember($entry->userName)  && isset($this->classes['junior']))
+      $this->classes['junior']->addPenNumber($penNumber);
   }
 
   public function removeEntry($entry){
     unset($this->entries[$entry->penNumber]);
     unset($this->classes[$entry->className]->penNumbers[$entry->penNumber]);
 
-    if(EventUser::isJuvenileMember($entry->userName) && isset($this->classes['juvenile']))
-      unset($this->classes['juvenile']->penNumber[$entry->penNumber]);
+    if(EventUser::isJuniorMember($entry->userName) && isset($this->classes['junior']))
+      unset($this->classes['junior']->penNumber[$entry->penNumber]);
   }
 
   public function getPlacementEntry($placement, $prizeData){

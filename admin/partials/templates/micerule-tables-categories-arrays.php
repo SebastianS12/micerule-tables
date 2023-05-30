@@ -7,7 +7,7 @@ $awards = array("Best in Show",
                 "Best Marked",
                 "Best Satin",
                 "Best AOV",
-                "Best Juvenile",);
+                "Best Junior",);
 
 
 $breeds = array(				"Abyssinian",
