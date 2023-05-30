@@ -166,7 +166,7 @@ class RegistrationTables {
     $html = "<table id = 'optional-registrationTable'>";
     $html .= "<tbody>";
     foreach($this->eventClasses->optionalClasses as $position => $className){
-        if($className == 'juvenile'){
+        if($className == 'Juvenile'){
           $html .= $this->getJuvenileRowHtml();
         }else{
           $html .= $this->getOptionalClassRowHtml($className);
@@ -191,7 +191,7 @@ class RegistrationTables {
   }
 
   private function getJuvenileRegistrationCellHtml(){
-    $html = "<td class = 'positionCell AA'>".$this->eventClasses->getClassIndex("juvenile", "AA")."</td>";
+    $html = "<td class = 'positionCell AA'>".$this->eventClasses->getClassIndex("Juvenile", "AA")."</td>";
     if($this->eventOptionalSettings->allowOnlineRegistrations){
       $html .= (time() > strtotime($this->eventDeadline)) ? "<td id = 'entries-count-AA'>(".$this->eventRegistrationData->getJuvenileRegistrationCount().")</td>" : "<td></td>";
     }else{
