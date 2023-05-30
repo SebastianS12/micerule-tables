@@ -183,7 +183,7 @@ class RegistrationTables {
     $html .= "<tr class = 'classRow' id = 'juvenile-tr'>";
     $html .= $this->getJuvenileRegistrationCellHtml();
     $html .= "<td class = 'classNameCell'>Juvenile</td>";
-    $html .= "<td></td>";
+    $html .= "<td class='registrationInput-optionalClass'></td>";
     $html .= "<td></td>";
     $html .= "</tr>";
 
@@ -206,7 +206,7 @@ class RegistrationTables {
     $html .= "<tr class = 'classRow' id = '".$className."-tr'>";
     $html .= $this->getOptionalClassRowCellHtml($className);
     $html .= "<td class = 'classNameCell'>".$className."</td>";
-    $html .= "<td></td>";
+    $html .= "<td class='registrationInput-optionalClass'></td>";
     $html .= "<td></td>";
     $html .= "</tr>";
 
