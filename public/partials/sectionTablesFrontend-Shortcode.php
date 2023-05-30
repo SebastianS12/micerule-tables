@@ -50,9 +50,11 @@ add_shortcode('sectionTablesFrontend','sectionTablesFrontend');
 
 
 function addClassToShowCalendar($output, $event){
-  $eventOptionalSettings = EventOptionalSettings::create($event->location_id);
-  if($eventOptionalSettings->allowOnlineRegistrations){
-    $output = "<div class = 'online-registration'>".$output."</div>";
+  if(is_page(2862)){
+    $eventOptionalSettings = EventOptionalSettings::create($event->location_id);
+    if($eventOptionalSettings->allowOnlineRegistrations){
+      $output = "<div class = 'online-registration'>".$output."</div>";
+    }
   }
 
   return $output;
