@@ -284,7 +284,7 @@ class UserRegistrationData implements JsonSerializable {
       }
     }
     if($this->juvenileRegistrationCount > 0)
-      $userRegistrationOverviewHtml .= "<li><span class='class-entered'>".$eventClasses->getClassIndex("juvenile", "AA")."</span> juvenile AA: <span class='number-entered'>".$this->juvenileRegistrationCount."</span></li>";
+      $userRegistrationOverviewHtml .= "<li><span class='class-entered'>".$eventClasses->getClassIndex("Juvenile", "AA")."</span> Juvenile AA: <span class='number-entered'>".$this->juvenileRegistrationCount."</span></li>";
 
     $userRegistrationOverviewHtml .= "</ul>";
 

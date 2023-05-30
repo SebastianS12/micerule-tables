@@ -26,7 +26,7 @@ class Label implements IAdminTab {
                   </div>
                 </li>";
       foreach($userLabelData as $labelData){
-        if($labelData->className != "juvenile"){
+        if($labelData->className != "Juvenile"){
           $absentClass = ($labelData->absent) ? "absent" : "";
           $html .= "<li class='pen-label ".$absentClass."'>
                       <div class='label-class'>
