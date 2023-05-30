@@ -1,70 +1,58 @@
-const sectionNames = ['SELFS', 'TANS', 'MARKED', 'SATINS', 'AOVS'];
+function registerClasses(){
+  var classRegistrations = [];
+  var optionalClassRegistrations = [];
 
-jQuery(document).ready(function($){
+  $(".registrationInput").each(function(){
+    var inputVal = $(this).find("input").val();
+    if(inputVal == ""){
+      inputVal = 0;
+    }
 
-  //var currentAdRegistrations = [];
+    var className = this.id.split("&-&")[0];
+    var classIndex = this.id.split("&-&")[1];
+    var age = this.id.split("&-&")[2];
 
-  $(".registerClassesButton").on('click',function(){
+    const registrationData = {className : className, classIndex: classIndex, age: age, registrationCount : inputVal,};
+    classRegistrations.push(registrationData);
+  });
 
-    var classRegistrations = [];
-    var optionalClassRegistrations = [];
+  $(".registrationInput-optionalClass").each(function(){
+    var inputVal = $(this).find("input").val();
+    if(inputVal == ""){
+      inputVal = 0;
+    }
+    var className = this.id.split("&-&")[0];
+    var classIndex = this.id.split("&-&")[1];
+    var age = this.id.split("&-&")[2];
 
-    $(".registrationInput").each(function(){
-      var inputVal = $(this).find("input").val();
-      if(inputVal == ""){
-        inputVal = 0;
-      }
+    const registrationData = {className : className, classIndex: classIndex, age: age, registrationCount : inputVal,};
+    optionalClassRegistrations.push(registrationData);
+  });
 
-      var className = this.id.split("&-&")[0];
-      var classIndex = this.id.split("&-&")[1];
-      var age = this.id.split("&-&")[2];
-
-      const registrationData = {className : className, classIndex: classIndex, age: age, registrationCount : inputVal,};
-      classRegistrations.push(registrationData);
-    });
-
-    $(".registrationInput-optionalClass").each(function(){
-      var inputVal = $(this).find("input").val();
-      if(inputVal == ""){
-        inputVal = 0;
-      }
-      var className = this.id.split("&-&")[0];
-      var classIndex = this.id.split("&-&")[1];
-      var age = this.id.split("&-&")[2];
-
-      const registrationData = {className : className, classIndex: classIndex, age: age, registrationCount : inputVal,};
-      optionalClassRegistrations.push(registrationData);
-    });
-
-    $("#spinner-div").show();
-    jQuery.ajax({
-      type: 'POST',
-      url: my_ajax_obj.ajax_url,
-      data: {
-        _ajax_nonce: my_ajax_obj.nonce,
-        action: 'registerClasses',
-        classRegistrations: classRegistrations,
-        optionalClassRegistrations: optionalClassRegistrations,
-        userName: $("#userSelectRegistration").val(),
-        locationID: $("#locationID").val(),
-      },
-      success: function (data) {
-        $("#spinner-div").hide();
-        displayRegisterModalHtml(data);
-        updateAdminTabs();
-        //displayRegisterModalHtml(adRegistrations, u8Registrations, $("#userSelectRegistration").val());
-        //updateRegistrationOverview(jQuery.parseJSON(data));
-      },
-      error: function (XMLHttpRequest, textStatus, errorThrown) {
-        alert(errorThrown);
-        console.log("Fail");
-      }
-    });
-
-  //displayRegisterModalHtml(adRegistrations, u8Registrations, $("#userSelectRegistration").val());
-});
-
-});
+  
+  $("#spinner-div").show();
+  jQuery.ajax({
+    type: 'POST',
+    url: my_ajax_obj.ajax_url,
+    data: {
+      _ajax_nonce: my_ajax_obj.nonce,
+      action: 'registerClasses',
+      classRegistrations: classRegistrations,
+      optionalClassRegistrations: optionalClassRegistrations,
+      userName: $("#userSelectRegistration").val(),
+      locationID: $("#locationID").val(),
+    },
+    success: function (data) {
+      $("#spinner-div").hide();
+      displayRegisterModalHtml(data);
+      updateAdminTabs();
+    },
+    error: function (XMLHttpRequest, textStatus, errorThrown) {
+      alert(errorThrown);
+      console.log("Fail");
+    }
+  });
+}
 
 function displayRegisterModalHtml(html){
   $("#registerModal").html(html);
