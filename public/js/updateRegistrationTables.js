@@ -1,10 +1,17 @@
 jQuery(document).ready(function($){
+  initRegistrationTablesJS();
+});
+
+function initRegistrationTablesJS(){
   $("#userSelectRegistration").select2();
   $("#userSelectRegistration").on('change',function(){
     userName = $(this).val();
     updateEntryFields(userName);
   });
-});
+  $(".registerClassesButton").on('click',function(){
+    registerClasses();
+  });
+}
 
 function updateEntryFields(userName){
   jQuery.ajax({
@@ -19,6 +26,7 @@ function updateEntryFields(userName){
       console.log(data);
       var registrationTablesHtml = JSON.parse(data);
       $("#registrationTables").replaceWith(registrationTablesHtml);
+      initRegistrationTablesJS();
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
       alert(errorThrown);
