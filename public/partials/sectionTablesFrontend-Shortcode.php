@@ -7,7 +7,15 @@ function sectionTablesFrontend($atts){
   $user = wp_get_current_user();
   $userName = $user->display_name;
 
+  $sectionNames = EventProperties::SECTIONNAMES;
+  $challengeNames = EventProperties::CHALLENGENAMES;
+
+  $locationID = EventProperties::getEventLocationID($post->ID);
+  $eventRegistrationData = EventRegistrationData::create($post->ID);//get_post_meta($post->ID, 'micerule_data_event_class_registrations', true);
+  $eventOptionalSettings = EventOptionalSettings::create($locationID);
+
   $html = "<div id='eventSectionTables'>";
+
   //$html .= "<p>".var_export(EntryBookData::create($post->ID), true)."</p>";
 
   $registrationTables = new RegistrationTables($post->ID, $userName);
