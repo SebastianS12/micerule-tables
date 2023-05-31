@@ -80,6 +80,7 @@ class LocationSectionTables{
       $html .= "<tr class = 'classRow-location' id = '".$challengeNames[$sectionNameLower]."-tr-location'>";
       $html .= "<td class = 'positionCell ad'>".$eventClasses->getClassIndex($challengeNames[$sectionNameLower], "Ad")."/".$eventClasses->getClassIndex($challengeNames[$sectionNameLower], "U8")."</td>";
       $html .= "<td class = 'classNameCell'><span>".$challengeNames[$sectionNameLower]."</span></td>";
+      $html .= "<td></td><td></td>";
       $html .= "</tr>";
 
       $html .= "</tbody>";
