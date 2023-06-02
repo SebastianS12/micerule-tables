@@ -2,6 +2,7 @@
 
 class JudgingSheets implements IAdminTab{
   private $eventID;
+  private $standardClasses;
 
   public function __construct($eventID){
     $this->eventID = $eventID;
@@ -15,6 +16,7 @@ class JudgingSheets implements IAdminTab{
 
     $html = "<div class = 'judgingSheets content' style = 'display : none'>";
     $html .= "<div class = 'sheet-set'>";
+    $html .= "<p>".var_export($judgeData, true)."</p>";
 
     $html .= $this->getGrandChallengeSheets($judgeData->judgeGrandChallenge, $judgeData->judges);
     foreach($judgeData->judges as $judgeName){
