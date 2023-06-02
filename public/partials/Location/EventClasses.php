@@ -1,13 +1,11 @@
 <?php
 
 class EventClasses implements JsonSerializable{
-  public $locationID;
   public $sectionClasses;
   public $optionalClasses;
   public $classIndices;
 
-  public function __construct($locationID){
-    $this->locationID = $locationID;
+  public function __construct(){
     $this->sectionClasses = array();
     $this->optionalClasses = array();
     $this->classIndices = array();
@@ -124,7 +122,7 @@ class EventClasses implements JsonSerializable{
   public static function createFromJson($json){
     $jsonObject = json_decode($json);
 
-    $eventClasses = new EventClasses($jsonObject->locationID);
+    $eventClasses = new EventClasses();
     foreach($jsonObject->sectionClasses as $sectionName => $sectionClasses){
       foreach($sectionClasses as $sectionClass){
         $eventClasses->addClass($sectionName, $sectionClass);
@@ -144,7 +142,7 @@ class EventClasses implements JsonSerializable{
   }
 
   public static function create($locationID){
-    $eventClasses = new EventClasses($locationID);
+    $eventClasses = new EventClasses();
     $eventClassesJson = get_post_meta($locationID, 'micerule_data_event_classes', true);
     if($eventClassesJson != "")
       $eventClasses = EventClasses::createFromJson($eventClassesJson);

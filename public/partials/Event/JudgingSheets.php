@@ -2,6 +2,7 @@
 
 class JudgingSheets implements IAdminTab{
   private $eventID;
+  private $standardClasses;
 
   public function __construct($eventID){
     $this->eventID = $eventID;

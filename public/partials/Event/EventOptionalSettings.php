@@ -1,6 +1,10 @@
 <?php
 
 class EventOptionalSettings implements JsonSerializable{
+  public $allowOnlineRegistrations;
+  public $registrationFee;
+  public $optionalClasses;
+  public $prizeMoney;
 
   public function __construct($allowOnlineRegistrations = false, $registrationFee = "", $unstandardised = false, $junior = false, $auction = false, $firstPrize = "", $secondPrize = "", $thirdPrize = ""){
     $this->allowOnlineRegistrations = $allowOnlineRegistrations;

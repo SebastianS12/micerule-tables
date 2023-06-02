@@ -9,6 +9,7 @@ function assignLocationSettingsListeners(){
 }
 
 function updateOptionalSettings(settingElement){
+  $(".optionalSettings").off();
   jQuery.ajax({
     type: 'POST',
     url: my_ajax_obj.ajax_url,
@@ -32,6 +33,7 @@ function updateOptionalSettings(settingElement){
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
       alert(errorThrown);
+      assignLocationSettingsListeners();
     }
   });
 }

@@ -1,6 +1,14 @@
 <?php
 
 class RegistrationTables {
+  public $eventID;
+  public $locationID;
+  public $eventClasses;
+  public $eventRegistrationData;
+  public $userName;
+  public $userRegistrationData;
+  public $eventDeadline;
+  public $eventOptionalSettings;
 
   public function __construct($eventID, $userName){
     $this->eventID = $eventID;
@@ -11,7 +19,6 @@ class RegistrationTables {
     $this->userRegistrationData = $this->eventRegistrationData->getUserRegistrationData($userName);
     $this->eventDeadline = EventProperties::getEventDeadline($eventID);
     $this->eventOptionalSettings = EventOptionalSettings::create($this->locationID);
-    $this->previousSectionCount = 0;
   }
 
   public function getHtml(){
@@ -52,14 +59,12 @@ class RegistrationTables {
 
           $html .= $this->getClassRowHtml($sectionName, $className, $classAdRegistrationCount, $classU8RegistrationCount, $position);
         }
-        $this->previousSectionCount += $this->eventClasses->getSectionClassCount($sectionName);
 
       $grandChallengeAdRegistrationCount += $sectionAdRegistrationCount;
       $grandChallengeU8RegistrationCount += $sectionU8RegistrationCount;
 
       //add challenge row
       $html .= $this->getSectionChallengeRowHtml($challengeNames[$sectionName], $sectionAdRegistrationCount, $sectionU8RegistrationCount);
-      $this->previousSectionCount++;
 
       $html .= "</tbody>";
       $html .= "</table>";
@@ -110,7 +115,7 @@ class RegistrationTables {
   }
 
   private function getClassRowU8CellHtml($sectionName, $className, $classU8RegistrationCount, $position){
-    $classIndex = $this->eventClasses->getClassIndex($className, "U8");//(2 * ($position + $this->previousSectionCount) + 2);
+    $classIndex = $this->eventClasses->getClassIndex($className, "U8");
     $html = "";
     if($this->eventOptionalSettings->allowOnlineRegistrations){
       $html .= (time() < strtotime($this->eventDeadline) && is_user_logged_in() && (EventUser::isMember($this->userName) || current_user_can('administrator'))) ? "<td id = '".$className."&-&".$classIndex."&-&U8&-&RegistrationInput' class = 'registrationInput'><input type = 'number' min = '0' value = '".$this->userRegistrationData->getUserClassRegistrationCount($className, "U8")."'></input></td>" : "";
@@ -152,7 +157,6 @@ class RegistrationTables {
     $html .= "<tbody>";
     $html .= $this->getSectionHeaderRowHtml();
     $html .= $this->getSectionChallengeRowHtml("GRAND CHALLENGE", $this->eventRegistrationData->getGrandChallengeRegistrationCount("Ad"), $this->eventRegistrationData->getGrandChallengeRegistrationCount("U8"));
-    $this->previousSectionCount++;
     $html .= "</tbody>";
     $html .= "</table>";
 
@@ -160,9 +164,6 @@ class RegistrationTables {
   }
 
   private function getOptionalClassesRegistrationTableHtml(){
-    //count +1 from here on
-    $this->previousSectionCount = $this->previousSectionCount * 2;
-
     $html = "<table id = 'optional-registrationTable'>";
     $html .= "<tbody>";
     foreach($this->eventClasses->optionalClasses as $position => $className){
@@ -231,9 +232,9 @@ class RegistrationTables {
     global $wpdb;
 
     $html = "<div class='update-button-wrapper'>";
-    $html .= (time() < strtotime($this->eventDeadline) && is_user_logged_in() && (EventUser::isMember($this->userName) || current_user_can('administrator'))) ? "<button type ='button' class = 'registerClassesButton'>Update Entries</button>" : "";
+    $html .= ($this->eventOptionalSettings->allowOnlineRegistrations && time() < strtotime($this->eventDeadline) && is_user_logged_in() && (EventUser::isMember($this->userName) || current_user_can('administrator'))) ? "<button type ='button' class = 'registerClassesButton'>Update Entries</button>" : "";
 
-    $html .= "<div style = ".((is_user_logged_in() && time() < strtotime($this->eventDeadline) && $this->eventOptionalSettings->allowOnlineRegistrations && (current_user_can('administrator') || in_array(wp_get_current_user()->display_name, EventProperties::getLocationSecretaries($this->locationID)['name']) )) ? '' : 'visibility:hidden').">";
+    $html .= "<div style = ".(($this->eventOptionalSettings->allowOnlineRegistrations && is_user_logged_in() && time() < strtotime($this->eventDeadline) && $this->eventOptionalSettings->allowOnlineRegistrations && (current_user_can('administrator') || in_array(wp_get_current_user()->display_name, EventProperties::getLocationSecretaries($this->locationID)['name']) )) ? '' : 'visibility:hidden').">";
     //Get all user names
     $users = (array) $wpdb->get_results("SELECT display_name, id FROM " .$wpdb->prefix."users ORDER BY display_name;");
     $html .= "<select autocomplete = 'off' id = 'userSelectRegistration'>";
@@ -247,14 +248,5 @@ class RegistrationTables {
     $html .= "<div id = 'registerModal' style = 'hidden'></div>";
 
     return $html;
-  }
-
-  private function isUserMember($user){
-    $memberShipRoles = array('pms_subscription_plan_6551', 'pms_subscription_plan_6549', 'pms_subscription_plan_13315', 'pms_subscription_plan_13314', 'pms_subscription_plan_13309', 'pms_subscription_plan_13305', 'pms_subscription_plan_13317', 'pms_subscription_plan_13307',
-    'pms_subscription_plan_13322', 'pms_subscription_plan_13320', 'pms_subscription_plan_13319', 'pms_subscription_plan_13318', 'pms_subscription_plan_13311', 'pms_subscription_plan_13306', 'pms_subscription_plan_13313', 'pms_subscription_plan_13312');
-    $user = get_user_by('id', $user->id);
-    $userRoles = $user->roles;
-
-    return (count(array_intersect($memberShipRoles, $userRoles)) > 0);
   }
 }
