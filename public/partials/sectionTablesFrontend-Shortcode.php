@@ -29,7 +29,7 @@ function sectionTablesFrontend($atts){
   $html .= "<hr>";
   $html .= "</div>";
 
-  $html .= (current_user_can('administrator')) ? "<button type ='button' id = 'create-show-post'>Create Show Report</button>" : "";
+  $html .= ($eventOptionalSettings->allowOnlineRegistrations && current_user_can('administrator')) ? "<button type ='button' id = 'create-show-post'>Create Show Report</button>" : "";
 
   $html .= AdminTabs::getAdminTabsHtml($post->ID);
 
