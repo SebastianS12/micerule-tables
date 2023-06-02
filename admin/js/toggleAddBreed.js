@@ -12,7 +12,7 @@ jQuery(document).ready(function($){
 
   //Icon Preview Select
   $("#overviewTable").on('change','#editSelectAdd',function(){
-    previewSelectedIcon();
+    previewSelectedIcon($(this).val());
   });
 
   $("#addBreedButton").on('click',function(){
@@ -34,10 +34,10 @@ jQuery(document).ready(function($){
     $("#overviewTable").on("click", ".submitPopoverAdd", function(){
       var name = $(".namePopover").val();
       var colour = $(".editColour").val();
-      var category = $(".editCategory").val();
+      var section = $(".editSection").val();
       var iconSelectValue = $('#editSelectAdd').select2('data')[0].id;
 
-      addBreedDBEntry(name, colour, category, iconSelectValue);
+      addBreedDBEntry(name, colour, section, iconSelectValue);
     });
 
 
@@ -85,15 +85,14 @@ jQuery(document).ready(function($){
       $("#or").css("opacity",0);
     });
     //-------------------------------Upload Area End------------------------------
-  });
 
-  /**
+    /**
    * adds uploaded icon to the icon preview
    * only triggered when icon is uploaded, not selected
    */
   function previewUploadedIcon(){
     $("#iconAdd").css("display","block");
-    var iconPreviewElement = $("#overViewTable").find('tbody tr:first').find(".icon-bg-add");
+    var iconPreviewElement = $("#overviewTable").find('tbody tr:first').find(".icon-bg-add");
     //var icon =$(this).parents().eq(6).find(".icon-bg-add"); //icon that's being edited
     var reader = new FileReader();
     reader.onload = function(e){
@@ -108,10 +107,10 @@ jQuery(document).ready(function($){
      * adds selected, already uploaded icon to the icon preview
      * only triggered when icon is selected, not uploaded
      */
-  function previewSelectedIcon(){
+  function previewSelectedIcon(iconPath){
     $("#iconAdd").css("display","block");
-    var iconPreviewElement = $("#overViewTable").find('tbody tr:first').find(".icon-bg-add");
-    iconPreviewElement.find("img").attr('src',$(this).val());
+    var iconPreviewElement = $("#overviewTable").find('tbody tr:first').find(".icon-bg-add");
+    iconPreviewElement.find("img").attr('src',iconPath);
     iconPreviewElement.css("display","block");
   }
 
@@ -128,7 +127,7 @@ jQuery(document).ready(function($){
     sections.forEach(function(value){
       options += "<option value='"+value+"'>"+value+"</option>";
     });
-    html += "<select class='editCategory'>"+options+"</select>";
+    html += "<select class='editSection'>"+options+"</select>";
     html += "</div>";
     html += "<div class='popover-tabs'>";
     html += "<div id='colourTab' class='active'><span>Colour</span></div>";
@@ -243,14 +242,14 @@ jQuery(document).ready(function($){
    * adds breed to micerule_breeds table by calling ajax function breedAdd
    * @param {string} name 
    * @param {string} colour - hex string of selected colour
-   * @param {string} category 
+   * @param {string} section 
    * @param {string} iconSelectValue - Path of selected Icon
    */
-  function addBreedDBEntry(name, colour, category, iconSelectValue){
+  function addBreedDBEntry(name, colour, section, iconSelectValue){
     //allowed formats for upload
     var fileExtension = ['png', 'svg'];
 
-    if(name != "" && colour != ""  && category != "" &&($("#fileUploadAdd").val()!= "" || $("#editSelectAdd").select2('data')[0].id !="")){
+    if(name != "" && colour != ""  && section != "" &&($("#fileUploadAdd").val()!= "" || $("#editSelectAdd").select2('data')[0].id !="")){
       if($.inArray($("#fileUploadAdd").val().split('.').pop().toLowerCase(),fileExtension)==-1 && $("#editSelectAdd").select2('data')[0].id==""){
         alert("Only svg and png allowed!");
       }else{
@@ -267,7 +266,7 @@ jQuery(document).ready(function($){
 
         data.append('name',name);
         data.append('colour',colour);
-        data.append('category',category);
+        data.append('section',section);
         jQuery.ajax({
           type: 'POST',
           url: my_ajax_obj.ajax_url,
@@ -289,3 +288,6 @@ jQuery(document).ready(function($){
       alert("Please fill out all fields!");
     }
   }
+});
+
+  
