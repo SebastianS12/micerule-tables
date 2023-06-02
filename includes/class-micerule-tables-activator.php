@@ -32,7 +32,7 @@ class Micerule_Tables_Activator {
 			colour text,
 			css_class text,
 			section text,
-			path text,
+			icon_url text,
 			PRIMARY KEY  (id)
 			) $charset_collate; ";
 			dbDelta($sql_create_breed_table);

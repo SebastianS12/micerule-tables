@@ -278,6 +278,7 @@ jQuery(document).ready(function($){
           },
           success: function (data) {
             location.reload();
+            console.log(data);
           },
           error: function (XMLHttpRequest, textStatus, errorThrown) {
             alert(errorThrown);

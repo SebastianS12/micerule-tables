@@ -5,7 +5,6 @@
 *
 */
 jQuery(document).ready(function($){
-
   function formatState (state) {
     if (!state.id) {
       return state.text;
@@ -16,30 +15,25 @@ jQuery(document).ready(function($){
     return $state;
   };
 
-
   //load select2
   $('#deleteUpload').select2({
     templateResult: formatState
   });
 
-
   //DeleteIcon
   $("#deleteIcon").on('click',function(){
-    var deletePath = $("#deleteUpload").select2('data')[0].id;
-    console.log(deletePath);
-    if($("#deleteUpload").select2('data')[0].id !=""){
+    var iconPath = $("#deleteUpload").select2('data')[0].id;
+    if(iconPath !=""){
       jQuery.ajax({
         type: 'POST',
         url: my_ajax_obj.ajax_url,
         data: {
           _ajax_nonce: my_ajax_obj.nonce,
           action: 'deleteIcon',
-          path: deletePath
+          path: iconPath
         },
         success: function (data) {
           location.reload();
-          console.log(data);
-
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
           alert(errorThrown);
@@ -49,7 +43,6 @@ jQuery(document).ready(function($){
       alert("Select an Icon first!");
     }
   });
-
 
   //Multiple Files Uploads
   //allowed formats for upload
@@ -139,9 +132,10 @@ jQuery(document).ready(function($){
       processData: false,
       success: function (data) {
         console.log(data);
+        location.reload();
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
-        alert("test");
+        alert(errorThrown);
       }
     });
 
