@@ -12,7 +12,7 @@ if ( !defined('ABSPATH') ) {
 
 global $wpdb;
 global $post;
-
+/*
 $name = $_POST['name'];
 $colour = $_POST['colour'];
 $section = $_POST['section'];
@@ -44,7 +44,7 @@ if(isset($name)){
       'icon_url' => $iconURL,
     )
   );
-}
+}*/
 
 //move options to DB
 /*
@@ -72,17 +72,15 @@ foreach($options as $option){
   );
 }*/
 
-/*
+
 //move icon files and adjust icon urls
 $breedPaths = $wpdb->get_results("SELECT id, icon_url FROM " . $wpdb->prefix . "micerule_breeds", ARRAY_A);
 foreach($breedPaths as $index => $path){
-  $targetPath = ABSPATH."wp-content/plugins/micerule-tables/admin/svg/breed-icons/".basename($path["icon_url"]);
-    //echo(var_dump($path['path']));
-    //echo(var_dump(download_url($path['path'])));
-  rename(download_url($path['icon_url']), $targetPath);
+  $targetPath = BREED_ICONS_DIR.basename($path['icon_url']);//ABSPATH."wp-content/plugins/micerule-tables/admin/svg/breed-icons/".basename($path["icon_url"]);
+  rename(download_url(/*$path['icon_url']*/$srcURL), $targetPath);
     //echo(plugin_dir_url(__FILE__)."admin/svg/breed-icons/".basename($path['icon_url']));
-  $iconURL = plugin_dir_url("")."micerule-tables/admin/svg/breed-icons/".basename($path['icon_url']);
+  $iconURL = BREED_ICONS_DIR_URL.basename($path['icon_url']);
   $wpdb->update($wpdb->prefix."micerule_breeds", array('icon_url' => $iconURL), array('id' => $path['id']));
-}*/
+}
 
 wp_die();

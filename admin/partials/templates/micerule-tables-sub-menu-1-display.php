@@ -62,7 +62,7 @@ $breeds = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "micerule_breeds
         <tbody class="overviewTableBody">
           <?php
           foreach ($breeds as $breed) {
-            $path = ABSPATH."wp-content/plugins/micerule-tables/admin/svg/breed-icons/".basename($breed["path"]);
+            $path = BREED_ICONS_DIR.basename($breed["icon_url"]);//ABSPATH."wp-content/plugins/micerule-tables/admin/svg/breed-icons/".basename($breed["path"]);
             echo '<tr>';
             echo '<td><div class="icon-bg" style="background-color:' . $breed['colour'] . '"><img src="' .((file_exists($path)) ?  $breed['icon_url'] : $defaultPath) . '" width="50" height="50" ></div></td>';
             echo '<td class="name" style="width:100%">' . $breed['name'] . '</td>';
