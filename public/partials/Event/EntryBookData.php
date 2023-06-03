@@ -233,9 +233,6 @@ class SectionData implements JsonSerializable{
 
   public function bestsChecked(){
     $bestsChecked = (count($this->placementEntries) > 0);
-    foreach(EventProperties::AGESECTIONS as $age){
-      $bestsChecked = $bestsChecked && isset($this->placementEntries[$age]);
-    }
     foreach($this->placementEntries as $age => $placementEntry){
       $bestsChecked = $bestsChecked && $placementEntry->isPlacementChecked("1");
     }
@@ -247,7 +244,8 @@ class SectionData implements JsonSerializable{
     if($this->bestsChecked()){
       $checkValue = ($checkValue == "true") ? true : false;
       $this->placementEntries[$age]->best = $checkValue;
-      $this->placementEntries[$oppositeAge]->bestOA = $checkValue;
+      if(isset($this->placementEntries[$oppositeAge]))
+        $this->placementEntries[$oppositeAge]->bestOA = $checkValue;
     }
   }
 
