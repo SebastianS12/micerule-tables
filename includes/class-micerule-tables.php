@@ -50,7 +50,7 @@ class Micerule_Tables{
 
     $this->loader->add_action('wp_ajax_deleteBreed',$plugin_admin,'deleteBreed');
 
-    $this->loader->add_action('wp_ajax_breedAdd',$plugin_admin,'breedAdd');
+    $this->loader->add_action('wp_ajax_addBreed',$plugin_admin,'addBreed');
 
     $this->loader->add_action('wp_ajax_getUploads',$plugin_admin,'getUploads');
 

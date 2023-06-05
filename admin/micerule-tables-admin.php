@@ -85,6 +85,9 @@ class Micerule_Tables_Admin{
     ));
     //---------------------------------------------
 
+    //---------------------breedPopover----------------------------
+    wp_enqueue_script('breedPopover',plugin_dir_url( __FILE__ ) . 'js/breedPopover.js',array('jquery'),$this->plugin_name, true);
+    //--------------------------------------------------------------+
     //---------------------updateBreed----------------------------
     wp_enqueue_script('updateBreed',plugin_dir_url( __FILE__ ) . 'js/updateBreed.js',array('jquery'),$this->plugin_name, true);
 
@@ -92,13 +95,11 @@ class Micerule_Tables_Admin{
     wp_localize_script('updateBreed','my_ajax_obj',array(
       'ajax_url' => admin_url('admin-ajax.php'),
       'nonce'    => $title_nonce,
-
     ));
 
     //--------------------------------------------------------------
 
     //------------------deleteBreed----------------
-
     $title_nonce = wp_create_nonce('deleteBreed');
     wp_localize_script('deleteTable','my_ajax_obj',array(
       'ajax_url' => admin_url('admin-ajax.php'),
@@ -107,15 +108,13 @@ class Micerule_Tables_Admin{
     ));
     //---------------------------------------------
 
+    //-------------------addBreed------------------
+    wp_enqueue_script('addBreed',plugin_dir_url( __FILE__ ) . 'js/addBreed.js',array('jquery'),$this->plugin_name, true);
 
-    //-------------------breedAdd------------------
-    wp_enqueue_script('toggleAddBreed',plugin_dir_url( __FILE__ ) . 'js/toggleAddBreed.js',array('jquery'),$this->plugin_name, true);
-
-    $title_nonce = wp_create_nonce('breedAdd');
-    wp_localize_script('breedAdd','my_ajax_obj',array(
+    $title_nonce = wp_create_nonce('addBreed');
+    wp_localize_script('addBreed','my_ajax_obj',array(
       'ajax_url' => admin_url('admin-ajax.php'),
       'nonce'    => $title_nonce,
-
     ));
     //---------------------------------------------
 
@@ -126,7 +125,6 @@ class Micerule_Tables_Admin{
     wp_localize_script('deleteIcon','my_ajax_obj',array(
       'ajax_url' => admin_url('admin-ajax.php'),
       'nonce'    => $title_nonce,
-
     ));
 
     $title_nonce = wp_create_nonce('uploadFiles');
@@ -180,7 +178,7 @@ class Micerule_Tables_Admin{
     require_once plugin_dir_path(__FILE__) . 'partials/getUploads.php';
   }
 
-  public function breedAdd(){
+  public function addBreed(){
     require_once plugin_dir_path(__FILE__) . 'partials/addBreed.php';
   }
 
