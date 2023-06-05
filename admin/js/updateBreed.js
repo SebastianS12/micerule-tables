@@ -15,7 +15,6 @@ jQuery(document).ready(function ($) {
       options += "<option value='" + value + "'" + ((value == section) ? ' selected="selected"' : '') + ">" + value + "</option>";
     });
     html += "<select class='editSection'>" + options + "</select>";
-    svgPath = iconElement.find("img").attr("src");
     html += "</div>";
     html += "<div class='popover-tabs'>";
     html += "<div id='colourTab' class='active'><span>Colour</span></div>";
@@ -75,16 +74,18 @@ jQuery(document).ready(function ($) {
   *
   */
   $("#overviewTable").on("click", ".submitPopover", function () {
-    var name_New = $(".namePopover").val();
+    var id = $(".icon-edit").attr("data-id");
+    var name = $(".namePopover").val();
     var colour = $(".editColour").val();
-    var category_New = $(".editCategory").val();
+    var section = $(".editCategory").val();
     var selectEdit = $('#editSelect').select2('data')[0].id;
+    var iconURL = $(".icon-edit").find("img").attr("src");
 
     //Ajax call for Edit
     //allowed formats for upload
     var fileExtension = ['png', 'svg'];
 
-    if (name_New == "" || category_New == "") {
+    if (name == "" || section == "") {
       alert("Please fill out all fields!");
     } else if ($("#fileUpload").prop('files').length != 0 && $.inArray($("#fileUpload").val().split('.').pop().toLowerCase(), fileExtension) == -1) {
       alert("Only svg and png allowed!");
@@ -97,16 +98,15 @@ jQuery(document).ready(function ($) {
         data.append('file', file);
       } else {
         if (selectEdit != "") {
-          data.append('path', $('#editSelect').select2('data')[0].id);
+          data.append('iconURL', $('#editSelect').select2('data')[0].id);
         } else {
-          data.append('path', svgPath);
+          data.append('iconURL', iconURL);
         }
       }
+      data.append('id', id);
       data.append('name', name);
-      data.append('name_New', name_New);
       data.append('colour', colour);
-      data.append('category', category);
-      data.append('category_New', category_New);
+      data.append('section', section);
       jQuery.ajax({
         type: 'POST',
         url: my_ajax_obj.ajax_url,
@@ -128,6 +128,7 @@ jQuery(document).ready(function ($) {
   *
   */
   $("#overviewTable").on("click", ".deletePopover", function () {
+    var id = $(".icon-edit").attr("data-id");
     $("#dialogText").dialog({
       buttons: {
         'Cancel': function () {
@@ -140,8 +141,7 @@ jQuery(document).ready(function ($) {
             data: {
               _ajax_nonce: my_ajax_obj.nonce,
               action: 'deleteBreed',
-              name: name,
-              category: category,
+              id: id,
             },
             success: function (data) {
               location.reload();

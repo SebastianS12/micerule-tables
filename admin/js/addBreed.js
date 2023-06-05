@@ -104,7 +104,7 @@ jQuery(document).ready(function ($) {
           var file = $("#fileUpload").prop('files')[0];
           data.append('file', file);
         } else {
-          data.append('path', iconSelectValue);
+          data.append('iconURL', iconSelectValue);
         }
 
         data.append('name', name);
