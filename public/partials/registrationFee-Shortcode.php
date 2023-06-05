@@ -1,5 +1,4 @@
 <?php
-
 function showRegistrationFee(){
   global $post;
   $eventOptionalSettings = EventOptionalSettings::create(EventProperties::getEventLocationID($post->ID));//get_post_meta($post->ID, 'micerule_data_event_optional_settings', true);
