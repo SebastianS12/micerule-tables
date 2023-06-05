@@ -13,7 +13,7 @@ jQuery(document).ready(function ($) {
     var name = $(".namePopover").val();
     var colour = $(".editColour").val();
     var section = $(".editSection").val();
-    var iconSelectValue = $('#editSelectAdd').select2('data')[0].id;
+    var iconSelectValue = $('#editSelect').select2('data')[0].id;
 
     addBreedDBEntry(name, colour, section, iconSelectValue);
   });
@@ -68,7 +68,7 @@ jQuery(document).ready(function ($) {
     $(".icon-bg-add").closest("tr").remove();
 
     //add preview row
-    $("#overviewTable").prepend("<tr><td><div class='icon-bg-add' width='50' height='50'><img src='/wp-content/themes/Divi-child/Assets/Icons/icon-placeholder.svg' id='iconAdd' width='50' height='50'></div></td></tr>");
+    $("#overviewTable").prepend("<tr><td><div class='icon-bg-add' width='50' height='50'><img src='/wp-content/themes/Divi-child/Assets/Icons/icon-placeholder.svg' id='icon' width='50' height='50'></div></td></tr>");
     $(".icon-bg-add").addClass("icon-edit");
     $('.icon-bg-add').popover({
       html: true,

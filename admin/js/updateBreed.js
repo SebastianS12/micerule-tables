@@ -5,7 +5,7 @@
 jQuery(document).ready(function ($) {
   function popoverHtml(callback, iconElement) {
     var html = "<div class='form-group'>";
-    var name = iconElement.closest('tr').find('breed-name').text();
+    var name = iconElement.closest('tr').find('.breed-name').text();
     html += "<div class='breed-row'>";
     html += "<input type='text' class='namePopover' value='" + name + "'>";
 
@@ -77,7 +77,7 @@ jQuery(document).ready(function ($) {
     var id = $(".icon-edit").attr("data-id");
     var name = $(".namePopover").val();
     var colour = $(".editColour").val();
-    var section = $(".editCategory").val();
+    var section = $(".editSection").val();
     var selectEdit = $('#editSelect').select2('data')[0].id;
     var iconURL = $(".icon-edit").find("img").attr("src");
 

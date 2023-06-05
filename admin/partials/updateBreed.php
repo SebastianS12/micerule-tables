@@ -12,7 +12,7 @@ $id = $_POST['id'];
 $name = $_POST['name'];
 $colour = $_POST['colour'];
 $iconURL = $_POST['iconURL'];
-$css_Class = "";
+$cssClass = "";
 $section = $_POST['section'];
 //css_Class based on upload path
 if (!isset($iconURL)) {
@@ -25,12 +25,13 @@ if (!isset($iconURL)) {
   
   $iconURL= BREED_ICONS_DIR_URL.basename($_FILES["file"]["name"]); 
 }
+$cssClass = basename($iconURL,".".pathinfo($iconURL)['extension']);
 
 $table_name = $wpdb->prefix . "micerule_breeds";
 $data = array(
   "name" => $name,
   "colour" => $colour,
-  "css_class" => $css_Class,
+  "css_class" => $cssClass,
   "section" => $section,
   "icon_url" => $iconURL,
 );
