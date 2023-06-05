@@ -209,12 +209,12 @@ class JudgesReport implements IAdminTab {
     $html .= "<div style='display: flex'>
                <div style='display: flex; flex-direction: column; justify-content: space-around;'>
                 <div style='display: flex; align-items: center; width: 62px;'>
-                 <input type='radio' class='buck' name='".$reportDataItem->className."&-&".$placement."&-&".$entry->age."' value='B' ".$buckChecked.">
-                 <label for='buck'>B</label>
+                 <input type='radio' id = '".$reportDataItem->className."&-&".$placement."&-&".$entry->age."&-&buck' class='buck' name='".$reportDataItem->className."&-&".$placement."&-&".$entry->age."' value='B' ".$buckChecked.">
+                 <label for = '".$reportDataItem->className."&-&".$placement."&-&".$entry->age."&-&buck'>B</label>
                 </div>
                <div style='display: flex; align-items: center;'>
-                <input type='radio' class='doe' name='".$reportDataItem->className."&-&".$placement."&-&".$entry->age."' value='D' ".$doeChecked.">
-                <label for='doe'>D</label>
+                <input type='radio' id = '".$reportDataItem->className."&-&".$placement."&-&".$entry->age."&-&doe' class='doe' name='".$reportDataItem->className."&-&".$placement."&-&".$entry->age."' value='D' ".$doeChecked.">
+                <label for = '".$reportDataItem->className."&-&".$placement."&-&".$entry->age."&-&doe'>D</label>
                </div>
               </div>
               <textarea style='height: 60px; font-size: 16px' name='report' class = 'jr-report'>".$prizeEntry->judgesComments."</textarea>";
