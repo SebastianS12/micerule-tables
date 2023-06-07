@@ -1,5 +1,5 @@
 <?php
-
+require_once plugin_dir_path(__FILE__) . 'partials/ResultTable.php';
 class Micerule_Tables_Admin{
 
   private $plugin_name;
@@ -231,13 +231,6 @@ class Micerule_Tables_Admin{
       'manage_options',
       'mr_tables_breedSettings',
       'mr_tables_sub_menu_icons_html',);
-
-      //add option for breed ids, empty in the beginning
-      $data = array();
-      add_option("mrOption_id",$data);
-
-      //add option for icon paths
-      add_option("mrOption_paths",$data);
     }
 
     //Add Meta Box in Events Manager Post
@@ -272,16 +265,22 @@ class Micerule_Tables_Admin{
       global $post;
 
       if(isset($post->ID)){
-        update_post_meta($post->ID, 'micerule_data_settings', $_POST['micerule_table_data']);
-        update_post_meta( $post->ID, 'micerule_data_time', $_POST['event_end_date']);
-        update_post_meta( $post->ID, 'micerule_data_scCheck', $_POST['scCheck']);
-
-        update_post_meta($post->ID, 'micerule_data_event_deadline', $_POST['micerule_table_data_deadline']);
-
-        update_post_meta($post->ID, 'micerule_data_breeds', $_POST['micerule_breeds_table_data']);
-        update_post_meta($post->ID, 'micerule_data_location_secretaries', $_POST['micerule_table_location_secretaries']);
+        //update_post_meta($post->ID, 'micerule_data_settings', $_POST['micerule_table_data']);
+        /*
+        if(isset($_POST['event_end_date'])) 
+          update_post_meta( $post->ID, 'micerule_data_time', $_POST['event_end_date']);
+        if(isset($_POST['scCheck']))
+          update_post_meta( $post->ID, 'micerule_data_scCheck', $_POST['scCheck']);
+        if(isset($_POST['micerule_table_data_deadline']))
+          update_post_meta($post->ID, 'micerule_data_event_deadline', $_POST['micerule_table_data_deadline']);
+        if(isset($_POST['micerule_breeds_table_data']))
+          update_post_meta($post->ID, 'micerule_data_breeds', $_POST['micerule_breeds_table_data']);
+        if(isset($_POST['micerule_table_location_secretaries']))
+          update_post_meta($post->ID, 'micerule_data_location_secretaries', $_POST['micerule_table_location_secretaries']);
+          */
+          ResultTable::saveTableData($post->ID, $_POST['micerule_table_data']);
       }
-
+      
     }
   }
 

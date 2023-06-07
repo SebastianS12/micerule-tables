@@ -36,5 +36,22 @@ class Micerule_Tables_Activator {
 			PRIMARY KEY  (id)
 			) $charset_collate; ";
 			dbDelta($sql_create_breed_table);
+
+		//results table
+		$event_results_table_name = $wpdb->prefix."micerule_event_results";
+		$sql_create_event_results_table = "CREATE TABLE ".$event_results_table_name. " (
+			id bigint(20) unsigned NOT NULL auto_increment,
+			event_post_id bigint(20) unsigned,
+			award text,
+			section text,
+			fancier_name text,
+			variety_name text,
+			age text,
+			points int(2),
+			PRIMARY KEY  (id)
+			) $charset_collate; ";
+			dbDelta($sql_create_event_results_table);
+
+		
 		}
 	}
