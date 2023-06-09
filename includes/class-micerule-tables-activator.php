@@ -52,6 +52,47 @@ class Micerule_Tables_Activator {
 			) $charset_collate; ";
 			dbDelta($sql_create_event_results_table);
 
-		
+		//event judges table
+		$event_judges_table_name = $wpdb->prefix."micerule_event_judges";
+		$sql_create_event_judges_table = "CREATE TABLE ".$event_judges_table_name. " (
+			event_post_id bigint(20) unsigned NOT NULL,
+			judge_no int unsigned NOT NULL,
+			judge_name text,
+			PRIMARY KEY  (event_post_id, judge_no)
+			) $charset_collate; ";
+			dbDelta($sql_create_event_judges_table);
+
+		//event judges sections table
+		$event_judges_sections_table_name = $wpdb->prefix."micerule_event_judges_sections";
+		$sql_create_event_judges_sections_table = "CREATE TABLE ".$event_judges_sections_table_name. " (
+			id bigint(20) unsigned NOT NULL auto_increment,
+			event_post_id bigint(20) unsigned NOT NULL,
+			judge_no int unsigned NOT NULL,
+			section text,
+			PRIMARY KEY  (id),
+			CONSTRAINT fk_event_id_judge_no_sections
+				FOREIGN KEY (event_post_id, judge_no) 
+				REFERENCES ".$event_judges_table_name."(event_post_id, judge_no)
+				ON DELETE CASCADE
+			) $charset_collate; ";
+			dbDelta($sql_create_event_judges_sections_table);
+
+		//event judges partnerships table
+		$event_judges_partnerships_table_name = $wpdb->prefix."micerule_event_judges_partnerships";
+		$sql_create_event_judges_partnerships_table = "CREATE TABLE ".$event_judges_partnerships_table_name. " (
+			event_post_id bigint(20) unsigned NOT NULL,
+			judge_no int unsigned NOT NULL,
+			partner_name text,
+			PRIMARY KEY  (event_post_id, judge_no),
+			CONSTRAINT fk_event_id_judge_no_partnerships
+				FOREIGN KEY (event_post_id, judge_no) 
+				REFERENCES ".$event_judges_table_name."(event_post_id, judge_no)
+				ON DELETE CASCADE
+			) $charset_collate; ";
+			dbDelta($sql_create_event_judges_partnerships_table);
 		}
 	}
+
+	//judge db: (judge_no event_id,) name
+	//judge_sections db: (judge_no, event_id), section, reference judge db on delete cascade
+	//judge_partnership db: (judge_no, event_id,) judge_partner_name reference judge db on delete cascade
