@@ -7,16 +7,6 @@ class ResultTable{
                 self::saveTableRow($rowData, $award, $sectionName, $postID);
             }
         }
-        /*
-        self::saveTableRow($tableData, "BIS", $postID);
-        self::saveTableRow($tableData['BOA'], "BOA", $postID);
-        foreach($tableData['BISec'] as $rowData){
-            self::saveTableRow($tableData['BISec'], "BISec", $postID);
-        //}
-        /*
-        foreach($tableData['BOSec'] as $rowData){
-            self::saveTableRow($rowData, "BOSec", $postID);
-        }*/
     }
 
     private static function saveTableRow($rowData, $award, $section, $postID){

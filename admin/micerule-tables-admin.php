@@ -1,5 +1,6 @@
 <?php
 require_once plugin_dir_path(__FILE__) . 'partials/ResultTable.php';
+require_once plugin_dir_path(__FILE__) . 'partials/EventJudges.php';
 class Micerule_Tables_Admin{
 
   private $plugin_name;
@@ -278,7 +279,9 @@ class Micerule_Tables_Admin{
         if(isset($_POST['micerule_table_location_secretaries']))
           update_post_meta($post->ID, 'micerule_data_location_secretaries', $_POST['micerule_table_location_secretaries']);
           */
-          ResultTable::saveTableData($post->ID, $_POST['micerule_table_data']);
+
+          //ResultTable::saveTableData($post->ID, $_POST['micerule_table_data']);
+          EventJudgesHelper::saveEventJudges($post->ID, $_POST['judge_data']);
       }
       
     }

@@ -100,7 +100,7 @@ function getTableRowHtml($award, $displayedAward, $users, $rowData, $breeds, $se
   }
   $html .= "</select></td>";
 
-  $html .= "<input id='test' type='hidden' name='micerule_table_data[".$award."][".$section."][data_id]' value='".((isset($rowData['id'])) ? $rowData['id'] : "")."'>";  
+  $html .= "<input type='hidden' name='micerule_table_data[".$award."][".$section."][data_id]' value='".((isset($rowData['id'])) ? $rowData['id'] : "")."'>";  
   $html .= "<td><input type='hidden' name='micerule_table_data[".$award."][".$section."][points]' value='".$points."'>".$points."</td>";
 
   return $html;
