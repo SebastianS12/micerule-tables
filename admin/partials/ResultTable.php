@@ -2,9 +2,9 @@
 
 class ResultTable{
     public static function saveTableData($postID, $tableData){
-        foreach($tableData as $award => $sectionData){
-            foreach($sectionData as $sectionName => $rowData){
-                self::saveTableRow($rowData, $award, $sectionName, $postID);
+        foreach($tableData as $section => $awardData){
+            foreach($awardData as $award => $rowData){
+                self::saveTableRow($rowData, $award, $section, $postID);
             }
         }
     }
@@ -28,7 +28,7 @@ class ResultTable{
         );
 
         $table_name = $wpdb->prefix."micerule_event_results";
-        if(isset($rowData['data_id']))
+        if(isset($rowData['data_id']) && $rowData['data_id'] != '')
             $wpdb->update($table_name, $data, array('id' => $rowData['data_id']));
         else
             $wpdb->insert($table_name, $data);

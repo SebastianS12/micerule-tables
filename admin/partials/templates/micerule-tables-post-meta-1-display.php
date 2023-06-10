@@ -72,7 +72,7 @@ $scCheck = get_post_meta($post->ID, 'micerule_data_scCheck', true);
 function getTableRowHtml($award, $displayedAward, $users, $rowData, $breeds, $section, $points){
   $html = "<td>".$displayedAward."</td>
            <td>
-            <select name='micerule_table_data[".$award."][".$section."][fancier_name]' autocomplete='off'>
+            <select name='micerule_table_data[".$section."][".$award."][fancier_name]' autocomplete='off'>
               <option value=''>Please Select</option>";
   foreach($users as $user){
     $html .= "<option value='".$user->display_name."' ".((isset($rowData['fancier_name']) && $rowData['fancier_name'] == $user->display_name) ? 'selected="selected"' : '').">";
@@ -82,7 +82,7 @@ function getTableRowHtml($award, $displayedAward, $users, $rowData, $breeds, $se
   $html .= "</select></td>";
 
   $html .= "<td>
-              <select name='micerule_table_data[".$award."][".$section."][variety_name]' style='width:200px' autocomplete='off'>
+              <select name='micerule_table_data[".$section."][".$award."][variety_name]' style='width:200px' autocomplete='off'>
                 <option value=''>No Record</option>";
   foreach ($breeds as $breed) {
     $html .= "<option value='".$breed['name']."' ".((isset($rowData['variety_name']) && $rowData['variety_name'] == $breed['name']) ? 'selected="selected"' : '').">";
@@ -92,7 +92,7 @@ function getTableRowHtml($award, $displayedAward, $users, $rowData, $breeds, $se
   $html .= "</select></td>";
 
   $html .= "<td>
-              <select id='ageBIS1' name='micerule_table_data[".$award."][".$section."][age]' autocomplete='off'>";
+              <select id='ageBIS1' name='micerule_table_data[".$section."][".$award."][age]' autocomplete='off'>";
   foreach (EventProperties::AGESECTIONS as $age) {
     $html .= "<option value='".$age."' ".((isset($rowData['age']) && $rowData['age'] == $age) ? 'selected="selected"' : '').">";
     $html .= $age;
@@ -100,8 +100,8 @@ function getTableRowHtml($award, $displayedAward, $users, $rowData, $breeds, $se
   }
   $html .= "</select></td>";
 
-  $html .= "<input type='hidden' name='micerule_table_data[".$award."][".$section."][data_id]' value='".((isset($rowData['id'])) ? $rowData['id'] : "")."'>";  
-  $html .= "<td><input type='hidden' name='micerule_table_data[".$award."][".$section."][points]' value='".$points."'>".$points."</td>";
+  $html .= "<input type='hidden' name='micerule_table_data[".$section."][".$award."][data_id]' value='".((isset($rowData['id'])) ? $rowData['id'] : "")."'>";  
+  $html .= "<td><input type='hidden' name='micerule_table_data[".$section."][".$award."][points]' value='".$points."'>".$points."</td>";
 
   return $html;
 }

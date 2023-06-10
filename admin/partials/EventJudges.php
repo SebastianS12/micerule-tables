@@ -59,7 +59,9 @@ class EventJudgesHelper
             "judge_no" => $judgeNo,
             "section" => $section,
         );
-        $wpdb->insert($table_name, $data);
+        $updateStatus = $wpdb->update($table_name, $data, $data);
+        if(count($wpdb->get_results("SELECT * FROM ".$table_name." WHERE event_post_id = ".$eventPostID." AND judge_no = ".$judgeNo." AND section = '".$section."'")) == 0)
+            $wpdb->insert($table_name, $data);
     }
 
     public static function deleteJudgeSection($eventPostID, $judgeNo, $section){
