@@ -52,6 +52,17 @@ class Micerule_Tables_Activator {
 			) $charset_collate; ";
 			dbDelta($sql_create_event_results_table);
 
+		//optional results
+		$event_results_optional_table_name = $wpdb->prefix."micerule_event_results_optional";
+		$sql_create_event_results_optional_table = "CREATE TABLE ".$event_results_optional_table_name. " (
+			event_post_id bigint(20) unsigned NOT NULL,
+			class_name varchar(50) NOT NULL,
+			fancier_name text,
+			variety_name text,
+			PRIMARY KEY  (event_post_id, class_name)
+			) $charset_collate; ";
+			dbDelta($sql_create_event_results_optional_table);
+
 		//event judges table
 		$event_judges_table_name = $wpdb->prefix."micerule_event_judges";
 		$sql_create_event_judges_table = "CREATE TABLE ".$event_judges_table_name. " (

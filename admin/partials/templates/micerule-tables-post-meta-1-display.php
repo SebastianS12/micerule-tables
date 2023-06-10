@@ -33,8 +33,8 @@ $scCheck = get_post_meta($post->ID, 'micerule_data_scCheck', true);
 <label for="addShortcode"><strong>Display as event table</strong> (Check this as soon as results have been entered below to have them displayed on the <a href="/show-results">Show Results</a> page)</label>
 <br><br>
 <input type="hidden" name="scCheck" id="hValue" value="<?php echo (isset($scCheck)) ? $scCheck : '0';?>">
-<button type="button" id="addRowU" class="addRow">Add/Hide Unstandardised Row</button>
-<button type="button" id="addRowJ" class="addRow">Add/Hide Junior Row</button>
+<button type="button" id="unstandardised-row-toggle" class="addRow">Add/Hide Unstandardised Row</button>
+<button type="button" id="junior-row-toggle" class="addRow">Add/Hide Junior Row</button>
 <br><br>
 <table style="width:100%">
   <tr style="text-align:left">
@@ -63,6 +63,10 @@ $scCheck = get_post_meta($post->ID, 'micerule_data_scCheck', true);
     echo "<tr>".getTableRowHtml("BISec", "Best ".$section, $users, $BISecData, $breeds, strtolower($section), 2)."</tr>";
     echo "<tr>".getTableRowHtml("BOSec", "Best Opposite Age ".$section, $users, $BOSecData, $breeds, strtolower($section), 1)."</tr>";
   }
+  $juniorData = $wpdb->get_row("SELECT * FROM ".$wpdb->prefix."micerule_event_results_optional WHERE event_post_id = ".$post->ID." AND class_name = 'junior'", ARRAY_A);
+  echo getOptionalTableRowHtml("junior", $users, $breeds, $juniorData);
+  $unstandardisedData = $wpdb->get_row("SELECT * FROM ".$wpdb->prefix."micerule_event_results WHERE event_post_id = ".$post->ID." AND class_name = 'unstandardised'", ARRAY_A);
+  echo getOptionalTableRowHtml("unstandardised", $users, $breeds, $unstandardisedData);
   ?>
 </table>
 
@@ -102,6 +106,36 @@ function getTableRowHtml($award, $displayedAward, $users, $rowData, $breeds, $se
 
   $html .= "<input type='hidden' name='micerule_table_data[".$section."][".$award."][data_id]' value='".((isset($rowData['id'])) ? $rowData['id'] : "")."'>";  
   $html .= "<td><input type='hidden' name='micerule_table_data[".$section."][".$award."][points]' value='".$points."'>".$points."</td>";
+
+  return $html;
+}
+
+function getOptionalTableRowHtml($optionalClassName, $users, $breeds, $rowData){
+  $html = "<tr ".(!isset($rowData) ? "style='display:none'" : "")." id='".$optionalClassName."Row'>
+            <td>Best ".strtoupper($optionalClassName)."</td>
+            <td>
+            <select class='fancier-select' name='micerule_table_data_optional[".$optionalClassName."][fancier_name]' autocomplete='off'>
+              <option value=''>Please Select</option>";
+  foreach($users as $user){
+    $html .= "<option value='".$user->display_name."' ".((isset($rowData['fancier_name']) && $rowData['fancier_name'] == $user->display_name) ? 'selected="selected"' : '').">";
+    $html .= $user->display_name;
+    $html .= "</option>";
+  }
+  $html .= "</select></td>";
+
+  $html .= "<td>
+              <select class='variety-select' name='micerule_table_data_optional[".$optionalClassName."][variety_name]' style='width:200px' autocomplete='off'>
+                <option value=''>No Record</option>";
+  foreach ($breeds as $breed) {
+    $html .= "<option value='".$breed['name']."' ".((isset($rowData['variety_name']) && $rowData['variety_name'] == $breed['name']) ? 'selected="selected"' : '').">";
+    $html .= $breed['name'];
+    $html .= "</option>";
+  }
+  $html .= "</select></td>";
+
+  $html .= "<td>AA</td>";
+  $html .= "<td>0</td>";
+  $html .= "</tr>";
 
   return $html;
 }

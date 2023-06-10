@@ -281,6 +281,7 @@ class Micerule_Tables_Admin{
           */
 
           ResultTable::saveTableData($post->ID, $_POST['micerule_table_data']);
+          ResultTable::saveOptionalTableData($post->ID, $_POST['micerule_table_data_optional']);
           EventJudgesHelper::saveEventJudges($post->ID, $_POST['judge_data']);
       }
       

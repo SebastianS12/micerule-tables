@@ -74,6 +74,33 @@ function micerule_shortcode_table($atts){
     $html .= "<td class='eventCell'>".$sectionResultData['points']."</td>";
     $html .= "</tr>";
   }
+
+  $optionalResultTableData = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."micerule_event_results_optional WHERE event_post_id = ".$micerule_settings['id'], ARRAY_A);
+  foreach($optionalResultTableData as $optionalClassResult){
+    $html .= "<tr>";
+    $html .= "<td class='eventCell2'>Best ".strtoupper($optionalClassResult['class_name'])."</td>";
+    if(is_user_logged_in()){
+      $html .= "<td class='eventCell'>".$optionalClassResult['fancier_name']."</td>";
+    }else{
+      $html .= "<td class = 'resultCellBlur'>";
+      $html .= "<div class ='blurDiv' style='width:".random_int(70,175)."px; background-image: url(".plugin_dir_url(__DIR__)."../public/partials/blur.png);height:20px ;display:inline-block; background-position: ".random_int(0,500)."px 0'></div>";
+      $html .= "</td>";
+    }
+
+    $breedName = "(No record)";
+    $iconURL = $defaultPath;
+    $iconColour = "#FFF";
+    $breedData = $wpdb->get_row("SELECT * FROM ".$wpdb->prefix."micerule_breeds WHERE name = '".$optionalClassResult['variety_name']."'", ARRAY_A);
+    if(isset($breedData)){
+      $breedName = $breedData['name'];
+      $iconColour = $breedData['colour'];
+      $iconURL = $breedData['icon_url'];
+    }
+    $html .= "<td class='eventCell'><div class='variety-icon' style='background:url(".$iconURL.");background-repeat:no-repeat;background-color:".$iconColour."'></div>".$breedName."</td>";
+    $html .= "<td class='eventCell'>AA</td>";
+    $html .= "<td class='eventCell'>0</td>";
+    $html .= "</tr>";
+  }
   $html .= "</tbody>";
   $html .= "</table>";
   $html .= "</div>";
