@@ -11,30 +11,12 @@ function micerule_shortcode_table($atts){
     'id' => ''
   ), $atts);
 
-
-  $defaultPath = get_home_url()."/wp-content/themes/Divi-child/Assets/spacer.gif";
-
   //start html
   $html = "<div class='micerule_table_MotherShipContainer'>";
   $html .= "<p><a href ='".get_permalink($micerule_settings['id'])."'>Calendar Page</a></p>";
 
   if(is_user_logged_in()){
-    $html.= "<div class='judges'>";
-    //header
-    $html .= "<p>Judges</p>";
-    //create rows with names of judges and their classes
-    $judgesData = $wpdb->get_results("SELECT judge_no, judge_name FROM ".$wpdb->prefix."micerule_event_judges WHERE event_post_id = ".$micerule_settings['id'], ARRAY_A);
-    foreach($judgesData as $judgeData){
-      $judgeSectionData = $wpdb->get_results("SELECT section FROM ".$wpdb->prefix."micerule_event_judges_sections WHERE event_post_id = ".$micerule_settings['id']." AND judge_no = ".$judgeData['judge_no'], ARRAY_A);
-      $html .= "<p>".$judgeData['judge_name'].":  ";
-      foreach($judgeSectionData as $sectionData){
-        $html .= strtoupper($sectionData['section']).", ";
-      }
-      $html = rtrim($html, ', '); //remove comma from last loop iteration
-      $html .= "</p>";
-    }
-    $html .= "<br>";
-    $html.= "</div>";
+    $html .= getJudgeHtml($micerule_settings['id']);
   }
 
   $html .= "<table id = 'micerule_table_".$micerule_settings['id']."'  class='eventTable'>";
@@ -52,24 +34,8 @@ function micerule_shortcode_table($atts){
     //TODO: There should be a better way to handle this -> add field to db?, helper class?
     $displayedAwards = array("BIS" => "Best in Show", "BOA" => "Best Opposite Age in Show", "BISec" => "Best ".$sectionResultData['section'], "BOSec" => "Best Opposite Age ".$sectionResultData['section']);
     $html .= "<td class='eventCell2'>".$displayedAwards[$sectionResultData['award']]."</td>";
-    if(is_user_logged_in()){
-      $html .= "<td class='eventCell'>".$sectionResultData['fancier_name']."</td>";
-    }else{
-      $html .= "<td class = 'resultCellBlur'>";
-      $html .= "<div class ='blurDiv' style='width:".random_int(70,175)."px; background-image: url(".plugin_dir_url(__DIR__)."../public/partials/blur.png);height:20px ;display:inline-block; background-position: ".random_int(0,500)."px 0'></div>";
-      $html .= "</td>";
-    }
-
-    $breedName = "(No record)";
-    $iconURL = $defaultPath;
-    $iconColour = "#FFF";
-    $breedData = $wpdb->get_row("SELECT * FROM ".$wpdb->prefix."micerule_breeds WHERE name = '".$sectionResultData['variety_name']."'", ARRAY_A);
-    if(isset($breedData)){
-      $breedName = $breedData['name'];
-      $iconColour = $breedData['colour'];
-      $iconURL = $breedData['icon_url'];
-    }
-    $html .= "<td class='eventCell'><div class='variety-icon' style='background:url(".$iconURL.");background-repeat:no-repeat;background-color:".$iconColour."'></div>".$breedName."</td>";
+    $html .= getFancierCellHtml($sectionResultData['fancier_name']);
+    $html .= getVarietyCellHtml($sectionResultData['variety_name']);
     $html .= "<td class='eventCell'>".$sectionResultData['age']."</td>";
     $html .= "<td class='eventCell'>".$sectionResultData['points']."</td>";
     $html .= "</tr>";
@@ -79,24 +45,8 @@ function micerule_shortcode_table($atts){
   foreach($optionalResultTableData as $optionalClassResult){
     $html .= "<tr>";
     $html .= "<td class='eventCell2'>Best ".strtoupper($optionalClassResult['class_name'])."</td>";
-    if(is_user_logged_in()){
-      $html .= "<td class='eventCell'>".$optionalClassResult['fancier_name']."</td>";
-    }else{
-      $html .= "<td class = 'resultCellBlur'>";
-      $html .= "<div class ='blurDiv' style='width:".random_int(70,175)."px; background-image: url(".plugin_dir_url(__DIR__)."../public/partials/blur.png);height:20px ;display:inline-block; background-position: ".random_int(0,500)."px 0'></div>";
-      $html .= "</td>";
-    }
-
-    $breedName = "(No record)";
-    $iconURL = $defaultPath;
-    $iconColour = "#FFF";
-    $breedData = $wpdb->get_row("SELECT * FROM ".$wpdb->prefix."micerule_breeds WHERE name = '".$optionalClassResult['variety_name']."'", ARRAY_A);
-    if(isset($breedData)){
-      $breedName = $breedData['name'];
-      $iconColour = $breedData['colour'];
-      $iconURL = $breedData['icon_url'];
-    }
-    $html .= "<td class='eventCell'><div class='variety-icon' style='background:url(".$iconURL.");background-repeat:no-repeat;background-color:".$iconColour."'></div>".$breedName."</td>";
+    $html .= getFancierCellHtml($optionalClassResult['fancier_name']);
+    $html .= getVarietyCellHtml($optionalClassResult['variety_name']);
     $html .= "<td class='eventCell'>AA</td>";
     $html .= "<td class='eventCell'>0</td>";
     $html .= "</tr>";
@@ -109,4 +59,53 @@ function micerule_shortcode_table($atts){
 }
 
 add_shortcode('micerule_tables', 'micerule_shortcode_table');
+
+function getJudgeHtml($eventPostID){
+  global $wpdb;
+
+  $html = "<div class='judges'>";
+  $html .= "<p>Judges</p>";
+  $judgesData = $wpdb->get_results("SELECT judge_no, judge_name FROM ".$wpdb->prefix."micerule_event_judges WHERE event_post_id = ".$eventPostID, ARRAY_A);
+  foreach($judgesData as $judgeData){
+    $judgeSectionData = $wpdb->get_results("SELECT section FROM ".$wpdb->prefix."micerule_event_judges_sections WHERE event_post_id = ".$eventPostID." AND judge_no = ".$judgeData['judge_no'], ARRAY_A);
+    $html .= "<p>".$judgeData['judge_name'].":  ";
+    foreach($judgeSectionData as $sectionData){
+      $html .= strtoupper($sectionData['section']).", ";
+    }
+    $html = rtrim($html, ', '); //remove comma from last loop iteration
+    $html .= "</p>";
+  }
+  $html .= "<br>";
+  $html.= "</div>";
+
+  return $html;
+}
+
+function getFancierCellHtml($fancierName){
+  $html = "";
+  if(is_user_logged_in()){
+    $html .= "<td class='eventCell'>".$fancierName."</td>";
+  }else{
+    $html .= "<td class = 'resultCellBlur'>";
+    $html .= "<div class ='blurDiv' style='width:".random_int(70,175)."px; background-image: url(".plugin_dir_url(__DIR__)."../public/partials/blur.png);height:20px ;display:inline-block; background-position: ".random_int(0,500)."px 0'></div>";
+    $html .= "</td>";
+  }
+
+  return $html;
+}
+
+function getVarietyCellHtml($varietyName){
+  global $wpdb;
+  $breedName = "(No record)";
+  $iconURL = get_home_url()."/wp-content/themes/Divi-child/Assets/spacer.gif";
+  $iconColour = "#FFF";
+  $breedData = $wpdb->get_row("SELECT * FROM ".$wpdb->prefix."micerule_breeds WHERE name = '".$varietyName."'", ARRAY_A);
+  if(isset($breedData)){
+    $breedName = $breedData['name'];
+    $iconColour = $breedData['colour'];
+    $iconURL = $breedData['icon_url'];
+  }
+  
+  return "<td class='eventCell'><div class='variety-icon' style='background:url(".$iconURL.");background-repeat:no-repeat;background-color:".$iconColour."'></div>".$breedName."</td>";
+}
 ?>
