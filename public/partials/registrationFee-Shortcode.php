@@ -9,9 +9,12 @@ function showRegistrationFee(){
   $html .= "</h1>";
   $html .= "</div>";
   $html .= "<h3 style='top: 2px; position: relative;'>Prize Money: ";
+
+  $numberFormatter = new NumberFormatter('en_GB',  NumberFormatter::CURRENCY);
+  $numberFormatter->setAttribute(NumberFormatter::FRACTION_DIGITS, 0);
   foreach($eventOptionalSettings->prizeMoney as $prizeMoney){
     if($prizeMoney != ""){
-      $html .= ($prizeMoney > 1.0) ? "£".number_format((float)$prizeMoney, 2, '.', '').", " : ($prizeMoney * 100)."p, ";
+      $html .= ($prizeMoney >= 1.0) ? $numberFormatter->formatCurrency((float)$prizeMoney, "GBP").", " : ($prizeMoney * 100)."p, ";
     }
   }
   //remove last comma
