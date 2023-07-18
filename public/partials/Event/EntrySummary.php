@@ -42,7 +42,7 @@ class EntrySummary implements IAdminTab {
                     <td class='js-notes'>".$entryData->classIndex." | ".$entryData->className." ".$entryData->age."</td>
                   </tr>";
       }
-      $html .= "<tr><td colspan = 2>Entry Fee: ".$this->entryData->getUserEntryFee($userName, intval($registrationFee))."£</td></tr>";
+      $html .= "<tr><td colspan = 2>Entry Fee: £".$this->entryData->getUserEntryFee($userName, floatval($registrationFee))."</td></tr>";
 
       $html .= "    </tbody>
                   </table>
