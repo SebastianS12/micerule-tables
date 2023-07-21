@@ -183,11 +183,14 @@ class JudgeData{
 
   private function setOptionalClasses(){
     $classes= $this->entryBookData->classes;
-    if(isset($classes['junior']))
-      $this->setOptionalClassSheetData($classes['junior']);
+    if(isset($classes['Junior']))
+      $this->setOptionalClassSheetData($classes['Junior']);
 
-    if(isset($classes['unstandardised']))
-      $this->setOptionalClassSheetData($classes['unstandardised']);
+    if(isset($classes['Unstandardised']))
+      $this->setOptionalClassSheetData($classes['Unstandardised']);
+
+    if(isset($classes['Auction']))
+      $this->setOptionalClassSheetData($classes['Auction']); 
   }
 
   private function setOptionalClassSheetData($classData){
