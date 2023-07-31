@@ -14,7 +14,6 @@ function assignJudgesReportsListeners(){
   $(".classSelect-judgesReports").on('change', function(){
     var penNumber = this.id.split("&-&")[0];
     var selectValue = $(this).val();
-    console.log(penNumber + selectValue);
 
     setCustomClassVariety(penNumber, selectValue, ".judgesReport.content");
   });
@@ -64,6 +63,8 @@ function submitReport(buttonElement){
 function submitGeneralComment(buttonElement){
   var judgeName = buttonElement.parentsUntil("tr").find(".jr-judge-name").text();
   var text = buttonElement.prev().find("textarea").eq(0).val();
+
+  $("#spinner-div").show();
   jQuery.ajax({
     type: 'POST',
     url: my_ajax_obj.ajax_url,
@@ -75,7 +76,11 @@ function submitGeneralComment(buttonElement){
       submitType: "generalComment"
     },
     success: function (data) {
-      updateAdminTabs();
+      $("#spinner-div").hide();
+      buttonElement.text("Submitted")
+      setTimeout(function() {
+        buttonElement.text("Submit Changes");
+      }, 3000);
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
       alert(errorThrown);
