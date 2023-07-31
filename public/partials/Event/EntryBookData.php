@@ -53,7 +53,7 @@ class EntryBookData implements JsonSerializable {
     $this->classes[$className]->addPenNumber($entry->penNumber);
 
     if(EventUser::isJuniorMember($entry->userName)  && isset($this->classes['junior']))
-      $this->classes['junior']->addPenNumber($penNumber);
+      $this->classes['junior']->addPenNumber($entry->penNumber);
   }
 
   public function removeEntry($entry){
