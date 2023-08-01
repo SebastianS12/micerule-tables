@@ -6,13 +6,7 @@ global $post;
 //Get data for Breeds,Age
 require_once plugin_dir_path(__FILE__) . 'micerule-tables-categories-arrays.php';
 
-$breeds = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "micerule_breeds", ARRAY_A);
-$breedsOSelfs = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "options WHERE option_name LIKE 'mrTables%Selfs'", ARRAY_A);
-$breedsOTans = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "options WHERE option_name LIKE 'mrTables%Tans'", ARRAY_A);
-$breedsOMarked = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "options WHERE option_name LIKE 'mrTables%Marked'", ARRAY_A);
-$breedsOSatins = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "options WHERE option_name LIKE 'mrTables%Satins'", ARRAY_A);
-$breedsOAOVs = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "options WHERE option_name LIKE 'mrTables%AOVs'", ARRAY_A);
-
+$breedsAllSections = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "micerule_breeds", ARRAY_A);
 
 //Get postmeta for current inputs
 $scCheck = get_post_meta($post->ID, 'micerule_data_scCheck', true);
@@ -37,13 +31,13 @@ $scCheck = get_post_meta($post->ID, 'micerule_data_scCheck', true);
   <tr>
   <?php 
   $BISData = $wpdb->get_row("SELECT * FROM ".$wpdb->prefix."micerule_event_results WHERE event_post_id = ".$post->ID." AND award = 'BIS'", ARRAY_A);
-  echo getTableRowHtml("BIS", "Best in Show", $BISData, $breeds, "Grand Challenge", 4);
+  echo getTableRowHtml("BIS", "Best in Show", $BISData, $breedsAllSections, "grand challenge", 4);
   ?>
   </tr>
   <tr>
   <?php
    $BOAData = $wpdb->get_row("SELECT * FROM ".$wpdb->prefix."micerule_event_results WHERE event_post_id = ".$post->ID." AND award = 'BOA'", ARRAY_A);
-   echo getTableRowHtml("BOA", "Best Opposite Age", $BOAData, $breeds, "Grand Challenge", 3); 
+   echo getTableRowHtml("BOA", "Best Opposite Age", $BOAData, $breedsAllSections, "grand challenge", 3); 
   ?>
   </tr>
   <?php 
@@ -54,10 +48,11 @@ $scCheck = get_post_meta($post->ID, 'micerule_data_scCheck', true);
     echo "<tr>".getTableRowHtml("BISec", "Best ".$section, $BISecData, $sectionBreeds, strtolower($section), 2)."</tr>";
     echo "<tr>".getTableRowHtml("BOSec", "Best Opposite Age ".$section, $BOSecData, $sectionBreeds, strtolower($section), 1)."</tr>";
   }
+
   $juniorData = $wpdb->get_row("SELECT * FROM ".$wpdb->prefix."micerule_event_results_optional WHERE event_post_id = ".$post->ID." AND class_name = 'junior'", ARRAY_A);
-  echo getOptionalTableRowHtml("junior", $breeds, $juniorData);
+  echo getOptionalTableRowHtml("junior", $breedsAllSections, $juniorData);
   $unstandardisedData = $wpdb->get_row("SELECT * FROM ".$wpdb->prefix."micerule_event_results_optional WHERE event_post_id = ".$post->ID." AND class_name = 'unstandardised'", ARRAY_A);
-  echo getOptionalTableRowHtml("unstandardised", $breeds, $unstandardisedData);
+  echo getOptionalTableRowHtml("unstandardised", $breedsAllSections, $unstandardisedData);
   ?>
 </table>
 
@@ -119,7 +114,7 @@ function getVarietySelectHtml($breeds, $varietyName, $selectName){
   return $html;
 }
 
-function getAgeSelectHtml($selectName, $selectedAge){
+function getAgeSelectHtml($selectedAge, $selectName){
   $html = "<select id='ageBIS1' name='".$selectName."' autocomplete='off'>";
   foreach (EventProperties::AGESECTIONS as $age) {
     $html .= "<option value='".$age."' ".((isset($selectedAge) && $selectedAge == $age) ? 'selected="selected"' : '').">";

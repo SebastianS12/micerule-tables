@@ -59,7 +59,7 @@ class EventJudgesHelper
             "judge_no" => $judgeNo,
             "section" => $section,
         );
-        $updateStatus = $wpdb->update($table_name, $data, $data);
+
         if(count($wpdb->get_results("SELECT * FROM ".$table_name." WHERE event_post_id = ".$eventPostID." AND judge_no = ".$judgeNo." AND section = '".$section."'")) == 0)
             $wpdb->insert($table_name, $data);
     }
@@ -87,5 +87,25 @@ class EventJudgesHelper
         global $wpdb;
         $table_name = $wpdb->prefix . "micerule_event_judges_partnerships";
         $wpdb->delete($table_name, array("event_post_id" => $eventPostID, "judge_no" => $judgeNo));
+    }
+
+    public static function convertPostMeta(){
+        global $wpdb;
+        $postMetaResults = $wpdb->get_results("SELECT post_id, meta_value FROM ".$wpdb->prefix."postmeta WHERE meta_key = 'micerule_data_settings' AND meta_value IS NOT NULL", ARRAY_A);
+        foreach($postMetaResults as $eventResult){
+            $eventPostID = $eventResult['post_id'];
+            $metaValue = get_post_meta($eventPostID, 'micerule_data_settings', true);
+                foreach($metaValue['judges'] as $index => $judgeName){
+                    if($judgeName != ""){
+                        self::saveJudgeName($eventPostID, $index+1, $judgeName);
+                        foreach($metaValue['classes'][$index] as $section){
+                            self::saveJudgeSection($eventPostID, $index+1, strtolower($section));
+                        }
+                        if($metaValue['pShip'][$index] != ""){
+                            self::saveJudgePartner($eventPostID, $index+1, $metaValue['pShip'][$index]);
+                        }
+                    }
+                }
+        }
     }
 }

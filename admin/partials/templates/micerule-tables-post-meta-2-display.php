@@ -5,6 +5,7 @@
 </div>
 
 <?php
+//TODO: split up function
 function getJudgesHtml()
 {
     global $post;
