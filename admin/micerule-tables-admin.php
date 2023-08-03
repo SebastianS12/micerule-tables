@@ -1,6 +1,9 @@
 <?php
 require_once plugin_dir_path(__FILE__) . 'partials/ResultTable.php';
 require_once plugin_dir_path(__FILE__) . 'partials/EventJudges.php';
+require_once plugin_dir_path(__FILE__) . 'partials/SeasonResults/SeasonResultsController.php';
+require_once plugin_dir_path(__FILE__) . 'partials/SeasonResults/SeasonResultsModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/SeasonResults/SeasonResultsView.php';
 class Micerule_Tables_Admin{
 
   private $plugin_name;
@@ -62,18 +65,6 @@ class Micerule_Tables_Admin{
 
     ));
     //--------------------------------------------
-
-    //------------------updateTable----------------
-    wp_enqueue_script('updateTable',plugin_dir_url( __FILE__ ) . 'js/updateTable.js',array('jquery'),$this->plugin_name, true);
-
-    $title_nonce = wp_create_nonce('updateTable');
-    wp_localize_script('updateTable','my_ajax_obj',array(
-      'ajax_url' => admin_url('admin-ajax.php'),
-      'nonce'    => $title_nonce,
-
-    ));
-
-    //---------------------------------------------
 
     //------------------deleteTable----------------
     wp_enqueue_script('deleteTable',plugin_dir_url( __FILE__ ) . 'js/deleteTable.js',array('jquery'),$this->plugin_name, true);
@@ -193,10 +184,6 @@ class Micerule_Tables_Admin{
 
   public function tableCreate(){
     require_once plugin_dir_path(__FILE__) . 'partials/micerule-tableCreate.php';
-  }
-
-  public function updateTable(){
-    require_once plugin_dir_path(__FILE__) . 'partials/micerule-updateTable.php';
   }
 
   public function deleteTable(){
