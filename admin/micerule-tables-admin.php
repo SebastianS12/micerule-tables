@@ -1,6 +1,7 @@
 <?php
 require_once plugin_dir_path(__FILE__) . 'partials/ResultTable.php';
 require_once plugin_dir_path(__FILE__) . 'partials/EventJudges.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Breed.php';
 require_once plugin_dir_path(__FILE__) . 'partials/SeasonResults/SeasonResultsController.php';
 require_once plugin_dir_path(__FILE__) . 'partials/SeasonResults/SeasonResultsModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/SeasonResults/SeasonResultsView.php';

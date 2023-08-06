@@ -151,78 +151,7 @@ arsort($bisResults);
 //limit displayed results to 20
 $topTwenty = array_slice($results2,0,20);
 
-
-//start HTML
-$html= "<div class = 'resultTable'>";
-$html .= "<table id = 'micerule_resultTable' style='width:100%'>";
-
-//Create header rows
-$html .= "<thead><tr>";
-$html .= "<th class = 'resultHeader'></th>";
-$html .= "<th class = 'avatarHeader'></th>";
-$html .= "<th class = 'resultHeader'>Name</th>";
-$html .= "<th class = 'resultHeader'>Points Accum'd</th>";
-$html .= "<th class = 'resultHeader'>Times Judged</th>";
-$html .= "<th class = 'resultHeader'>Adjusted Points</th>";
-$html .= "<th class = 'resultHeader'>Grand Total</th>";
-$html .= "</tr></thead><tbody>";
-
-if(is_user_logged_in()){
-
-  //table contents
-  $position = 1;
-  $keys = array_keys($topTwenty);
-  //$users = $wpdb->get_results("SELECT * FROM $wpdb->usermeta");
-  for($i = 0; $i < count($topTwenty); $i++){
-    if(isset($judgeCounter[$keys[$i]])){$jPoints=($results[$keys[$i]]+($results[$keys[$i]]*0.03*$judgeCounter[$keys[$i]]));}else {$jPoints = "";}
-    if($i > 0 && round($topTwenty[$keys[$i]]) != round($topTwenty[$keys[$i-1]])){
-      $position ++;
-    }
-    $firstPosClass = ($position == 1) ? 'firstPos' : '';
-    $userID = $wpdb->get_results("SELECT ID FROM $wpdb->users WHERE display_name = '".$keys[$i]."'");
-
-    $html .= "<tr class = ".$firstPosClass.">";
-    $html .= "<td class = 'season-position'>".$position."</td>";
-    $html .= "<td class = 'avatarCell'>".get_avatar($userID[0]->ID, 96,'monsterid')."</th>";
-    $html .= "<td class = 'resultCell'>".$keys[$i]."</td>";
-    $html .= "<td class = 'resultCell2'>".$results[$keys[$i]]."</td>";
-    $html .= "<td class = 'resultCell2'>".$judgeCounter[$keys[$i]]."</td>";
-    $html .= "<td class = 'resultCell2'>".$jPoints."</td>";
-    $html .= "<td class = 'resultCell2'>".round($topTwenty[$keys[$i]])."</td>";
-    $html .= "</tr>";
-  }
-
-}else{
-  $position = 1;
-  $keys = array_keys($topTwenty);
-  for($i = 0; $i < count($topTwenty); $i++){
-    if(isset($judgeCounter[$keys[$i]])){$jPoints=($results[$keys[$i]]+($results[$keys[$i]]*0.03*$judgeCounter[$keys[$i]]));}else {$jPoints = "";}
-    if($i > 0 && round($topTwenty[$keys[$i]]) != round($topTwenty[$keys[$i-1]])){
-      $position ++;
-    }
-    $firstPosClass = ($position == 1) ? 'firstPos' : '';
-
-    $html .= "<tr ".$firstPosClass.">";
-    $html .= "<td class = 'season-position'>".$position."</td>";
-    $html .= "<td class = 'avatarCell'><img src = '".plugin_dir_url(__FILE__)."lock.svg' style = 'height:96px; width:96px'></td>";
-    $html .= "<td class = 'resultCellBlur'>";
-    $html .= "<div class ='blurDiv' style='width:".random_int(35,82)."px;background-image: url(".plugin_dir_url(__FILE__)."blur.png);height:20px ;display:inline-block;".random_int(0,500)."px 0'></div><span> </span>
-    <div class ='blurDiv' style='width:".random_int(35,90)."px;background-image: url(".plugin_dir_url(__FILE__)."blur.png);height:20px ;display:inline-block;".random_int(0,500)."px 0'></div>";
-    $html .= "</td>";
-    $html .= "<td class = 'resultCell2'>".$results[$keys[$i]]."</td>";
-    $html .= "<td class = 'resultCell2'>".$judgeCounter[$keys[$i]]."</td>";
-    $html .= "<td class = 'resultCell2'>".$jPoints."</td>";
-    $html .= "<td class = 'resultCell2'>".round($topTwenty[$keys[$i]])."</td>";
-    $html .= "</tr>";
-  }
-}
-
-//close HTML
-$html .= "</tbody>";
-$html .= "</table>";
-$html .= "</div>";
-$html .="||";
-
+$html = LeaderboardView::getTopTwentyHtml($time[0], $time[1]);
 //-------------------------Top Twenties End----------------
 
 //-------------------------BIS-Winners html-----------------
@@ -340,46 +269,7 @@ if(isset($lastYear)){
 //-------------------------End-----------------------------
 
 //-------------------------VarietyResults Tables html------------
-$keys = array_keys( $varietyResults );
-
-
-$html2 ="<div id = 'varieties_table'>";
-
-$html .= "<div class = 'varietiesResultTable'>";
-$html .= "<table id = 'micerule_varieties_resultTable' style='width:100%'>";
-
-//Create header rows
-$html .= "<thead><tr>";
-$html .= "<th class = 'varietiesResultHeader'>Pos.</th>";
-$html .= "<th class = 'varietiesResultHeader'></th>";
-$html .= "<th class = 'varietiesResultHeader'><span>Variety</span></th>";
-$html .= "<th class = 'varietiesResultHeader'><span>Points Won</span></th>";
-$html .= "<th class = 'varietiesResultHeader'><span>Last Y Pos</span></th>";
-$html .= "</tr></thead><tbody>";
-
-$position=1;
-//table contents
-for($i=0;$i<count($varietyResults);$i++){
-  if($i>0 && $varietyResults[$keys[$i]] != $varietyResults[$keys[$i-1]]){
-    $position ++;
-  }
-  $firstPosClass = ($position == 1) ? 'firstPos' : '';
-  $html .= "<tr class = ".$firstPosClass.">";
-  $html .= "<td class = 'resultCell'>".$position."</td>";
-  $html .= "<td class = 'resultCell'><div class='variety-icon' style='background:url(".$legendPathsVariety[$keys[$i]].");background-repeat:no-repeat;background-color:".$iconsVarietyColour[$keys[$i]]."'></div></td>";
-  $html .= "<td class = 'resultCell' >".$keys[$i]."</td>";
-  $html .= "<td class = 'resultCell2'>".$varietyResults[$keys[$i]]."</td>";
-  $html .= "<td class = 'resultCell' >".$lyPosition[$keys[$i]]."</td >";
-  $html .= "</tr>";
-}
-
-//close HTML
-$html .= "</tbody>";
-$html .= "</table>";
-$html .= "</div>";
-
-$html .="</div>";
-
+$html .= LeaderboardView::getVarietyPopularityHtml($time[0], $time[1]);
 //--------------------------------End---------------------------
 
 //-------------------------------Chartlegend mobile-------------

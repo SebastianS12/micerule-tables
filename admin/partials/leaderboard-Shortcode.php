@@ -36,7 +36,7 @@ function leaderBoard_results(){
 	$html ="<p>Show Season:<p>";
 	$html .='<select id="seasonSelect">';
 	if(strtotime($eventDates[$indexCounter]->meta_value) > $dateFromCurrent){
-		$html .='<option value="'.$dateFromCurrent.'"   selected="selected">Current Season</option>';
+		$html .='<option value="'.$dateFromCurrent.'/'.time().'"   selected="selected">Current Season</option>';
 	}
 	for($i=0;$i<count($dateTo);$i++){//display season dates as option
 		$html .='<option value="'.$seasons[$i]->dateFrom.'/'.$seasons[$i]->dateTo.'">'.$dateFrom[$i].' / '.$dateTo[$i].'</option>';

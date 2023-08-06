@@ -25,6 +25,10 @@ include_once plugin_dir_path(__FILE__)."partials/Event/PriceCards.php";
 include_once plugin_dir_path(__FILE__)."partials/Event/JudgesReport.php";
 include_once plugin_dir_path(__FILE__)."partials/Event/ShowReportPost.php";
 include_once plugin_dir_path(__FILE__)."partials/Event/AdminTabs.php";
+
+require_once plugin_dir_path(__FILE__) . 'partials/Leaderboard/LeaderboardController.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Leaderboard/LeaderboardModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Leaderboard/LeaderboardView.php';
 class Micerule_Tables_Public {
 
 	/**
