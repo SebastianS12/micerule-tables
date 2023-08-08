@@ -20,11 +20,11 @@ class SeasonResultsModel {
     }
 
     private function getFancierPointsQuery($dateFrom, $dateTo){
-        return "SELECT SUM(points) AS points, fancier_name FROM ".$this->em_event_table." INNER JOIN ".$this->event_results_table." ON ".$this->em_event_table.".post_id=".$this->event_results_table.".event_post_id WHERE UNIX_TIMESTAMP(event_start_date) >= ".$dateFrom." AND UNIX_TIMESTAMP(event_end_date) <= ".$dateTo." GROUP BY fancier_name";
+        return "SELECT SUM(points) AS points, fancier_name FROM ".$this->em_event_table." INNER JOIN ".$this->event_results_table." ON ".$this->em_event_table.".post_id=".$this->event_results_table.".event_post_id WHERE UNIX_TIMESTAMP(event_start_date) >= ".$dateFrom." AND UNIX_TIMESTAMP(event_end_date) <= ".$dateTo." AND fancier_name != '' GROUP BY fancier_name";
     }
 
     private function getJudgeNamesQuery($dateFrom, $dateTo){
-        return "SELECT judge_name AS name FROM ".$this->em_event_table." INNER JOIN ".$this->judge_table." ON ".$this->em_event_table.".post_id=".$this->judge_table.".event_post_id WHERE UNIX_TIMESTAMP(event_start_date) >= ".$dateFrom." AND UNIX_TIMESTAMP(event_end_date) <= ".$dateTo;
+        return "SELECT judge_name AS name FROM ".$this->em_event_table." INNER JOIN ".$this->judge_table." ON ".$this->em_event_table.".post_id=".$this->judge_table.".event_post_id WHERE UNIX_TIMESTAMP(event_start_date) >= ".$dateFrom." AND UNIX_TIMESTAMP(event_end_date) <= ".$dateTo." AND judge_name != ''";
     }
 
     private Function getJudgePartnerNamesQuery($dateFrom, $dateTo){
@@ -43,6 +43,9 @@ class SeasonResultsModel {
     public function getCurrentSeasonDateFrom(){
         global $wpdb;
         $mostRecentSeasonEnd = $wpdb->get_var("SELECT dateTo FROM ".$wpdb->prefix."micerule_result_tables WHERE seasonTable = 1 ORDER BY dateTo DESC");
+        if($mostRecentSeasonEnd == null)
+            $mostRecentSeasonEnd = time();
+            
         return $mostRecentSeasonEnd + 1;
     }
 

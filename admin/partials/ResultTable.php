@@ -19,7 +19,7 @@ class ResultTable{
         global $wpdb;
 
         $fancier = (isset($rowData['fancier_name'])) ? $rowData['fancier_name'] : "";
-        $variety = (isset($rowData['variety_name'])) ? $rowData['variety_name'] : "";
+        $variety = (isset($rowData['variety_name'])) ? $rowData['variety_name'] : "No Record";
         $age = (isset($rowData['age'])) ? $rowData['age'] : "";
         $points = (isset($rowData['points'])) ? $rowData['points'] : 0;
 
@@ -114,6 +114,9 @@ class ResultTable{
         global $wpdb;
         $fancierName = $eventResult['name'][$awardIndex];
         $varietyName = get_option(get_option("mrOption_id")[$eventResult['breeds'][$awardIndex]])['name'];
+        if($varietyName == "" || $varietyName == null){
+            $varietyName = "No Record";
+        }
         $age = $eventResult['age'][$awardIndex];
 
         $table_name = $wpdb->prefix."micerule_event_results";
@@ -133,6 +136,9 @@ class ResultTable{
         global $wpdb;
         $fancierName = $eventResult['name'][$awardIndex];
         $varietyName = $eventResult['breeds'][$awardIndex];
+        if($varietyName == ""){
+            $varietyName = "No Record";
+        }
 
         $table_name = $wpdb->prefix."micerule_event_results_optional";
         $data = array(

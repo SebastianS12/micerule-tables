@@ -103,7 +103,7 @@ function getFancierSelectHtml($fancierName, $selectName){
 
 function getVarietySelectHtml($breeds, $varietyName, $selectName){
   $html = "<select name='".$selectName."' style='width:200px' autocomplete='off'>
-                <option value=''>No Record</option>";
+                <option value='No Record'>No Record</option>";
   foreach ($breeds as $breed) {
     $html .= "<option value='".$breed['name']."' ".((isset($varietyName) && $varietyName == $breed['name']) ? 'selected="selected"' : '').">";
     $html .= $breed['name'];

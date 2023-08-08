@@ -4,7 +4,7 @@ global $wpdb;
 require_once plugin_dir_path(__FILE__) . '../getUploads.php';
 $defaultPath = get_home_url() . "/wp-content/themes/Divi-child/Assets/spacer.gif";
 //Get Breeds from Options Database
-$breeds = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "micerule_breeds ORDER BY name ASC", ARRAY_A);
+$breeds = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "micerule_breeds WHERE name != 'No Record' ORDER BY name ASC", ARRAY_A);
 ?>
 
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap" rel="stylesheet">

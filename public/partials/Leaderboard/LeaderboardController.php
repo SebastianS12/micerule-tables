@@ -55,4 +55,61 @@ class LeaderboardController{
 
         return $previousSeasonVarietyStandings;
     }
+
+    public static function getBISVarietyChartData($seasonStartDate, $seasonEndDate){
+        $leaderboardModel = new LeaderboardModel();
+        $bisVarietyChartData = $leaderboardModel->getBISVarietyTimesWon($seasonStartDate, $seasonEndDate);
+        $bisVarietyChartData = self::appendBreedDataToChartData($bisVarietyChartData);
+
+        return $bisVarietyChartData;
+    }
+
+    private static function appendBreedDataToChartData($chartData){
+        foreach($chartData as $index => $bisVarietyData){
+            $breedData = Breed::getBreedData($bisVarietyData['variety_name']);
+            $chartData[$index]['colour'] = $breedData['colour'];
+            $chartData[$index]['css_class'] = $breedData['css_class'];
+        }
+
+        return $chartData;
+    }
+
+    public static function getSeasonShowCount($seasonStartDate, $seasonEndDate){
+        $leaderboardModel = new LeaderboardModel();
+        return $leaderboardModel->getSeasonShowCount($seasonStartDate, $seasonEndDate);
+    }
+
+    public static function getSeasonBISWinnerCountData($seasonStartDate, $seasonEndDate){
+        $leaderboardModel = new LeaderboardModel();
+        return $leaderboardModel->getSeasonBISWinnerCountData($seasonStartDate, $seasonEndDate);
+    }
+
+    public static function getSeasonSectionLeaderData($seasonStartDate, $seasonEndDate){
+        $seasonSectionLeaderData = array();
+        foreach(EventProperties::SECTIONNAMES as $sectionName){
+            $seasonSectionLeaderData[strtolower($sectionName)] = array();
+        }
+
+        $leaderboardModel = new LeaderboardModel();
+        foreach($leaderboardModel->getSeasonSectionLeaderData($seasonStartDate, $seasonEndDate) as $sectionWinnerData){
+            array_push($seasonSectionLeaderData[$sectionWinnerData['section']], $sectionWinnerData);
+        }
+
+        return $seasonSectionLeaderData;
+    }
+
+    public static function getSeasonDates(){
+        $seasonResultsModel = new SeasonResultsModel();
+        $currentSeasonStartDate = $seasonResultsModel->getCurrentSeasonDateFrom();
+        //SeasonResultsModel returns Data in reverse order: From earliest to latest season
+        $seasonData = array_reverse($seasonResultsModel->getSeasonTableData());
+
+        $seasonDates = array();
+        array_push($seasonDates, array("seasonStartDate" => $currentSeasonStartDate, "seasonEndDate" => time()));
+        foreach($seasonData as $seasonEntry){
+            array_push($seasonDates, array("seasonStartDate" => $seasonEntry->dateFrom, "seasonEndDate" => $seasonEntry->dateTo));
+        }
+
+        return $seasonDates;
+    }
 }
