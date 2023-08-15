@@ -26,7 +26,7 @@ if($submitType == "classReport"){
 
 if($submitType == "generalComment"){
   $judgeName = $_POST['judgeName'];
-  $text = $_POST['text'];
+  $text = html_entity_decode(stripslashes($_POST['text']));
 
   if($judgeName != "")
     $entryBookData->judgesComments[$judgeName] = $text;
