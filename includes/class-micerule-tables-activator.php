@@ -122,10 +122,10 @@ class Micerule_Tables_Activator {
 
 		$location_secretaries_table_name = $wpdb->prefix."micerule_location_secretaries";
 		$sql_create_location_secretaries_table = "CREATE TABLE IF NOT EXISTS ".$location_secretaries_table_name. " (
-			id bigint(20) unsigned NOT NULL auto_increment,
 			location_id bigint(20) unsigned NOT NULL,
+			secretary_position int unsigned NOT NULL,
 			secretary_name text,
-			PRIMARY KEY  (id)
+			PRIMARY KEY  (location_id, secretary_position)
 			) $charset_collate; ";
 		dbDelta($sql_create_location_secretaries_table);
 

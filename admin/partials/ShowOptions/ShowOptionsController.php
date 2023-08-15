@@ -121,4 +121,9 @@ class ShowOptionsController{
         $showClassesModel->deleteClass($locationID, $className);
         self::updateIndices($locationID);
     }
+
+    public static function userHasPermissions($locationID){
+        $locationSecretaryNames = LocationSecretaries::getLocationSecretaryNames($locationID);
+        return ((is_user_logged_in() && (in_array(wp_get_current_user()->display_name, $locationSecretaryNames) || current_user_can('administrator'))));
+    }
 }

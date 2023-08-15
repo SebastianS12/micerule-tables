@@ -16,7 +16,8 @@ class ShowOptionsView
     {
         $showOptions = ShowOptionsController::getShowOptions($locationID);
         $html = "<div class='showsec-options'>";
-        $html .= "<h3>SHOW OPTIONS</h3>";
+        if(ShowOptionsController::userHasPermissions($locationID)){
+            $html .= "<h3>SHOW OPTIONS</h3>";
         //enable online registrations checkbox
         $html .= "<div class='schedule-option'>";
         $html .= "<input type = 'checkbox' class = 'optionalSettings' id = 'enableOnlineRegistrations' " . (($showOptions['allow_online_registrations']) ? 'checked' : '') . "><label for = 'enableOnlineRegistrations'>Enable Online Registrations</label>";
@@ -54,7 +55,7 @@ class ShowOptionsView
         $html .= "<div class='schedule-option'>";
         $html .= "<input type = 'checkbox' class = 'optionalSettings optionalClasses' id = 'allow-Auction' " . (($showOptions['allow_auction']) ? 'checked' : '') . "><label for = 'allow-Auction'>Allow Auction</label>";
         $html .= "</div>";
-
+        }
         $html .= "</div>";
 
         return $html;
@@ -76,11 +77,11 @@ class ShowOptionsView
                 $html .= "<td class = 'positionCell'>" .$classData['ad_index']. "/" .$classData['u8_index']. "</td>";
                 $html .= "<td class = 'classNameCell'>" .$classData['class_name']. "</td>";
 
-                //if (is_user_logged_in() && (in_array(wp_get_current_user()->display_name, $locationSecretaries['name']) || current_user_can('administrator'))) {
+                if (ShowOptionsController::userHasPermissions($locationID)) {
                     $html .= "<td class='class-order'><button type = 'button' class = 'moveClassButton " . (($classData['section_position'] > 0) ? 'active' : '') . "' id = '" . $sectionNameLower . "&-&" . $classData['class_name'] . "&-&moveUp'><img class='button-img' src='/wp-content/plugins/micerule-tables/admin/svg/up.svg'></button>";
                     $html .= "<button type = 'button' class = 'moveClassButton " . (($classData['section_position'] < count($sectionClassesData) - 1 && $classData['section_position'] + 1 < count($sectionClassesData)) ? 'active' : '') . "'  id = '" . $sectionNameLower . "&-&" . $classData['class_name'] . "&-&moveDown'><img class='button-img' src='/wp-content/plugins/micerule-tables/admin/svg/down.svg'></button></td>";
                     $html .= "<td class='class-delete'><button type = 'button' class = 'deleteClassButton' id = '". $classData['class_name'] . "&-&delete'><img class='button-img' src='/wp-content/plugins/micerule-tables/admin/svg/trash.svg'></button></td>";
-                //}
+                }
                 $html .= "</tr>";
             }
             //add challenge row
@@ -93,9 +94,9 @@ class ShowOptionsView
             
             $html .= "</tbody>";
             $html .= "</table>";
-            //if (is_user_logged_in() && (in_array(wp_get_current_user()->display_name, $locationSecretaries['name']) || current_user_can('administrator'))) {
+            if (ShowOptionsController::userHasPermissions($locationID)) {
                 $html .= "<button type = 'button' id = '" . $sectionNameLower . "AddButton' class = 'addBreedButton'>Add Class</button>";
-            //}
+            }
             $html .= "</div>";
         }
         $html .= self::getShowOptionalClassesHtml($locationID);
@@ -121,10 +122,10 @@ class ShowOptionsView
             $html .= "<td class = 'positionCell'>".$classData['aa_index']."</td>";
             $html .= "<td class = 'classNameCell'>".$classData['class_name']."</td>";
 
-            //if(is_user_logged_in() && (in_array(wp_get_current_user()->display_name, $locationSecretaries['name']) || current_user_can('administrator'))){
+            if(ShowOptionsController::userHasPermissions($locationID)){
                 $html .= "<td class='class-order'><button type = 'button' class = 'moveClassButton " . (($classData['section_position'] > 0) ? 'active' : '') . "' id = 'optional&-&" . $classData['class_name'] . "&-&moveUp'><img class='button-img' src='/wp-content/plugins/micerule-tables/admin/svg/up.svg'></button>";
                 $html .= "<button type = 'button' class = 'moveClassButton " . (($classData['section_position'] < count($optionalClassesData) - 1 && $classData['section_position'] + 1 < count($optionalClassesData)) ? 'active' : '') . "'  id = 'optional&-&" . $classData['class_name'] . "&-&moveDown'><img class='button-img' src='/wp-content/plugins/micerule-tables/admin/svg/down.svg'></button></td>";
-            //}
+            }
             $html .= "</tr>";
         }
         $html .= "</tbody>";

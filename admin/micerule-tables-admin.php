@@ -1,6 +1,7 @@
 <?php
 require_once plugin_dir_path(__FILE__) . 'partials/ResultTable.php';
 require_once plugin_dir_path(__FILE__) . 'partials/EventJudges.php';
+require_once plugin_dir_path(__FILE__) . 'partials/LocationSecretaries.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Breed.php';
 require_once plugin_dir_path(__FILE__) . 'partials/SeasonResults/SeasonResultsController.php';
 require_once plugin_dir_path(__FILE__) . 'partials/SeasonResults/SeasonResultsModel.php';
@@ -268,8 +269,7 @@ class Micerule_Tables_Admin{
           update_post_meta($post->ID, 'micerule_data_event_deadline', $_POST['micerule_table_data_deadline']);
         if(isset($_POST['micerule_breeds_table_data']))
           update_post_meta($post->ID, 'micerule_data_breeds', $_POST['micerule_breeds_table_data']);
-        if(isset($_POST['micerule_table_location_secretaries']))
-          update_post_meta($post->ID, 'micerule_data_location_secretaries', $_POST['micerule_table_location_secretaries']);
+        
           */
 
           //ResultTable::saveTableData($post->ID, $_POST['micerule_table_data']);
@@ -278,6 +278,9 @@ class Micerule_Tables_Admin{
 
           //ResultTable::convertPostmeta();
           //EventJudgesHelper::convertPostMeta();
+
+          if(isset($_POST['micerule_table_location_secretaries_names']))
+            LocationSecretaries::saveLocationSecretaryNames($post->ID, $_POST['micerule_table_location_secretaries_names']);//update_post_meta($post->ID, 'micerule_data_location_secretaries', $_POST['micerule_table_location_secretaries']);
       }
       
     }
