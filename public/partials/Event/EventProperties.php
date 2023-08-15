@@ -8,6 +8,7 @@
 class EventProperties {
   const SECTIONNAMES = array('SELFS', 'TANS', 'MARKED', 'SATINS', 'AOVS');
   const CHALLENGENAMES = array('selfs' => 'SELF CHALLENGE', 'tans' => 'TAN CHALLENGE', 'marked' => 'MARKED CHALLENGE', 'satins' => 'SATIN CHALLENGE', 'aovs' => 'AOV CHALLENGE');
+  const GRANDCHALLENGE = "GRAND CHALLENGE";
   const AGESECTIONS = array("Ad", "U8");
 
   public static function getChallengeName($sectionName){

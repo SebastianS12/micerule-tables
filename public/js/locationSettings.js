@@ -28,7 +28,7 @@ function updateOptionalSettings(settingElement){
     },
     success: function (data) {
       if(settingElement.hasClass("optionalClasses")){
-        addOptionalClass(settingElement);
+        addOrDeleteOptionalClass(settingElement);
       }
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -38,14 +38,13 @@ function updateOptionalSettings(settingElement){
   });
 }
 
-function addOptionalClass(element){
+function addOrDeleteOptionalClass(element){
   var optionalClassName = element.prop("id").split("allow-")[1];
   if(optionalClassName != null){
     if(element.prop('checked')){
       addClass("optional", optionalClassName);
     }else{
-      var position = $("#"+optionalClassName+"-tr-location").find(".class-delete").prop("id").split("&-&")[0];
-      deleteClass("optional", position, optionalClassName);
+      deleteClass(optionalClassName);
     }
   }
 }

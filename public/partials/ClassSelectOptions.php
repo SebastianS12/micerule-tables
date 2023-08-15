@@ -7,11 +7,12 @@ class ClassSelectOptions {
 
   private function __construct($locationID){
     $varietyOptions = array();
+    /*
     global $wpdb;
     foreach(EventProperties::SECTIONNAMES as $sectionName){
       $sectionName = strtolower($sectionName);
       $this->varietyOptions[$sectionName] = $wpdb->get_results("SELECT option_name FROM ".$wpdb->prefix."options WHERE option_name LIKE 'mrTables%".$sectionName."'",ARRAY_A);
-    }
+    }*/
     $this->eventClasses = EventClasses::create($locationID);
   }
 
@@ -19,14 +20,7 @@ class ClassSelectOptions {
     if(!isset(self::$instance))
       self::$instance = new ClassSelectOptions($locationID);
 
-    $selectOptions = array();
-    foreach(self::$instance->varietyOptions[$sectionName] as $varietyOption){
-      $varietyName = get_option($varietyOption['option_name'])['name'];
-    if(!in_array($varietyName, self::$instance->eventClasses->getSectionClasses($sectionName))){
-        array_push($selectOptions, $varietyName);
-      }
-    }
-
+    $selectOptions = self::getClassSelectOptions($locationID, $sectionName);
     $optionsHtml = "";
     foreach($selectOptions as $selectOption){
       $optionSelected = ($selectedVariety == $selectOption) ? "selected" : "";
@@ -34,5 +28,21 @@ class ClassSelectOptions {
     }
 
     return $optionsHtml;
+  }
+
+  private static function getClassSelectOptions($locationID, $sectionName){
+    $selectOptions = array();
+    $sectionBreedNamesSQL = Breed::getSectionBreedNames($sectionName);
+    $showClassesModel = new ShowClassesModel();
+    $showSectionClassNames = $showClassesModel->getShowSectionClassNames($locationID, $sectionName);
+    if($sectionBreedNamesSQL != null){
+      foreach($sectionBreedNamesSQL as $breedNameSQLResult){
+        if(!in_array($breedNameSQLResult['name'], $showSectionClassNames)){
+          array_push($selectOptions, $breedNameSQLResult['name']);
+        }
+      }
+    }
+
+    return $selectOptions;
   }
 }

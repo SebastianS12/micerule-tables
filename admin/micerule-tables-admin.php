@@ -5,6 +5,10 @@ require_once plugin_dir_path(__FILE__) . 'partials/Breed.php';
 require_once plugin_dir_path(__FILE__) . 'partials/SeasonResults/SeasonResultsController.php';
 require_once plugin_dir_path(__FILE__) . 'partials/SeasonResults/SeasonResultsModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/SeasonResults/SeasonResultsView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/ShowOptions/ShowOptionsView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/ShowOptions/ShowOptionsController.php';
+require_once plugin_dir_path(__FILE__) . 'partials/ShowOptions/ShowOptionsModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/ShowOptions/ShowClassesModel.php';
 class Micerule_Tables_Admin{
 
   private $plugin_name;

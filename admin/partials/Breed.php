@@ -12,4 +12,9 @@ class Breed {
         global $wpdb;
         return $wpdb->get_results("SELECT DISTINCT icon_url FROM ".$wpdb->prefix."micerule_breeds", ARRAY_A);
     }
+
+    public static function getSectionBreedNames($section){
+        global $wpdb;
+        return $wpdb->get_results("SELECT name FROM ".$wpdb->prefix."micerule_breeds WHERE section = '".$section."'", ARRAY_A);
+    }
 }

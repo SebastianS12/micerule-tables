@@ -7,19 +7,13 @@ $event_id = url_to_postid( $url );
 
 $locationID = $_POST['id'];
 $sectionName = $_POST['section'];
-$position = $_POST['position'];
-$direction = $_POST['direction'];
+$firstClassName = $_POST['firstClassName'];
+$secondClassName = $_POST['secondClassName'];
 
-$eventClasses = EventClasses::create($locationID);
 if($sectionName != "optional")
-  $eventClasses->moveClass($sectionName, $position, $direction);
+  ShowOptionsController::swapSectionClasses($locationID, $firstClassName, $secondClassName);
 else
-  $eventClasses->moveOptionalClass($position, $direction);
-$eventClasses->updatePostMeta($locationID);
+  ShowOptionsController::swapOptionalClasses($locationID, $firstClassName, $secondClassName);
 
-$locationSecretaries = EventProperties::getLocationSecretaries($locationID);
-$locationOptionalSettings = EventOptionalSettings::create($locationID);
-$locationSectionTables = new LocationSectionTables($locationID);
-echo($locationSectionTables->getSectionTablesHtml($eventClasses, $locationSecretaries, $locationOptionalSettings));
-
+echo(ShowOptionsView::getSectionTablesHtml($locationID));
 wp_die();
