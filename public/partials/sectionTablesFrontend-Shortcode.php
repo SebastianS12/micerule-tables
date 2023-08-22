@@ -19,7 +19,7 @@ function sectionTablesFrontend($atts){
   //$html .= "<p>".var_export(EntryBookData::create($post->ID), true)."</p>";
 
   $registrationTables = new RegistrationTables($post->ID, $userName);
-  $html .= $registrationTables->getHtml();
+  $html .= RegistrationTablesView::getRegistrationTablesHtml($post->ID, $userName);//$registrationTables->getHtml();
   $html .= "</div>";
   $html .= "<div class = 'header-info'>";
   if($eventOptionalSettings->allowOnlineRegistrations){

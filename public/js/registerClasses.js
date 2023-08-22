@@ -9,10 +9,9 @@ function registerClasses(){
     }
 
     var className = this.id.split("&-&")[0];
-    var classIndex = this.id.split("&-&")[1];
-    var age = this.id.split("&-&")[2];
+    var age = this.id.split("&-&")[1];
 
-    const registrationData = {className : className, classIndex: classIndex, age: age, registrationCount : inputVal,};
+    const registrationData = {className : className, age: age, registrationCount : inputVal,};
     classRegistrations.push(registrationData);
   });
 
@@ -22,10 +21,9 @@ function registerClasses(){
       inputVal = 0;
     }
     var className = this.id.split("&-&")[0];
-    var classIndex = this.id.split("&-&")[1];
-    var age = this.id.split("&-&")[2];
+    var age = this.id.split("&-&")[1];
 
-    const registrationData = {className : className, classIndex: classIndex, age: age, registrationCount : inputVal,};
+    const registrationData = {className : className, age: age, registrationCount : inputVal,};
     optionalClassRegistrations.push(registrationData);
   });
 

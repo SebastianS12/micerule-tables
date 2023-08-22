@@ -26,13 +26,15 @@ class EventProperties {
     return $locationID;
   }
 
-
-  public static function getEventDeadline($eventID){
-    $eventDeadline = get_post_meta($eventID, 'micerule_data_event_deadline', true);
-
-    return $eventDeadline;
+  public static function saveEventDeadline($eventPostID, $eventDeadlineString){
+    global $wpdb;
+    $wpdb->replace($wpdb->prefix."micerule_event_deadline", array("event_post_id" => $eventPostID, "event_deadline" => strtotime($eventDeadlineString)));
   }
 
+  public static function getEventDeadline($eventPostID){
+    global $wpdb;
+    return $wpdb->get_var("SELECT event_deadline FROM ".$wpdb->prefix."micerule_event_deadline WHERE event_post_id = ".$eventPostID);
+  }
 
   public static function getEventMetaData($eventID){
     global $wpdb;

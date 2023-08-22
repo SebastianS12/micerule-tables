@@ -9,6 +9,7 @@
   $optionalClassRegistrations = $_POST['optionalClassRegistrations'];
   $userName = $_POST['userName'];
 
+  /*
   $isJuniorMember = EventUser::isJuniorMember($userName);
   $eventRegistrationData = EventRegistrationData::create($event_id);
 
@@ -57,5 +58,8 @@
   $eventRegistrationData->updatePostMeta($event_id);
   echo($userRegistrationData->getUserRegistrationOverviewHtml(EventProperties::getEventLocationID($event_id)));
   include("micerule-registerClasses-entryBookData.php");
+  */
+  //RegistrationTablesController::registerEntries($event_id, $classRegistrations, $optionalClassRegistrations, $userName);
+  echo(RegistrationTablesView::getUserRegistrationOverviewHtml($event_id, $userName));
 
   wp_die();

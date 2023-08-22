@@ -23,9 +23,7 @@ function updateEntryFields(userName){
       userName: userName,
     },
     success: function (data) {
-      console.log(data);
-      var registrationTablesHtml = JSON.parse(data);
-      $("#registrationTables").replaceWith(registrationTablesHtml);
+      $("#registrationTables").replaceWith(data);
       initRegistrationTablesJS();
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -36,5 +34,5 @@ function updateEntryFields(userName){
 
 //focus to select2 text field after open 
 $(document).on('select2:open', () => {
-    document.querySelector('.select2-search__field').focus();
-  });
+  document.querySelector('.select2-search__field').focus();
+});

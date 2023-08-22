@@ -29,6 +29,10 @@ include_once plugin_dir_path(__FILE__)."partials/Event/AdminTabs.php";
 require_once plugin_dir_path(__FILE__) . 'partials/Leaderboard/LeaderboardController.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Leaderboard/LeaderboardModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Leaderboard/LeaderboardView.php';
+
+require_once plugin_dir_path(__FILE__) . 'partials/RegistrationTables/RegistrationTablesController.php';
+require_once plugin_dir_path(__FILE__) . 'partials/RegistrationTables/RegistrationTablesModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/RegistrationTables/RegistrationTablesView.php';
 class Micerule_Tables_Public {
 
 	/**

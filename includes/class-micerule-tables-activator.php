@@ -129,6 +129,14 @@ class Micerule_Tables_Activator {
 			) $charset_collate; ";
 		dbDelta($sql_create_location_secretaries_table);
 
+		$event_deadline_table_name = $wpdb->prefix."micerule_event_deadline";
+		$sql_create_event_deadline_table = "CREATE TABLE IF NOT EXISTS ".$event_deadline_table_name. " (
+			event_post_id bigint(20) unsigned NOT NULL,
+			event_deadline int,
+			PRIMARY KEY  (event_post_id)
+			) $charset_collate; ";
+		dbDelta($sql_create_event_deadline_table);
+
 		$show_classes_table_name = $wpdb->prefix."micerule_show_classes";
 		$sql_create_show_classes_table = "CREATE TABLE IF NOT EXISTS ".$show_classes_table_name. " (
 			location_id bigint(20) unsigned NOT NULL,
@@ -162,6 +170,60 @@ class Micerule_Tables_Activator {
 			PRIMARY KEY  (location_id, challenge_name, age)
 			) $charset_collate; ";
 		dbDelta($sql_create_show_challenges_indices_table);
+
+		$show_user_registrations_table_name = $wpdb->prefix."micerule_show_user_registrations";
+		$sql_create_show_user_registrations_table = "CREATE TABLE IF NOT EXISTS ".$show_user_registrations_table_name. " (
+			class_registration_id bigint(20) unsigned NOT NULL auto_increment,
+			event_post_id bigint(20) unsigned NOT NULL,
+			user_name varchar(30) NOT NULL,
+			location_id bigint(20) unsigned NOT NULL,
+			class_name varchar(30) NOT NULL,
+			age varchar(10) NOT NULL,
+			PRIMARY KEY  (class_registration_id),
+			CONSTRAINT fk_location_id_class_name_registrations
+				FOREIGN KEY (location_id, class_name)
+				REFERENCES ".$show_classes_table_name."(location_id, class_name)
+				ON DELETE CASCADE
+			) $charset_collate; ";
+		dbDelta($sql_create_show_user_registrations_table);
+
+		$show_user_registrations_order_table_name = $wpdb->prefix."micerule_show_user_registrations_order";
+		$sql_create_show_user_registrations_order_table = "CREATE TABLE IF NOT EXISTS ".$show_user_registrations_order_table_name. " (
+			class_registration_id bigint(20) unsigned NOT NULL,
+			registration_order int NOT NULL,
+			PRIMARY KEY  (class_registration_id, registration_order),
+			CONSTRAINT fk_registration_id_registrations_order
+				FOREIGN KEY (class_registration_id)
+				REFERENCES ".$show_user_registrations_table_name."(class_registration_id)
+				ON DELETE CASCADE
+			) $charset_collate; ";
+		dbDelta($sql_create_show_user_registrations_order_table);
+
+		$show_user_junior_registrations_table_name = $wpdb->prefix."micerule_show_user_junior_registrations";
+		$sql_create_show_user_junior_registrations_table = "CREATE TABLE IF NOT EXISTS ".$show_user_junior_registrations_table_name. " (
+			class_registration_id bigint(20) unsigned NOT NULL,
+			registration_order int NOT NULL,
+			PRIMARY KEY  (class_registration_id, registration_order),
+			CONSTRAINT fk_registration_id_registrations_order_junior
+				FOREIGN KEY (class_registration_id, registration_order)
+				REFERENCES ".$show_user_registrations_order_table_name."(class_registration_id, registration_order)
+				ON DELETE CASCADE
+			) $charset_collate; ";
+		dbDelta($sql_create_show_user_junior_registrations_table);
+
+		$show_pen_numbers_table_name = $wpdb->prefix."micerule_show_challenges_indices";
+		$sql_create_show_pen_numbers_table = "CREATE TABLE IF NOT EXISTS ".$show_pen_numbers_table_name. " (
+			id bigint(20) unsigned NOT NULL,
+			class_registration_id bigint(20) unsigned NOT NULL,
+			registration_order int NOT NULL,
+			pen_number int NOT NULL,
+			PRIMARY KEY  (id),
+			CONSTRAINT fk_registration_order_pen_number
+				FOREIGN KEY (class_registration_id, registration_order)
+				REFERENCES ".$show_user_registrations_order_table_name."(class_registration_id, registration_order)
+				ON DELETE CASCADE
+			) $charset_collate; ";
+		dbDelta($sql_create_show_pen_numbers_table);
 
 		//file_put_contents(__DIR__.'/my_loggg.txt', ob_get_contents());
 	}
