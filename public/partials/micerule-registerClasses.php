@@ -59,7 +59,8 @@
   echo($userRegistrationData->getUserRegistrationOverviewHtml(EventProperties::getEventLocationID($event_id)));
   include("micerule-registerClasses-entryBookData.php");
   */
-  //RegistrationTablesController::registerEntries($event_id, $classRegistrations, $optionalClassRegistrations, $userName);
+  RegistrationTablesController::registerEntries($event_id, $classRegistrations, $optionalClassRegistrations, $userName);
+  RegistrationTablesController::assignPenNumbersToRegistrations($event_id, EventProperties::getEventLocationID($event_id));
   echo(RegistrationTablesView::getUserRegistrationOverviewHtml($event_id, $userName));
 
   wp_die();

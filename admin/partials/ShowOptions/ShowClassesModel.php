@@ -52,7 +52,7 @@ class ShowClassesModel{
     }
 
     public function getShowSectionClassNames($locationID, $section){
-        return $this->wpdb->get_col("SELECT class_name FROM ".$this->showClassesTable." WHERE location_id = ".$locationID." AND section = '".$section."'");
+        return $this->wpdb->get_col("SELECT DISTINCT(CLASSES.class_name) FROM ".$this->showClassesTable." CLASSES INNER JOIN ".$this->showClassesIndicesTable." INDICES ON CLASSES.location_id = INDICES.location_id AND CLASSES.class_name = INDICES.class_name WHERE CLASSES.location_id = ".$locationID." AND section = '".$section."' ORDER BY class_index");
     }
 
     public function getClassIndex($locationID, $className, $age){

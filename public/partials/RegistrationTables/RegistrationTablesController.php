@@ -76,4 +76,30 @@ class RegistrationTablesController{
         $registrationTablesModel = new RegistrationTablesModel();
         return $registrationTablesModel->getUserRegistrations($eventPostID, $userName);
     }
+
+    public static function assignPenNumbersToRegistrations($eventPostID, $locationID){
+        $showClassesModel = new ShowClassesModel();
+        $registrationTablesModel = new RegistrationTablesModel();
+        $agePenNumbers = array('Ad' => 1, 'U8' => 21);
+        foreach(EventProperties::SECTIONNAMES as $sectionName){
+            $sectionName = strtolower($sectionName);
+            foreach($showClassesModel->getShowSectionClassNames($locationID, $sectionName) as $className){
+                foreach($registrationTablesModel->getClassRegistrations($eventPostID, $className) as $classRegistration){
+                    $registrationTablesModel->savePenNumber($classRegistration['class_registration_id'], $classRegistration['registration_order'], $agePenNumbers[$classRegistration['age']]);
+                    $agePenNumbers[$classRegistration['age']]++;
+                }
+                $agePenNumbers["Ad"] = (floor($agePenNumbers["Ad"] / 20) + 2) * 20 + 1;
+                $agePenNumbers["U8"] = $agePenNumbers["Ad"] + 20;
+            }
+        }
+
+        $penNumber = (floor($agePenNumbers["Ad"] / 20) + 2) * 20 + 1;
+        foreach($showClassesModel->getShowSectionClassNames($locationID, "optional") as $className){
+            foreach($registrationTablesModel->getClassRegistrations($eventPostID, $className) as $classRegistration){
+                $registrationTablesModel->savePenNumber($classRegistration['class_registration_id'], $classRegistration['registration_order'], $penNumber);
+                $penNumber++;
+            }
+            $penNumber = (floor($penNumber / 20) + 1) * 20;
+        }
+    }
 }

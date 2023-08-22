@@ -31,7 +31,7 @@ class AdminTabs{
       $html .= " <li class = 'judgesReport tab' style='height: 26px;'>Judge's Report</li>
               </ul>";
       if((in_array(wp_get_current_user()->display_name, $locationSecretaries['name'])) || current_user_can('administrator')){
-        $html .= "<div class = 'fancierEntries content'>".$fancierEntries->getHtml()."</div>
+        $html .= "<div class = 'fancierEntries content'>".FancierEntriesView::getFancierEntriesHtml($eventID)."</div>
                   <div class = 'label content' style = 'display : none'>".$label->getHtml()."</div>
                   <div class = 'entrySummary content' style = 'display : none'>".$entrySummary->getHtml()."</div>
                   <div class = 'judgingSheets content' style = 'display : none'>".$judgingSheets->getHtml()."</div>

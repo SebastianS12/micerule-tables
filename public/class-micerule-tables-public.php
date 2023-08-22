@@ -33,6 +33,9 @@ require_once plugin_dir_path(__FILE__) . 'partials/Leaderboard/LeaderboardView.p
 require_once plugin_dir_path(__FILE__) . 'partials/RegistrationTables/RegistrationTablesController.php';
 require_once plugin_dir_path(__FILE__) . 'partials/RegistrationTables/RegistrationTablesModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/RegistrationTables/RegistrationTablesView.php';
+
+require_once plugin_dir_path(__FILE__) . 'partials/FancierEntries/FancierEntriesController.php';
+require_once plugin_dir_path(__FILE__) . 'partials/FancierEntries/FancierEntriesView.php';
 class Micerule_Tables_Public {
 
 	/**

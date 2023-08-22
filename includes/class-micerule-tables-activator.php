@@ -211,9 +211,9 @@ class Micerule_Tables_Activator {
 			) $charset_collate; ";
 		dbDelta($sql_create_show_user_junior_registrations_table);
 
-		$show_pen_numbers_table_name = $wpdb->prefix."micerule_show_challenges_indices";
+		$show_pen_numbers_table_name = $wpdb->prefix."micerule_show_pen_numbers";
 		$sql_create_show_pen_numbers_table = "CREATE TABLE IF NOT EXISTS ".$show_pen_numbers_table_name. " (
-			id bigint(20) unsigned NOT NULL,
+			id bigint(20) unsigned NOT NULL auto_increment,
 			class_registration_id bigint(20) unsigned NOT NULL,
 			registration_order int NOT NULL,
 			pen_number int NOT NULL,
