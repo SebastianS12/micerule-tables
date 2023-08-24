@@ -25,8 +25,8 @@ class RegistrationTablesView{
             $html .= self::getSectionHeaderRowHtml($eventPostID, $eventLocationID);
       
             foreach(RegistrationTablesController::getShowSectionClassesData($eventLocationID, $sectionName) as $classData){
-                $classAdRegistrationCount = RegistrationTablesController::getClassRegistrationCount($eventPostID, $userName, $classData['class_name'], "Ad");      
-                $classU8RegistrationCount = RegistrationTablesController::getClassRegistrationCount($eventPostID, $userName, $classData['class_name'], "U8");      
+                $classAdRegistrationCount = RegistrationTablesController::getClassRegistrationCount($eventPostID, $classData['class_name'], "Ad");      
+                $classU8RegistrationCount = RegistrationTablesController::getClassRegistrationCount($eventPostID, $classData['class_name'], "U8");      
                 $html .= self::getClassRowHtml($classData, $classAdRegistrationCount, $classU8RegistrationCount, $userName, $eventPostID, $eventLocationID);
             }
       

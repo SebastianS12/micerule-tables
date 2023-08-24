@@ -91,7 +91,7 @@ class RegistrationTablesModel{
     }
 
     public function getClassRegistrationCount($eventPostID, $className, $age){
-        $classRegistrationCount = $this->wpdb->get_var("SELECT COUNT(*) FROM ".$this->showClassRegistrationsOrderTable. " ORDER_TABLE INNER JOIN (SELECT class_registration_id FROM ".$this->showUserClassRegistrationsTable." WHERE event_post_id = ".$eventPostID." AND class_name = '".$className."' AND age = '".$age."') CLASS ON ORDER_TABLE.class_registration_id = CLASS.class_registration_id");
+        $classRegistrationCount = $this->wpdb->get_var("SELECT COUNT(*) FROM ".$this->showClassRegistrationsOrderTable. " REG_ORDER INNER JOIN ".$this->showUserClassRegistrationsTable." REGISTRATIONS ON REGISTRATIONS.class_registration_id = REG_ORDER.class_registration_id WHERE event_post_id = ".$eventPostID." AND class_name = '".$className."' AND age = '".$age."'");
         if($classRegistrationCount == null)
             $classRegistrationCount = 0;
         

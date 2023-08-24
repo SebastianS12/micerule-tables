@@ -22,4 +22,12 @@ class ShowOptionsModel{
     public function saveShowOptions($showOptions){
         $this->wpdb->replace($this->showOptionTable, $showOptions);
     }
+
+    public function getRegistrationFee($locationID){
+        $registrationFee = $this->wpdb->get_var("SELECT registration_fee FROM ".$this->showOptionTable." WHERE location_id = ".$locationID);
+        if($registrationFee == null)
+            $registrationFee = 0;
+
+        return $registrationFee;
+    }
 }
