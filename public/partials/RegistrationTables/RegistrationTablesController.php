@@ -1,6 +1,6 @@
 <?php
 
-//TODO: Duplicate Code from ShowOptionsController -> create ShowClasses SuperController
+//TODO: Duplicate Code from ShowOptionsController -> create ShowOptions Model
 class RegistrationTablesController{
     public static function getShowSectionClassesData($locationID, $section){
         $showClassesModel = new ShowClassesModel();
@@ -33,28 +33,22 @@ class RegistrationTablesController{
         return $challengeIndex;
     }
 
+    //TODO:optional classes
     public static function registerEntries($eventPostID, $classRegistrations, $optionalClassRegistrations, $userName){
-        $registrationTablesModel = new RegistrationTablesModel();
-        $eventLocationID = EventProperties::getEventLocationID($eventPostID);
-        $isJuniorMember = EventUser::isJuniorMember($userName);
         foreach($classRegistrations as $classRegistrationData){
             $className = $classRegistrationData['className'];
             $registrationCount = intval($classRegistrationData['registrationCount']);
             $age = $classRegistrationData['age'];
-            $currentUserRegistrationCount = self::getUserClassRegistrationCount($eventPostID, $userName, $className, $age);
+            $userClassRegistrationModel = new UserClassRegistration($eventPostID, $userName, $className, $age);
+            $currentUserRegistrationCount = $userClassRegistrationModel->getUserClassRegistrationCount();
 
             for($i = $currentUserRegistrationCount; $i < $registrationCount; $i++){
-                $registrationTablesModel->addUserRegistration($eventPostID, $userName, $eventLocationID, $className, $age, $isJuniorMember);
+                $userClassRegistrationModel->addUserRegistration();
             }
             for($i = $currentUserRegistrationCount; $i > $registrationCount; $i--){
-                $registrationTablesModel->deleteUserRegistration($eventPostID, $userName, $className, $age);
+                $userClassRegistrationModel->deleteUserRegistration($userClassRegistrationModel->getUserHighestClassRegistrationOrder());
             }
         }
-    }
-
-    public static function getUserClassRegistrationCount($eventPostID, $userName, $className, $age){
-        $registrationTablesModel = new RegistrationTablesModel();
-        return $registrationTablesModel->getUserClassRegistrationCount($eventPostID, $userName, $className, $age);
     }
 
     public static function getClassRegistrationCount($eventPostID, $className, $age){
@@ -77,7 +71,7 @@ class RegistrationTablesController{
         return $registrationTablesModel->getUserRegistrations($eventPostID, $userName);
     }
 
-    public static function assignPenNumbersToRegistrations($eventPostID, $locationID){
+    public static function createEntriesFromRegistrations($eventPostID, $locationID){
         $showClassesModel = new ShowClassesModel();
         $registrationTablesModel = new RegistrationTablesModel();
         $agePenNumbers = array('Ad' => 1, 'U8' => 21);
@@ -85,9 +79,12 @@ class RegistrationTablesController{
             $sectionName = strtolower($sectionName);
             foreach($showClassesModel->getShowSectionClassNames($locationID, $sectionName) as $className){
                 foreach($registrationTablesModel->getClassRegistrations($eventPostID, $className) as $classRegistration){
-                    $registrationTablesModel->savePenNumber($classRegistration['class_registration_id'], $classRegistration['registration_order'], $agePenNumbers[$classRegistration['age']]);
+                    $entry = ShowEntry::createWithPenNumber($eventPostID, $agePenNumbers[$classRegistration['age']]);
+                    $entry->save($classRegistration['class_registration_id'], $classRegistration['registration_order'], $className, false, false);
                     $agePenNumbers[$classRegistration['age']]++;
                 }
+                NextPenNumber::saveNextPennumber($locationID, $className, "Ad", $agePenNumbers["Ad"]);
+                NextPenNumber::saveNextPennumber($locationID, $className, "U8", $agePenNumbers["U8"]);
                 $agePenNumbers["Ad"] = (floor($agePenNumbers["Ad"] / 20) + 2) * 20 + 1;
                 $agePenNumbers["U8"] = $agePenNumbers["Ad"] + 20;
             }
@@ -96,9 +93,11 @@ class RegistrationTablesController{
         $penNumber = (floor($agePenNumbers["Ad"] / 20) + 2) * 20 + 1;
         foreach($showClassesModel->getShowSectionClassNames($locationID, "optional") as $className){
             foreach($registrationTablesModel->getClassRegistrations($eventPostID, $className) as $classRegistration){
-                $registrationTablesModel->savePenNumber($classRegistration['class_registration_id'], $classRegistration['registration_order'], $penNumber);
+                $entry = ShowEntry::createWithPenNumber($eventPostID, $penNumber);
+                $entry->save($classRegistration['class_registration_id'], $classRegistration['registration_order'], $className, false, false);
                 $penNumber++;
             }
+            NextPenNumber::saveNextPennumber($locationID, $className, "AA", $penNumber);
             $penNumber = (floor($penNumber / 20) + 1) * 20;
         }
     }

@@ -15,6 +15,6 @@ class Breed {
 
     public static function getSectionBreedNames($section){
         global $wpdb;
-        return $wpdb->get_results("SELECT name FROM ".$wpdb->prefix."micerule_breeds WHERE section = '".$section."'", ARRAY_A);
+        return $wpdb->get_col("SELECT name FROM ".$wpdb->prefix."micerule_breeds WHERE section = '".$section."'");
     }
 }

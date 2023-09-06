@@ -46,7 +46,7 @@ function registerClasses(){
       updateAdminTabs();
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
-      alert(errorThrown);
+      console.log(errorThrown);
       console.log("Fail");
     }
   });

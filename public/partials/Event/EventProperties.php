@@ -58,7 +58,6 @@ class EventProperties {
     return $locationSecretaries;
   }
 
-
   public static function getClassEditLink($eventID){
     global $wpdb;
     $classEditLink = "";
@@ -67,5 +66,9 @@ class EventProperties {
       $classEditLink = get_permalink($locationPostIDQueryResult);
 
     return $classEditLink;
+  }
+
+  public static function getOppositeAge($age){
+    return ($age == "Ad") ? "U8" : "Ad";
   }
 }

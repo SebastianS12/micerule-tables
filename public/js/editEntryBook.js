@@ -24,10 +24,10 @@ function assignEntryBookListeners(){
   $(".placementCheck").on('change', function(){
     var prize = this.id.split("&-&")[0];
     var placement = this.id.split("&-&")[1];
-    var penNumber = this.id.split("&-&")[2];
+    var entryID = this.id.split("&-&")[2];
     var checkValue = $(this).prop('checked');
 
-    editPlacement(prize, placement, penNumber, checkValue)
+    editPlacement(prize, placement, entryID, checkValue)
   });
 
   $(".BISCheck").on('change', function(){
@@ -35,9 +35,8 @@ function assignEntryBookListeners(){
     var age = this.id.split("&-&")[1];
     var section = this.id.split("&-&")[2];
     var checkValue = $(this).prop('checked');
-    var oppositeAge = (age == "Ad") ? "U8" : "Ad";
 
-    editBIS(prize, age, section, oppositeAge, checkValue);
+    editBIS(prize, age, section, checkValue);
   });
 
   $(".absentCheck").on('change', function(){
@@ -48,20 +47,17 @@ function assignEntryBookListeners(){
   });
 
   $(".classSelect-entryBook").on('change', function(){
-    var penNumber = this.id.split("&-&")[0];
-    var selectValue = $(this).val();
+    var entryID = this.id.split("&-&")[0];
+    var varietyName = $(this).val();
 
-    setCustomClassVariety(penNumber, selectValue, ".entryBook.content");
+    setCustomClassVariety(entryID, varietyName, ".entryBook.content");
   });
 
   $(".unstandardised-input").on('keyup', debounce((eventObject) => {
-    var section =eventObject.currentTarget.id.split("&-&")[0];
-    var className = eventObject.currentTarget.id.split("&-&")[1];
-    var age = eventObject.currentTarget.id.split("&-&")[2];
-    var penNumber = eventObject.currentTarget.id.split("&-&")[3];
-    var inputValue = $(eventObject.currentTarget).val();
+    var entryID = eventObject.currentTarget.id.split("&-&")[0];
+    var varietyName = $(eventObject.currentTarget).val();
 
-    setCustomClassVariety(penNumber, inputValue);
+    setCustomClassVariety(entryID, varietyName);
   }, 1000));
 }
 
@@ -79,7 +75,7 @@ function openMoveModal(penNumber){
   openEditModal("Move Entry to:", additionalHtml);
 
   $("#confirmMoveModal").on('click', function(){
-    console.log("move");
+    console.log($("#ageSelect").find('option').filter(":selected").val());
     jQuery.ajax({
       type: 'POST',
       url: my_ajax_obj.ajax_url,
@@ -95,6 +91,7 @@ function openMoveModal(penNumber){
         $.modal.close();
         $("#editEntryModal").remove();
         updateAdminTabs();
+        console.log(data);
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
         alert(errorThrown);
@@ -131,6 +128,7 @@ function openAddModal(){
         $.modal.close();
         $("#editEntryModal").remove();
         updateAdminTabs();
+        console.log(data);
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
         alert(errorThrown);
@@ -141,6 +139,8 @@ function openAddModal(){
 
 
 function openEditModal(title, additionalHtml){
+  //TODO:: file for constants
+  const sectionNames = ["SELFS", "TANS", "MARKED", "SATINS", "AOVS", "OPTIONAL"];
   var html = "<div class = 'modal-content'><h2>"+title+"</h2>";
 
   html += "<select id = 'sectionSelect'>";
@@ -227,7 +227,7 @@ function deleteEntry(penNumber){
   });
 }
 
-function editPlacement(prize, placement, penNumber, checkValue){
+function editPlacement(prize, placement, entryID, checkValue){
   $("#spinner-div").show();
   jQuery.ajax({
     type: 'POST',
@@ -237,7 +237,7 @@ function editPlacement(prize, placement, penNumber, checkValue){
       action: 'editPlacement',
       prize: prize,
       placement: placement,
-      penNumber: penNumber,
+      entryID: entryID,
       checkValue: checkValue,
     },
     success: function (data) {
@@ -251,7 +251,7 @@ function editPlacement(prize, placement, penNumber, checkValue){
 }
 
 
-function editBIS(prize, age, section, oppositeAge, checkValue){
+function editBIS(prize, age, section, checkValue){
   $("#spinner-div").show();
   jQuery.ajax({
     type: 'POST',
@@ -262,12 +262,12 @@ function editBIS(prize, age, section, oppositeAge, checkValue){
       prize: prize,
       section: section.toLowerCase(),
       age: age,
-      oppositeAge : oppositeAge,
       checkValue: checkValue,
     },
     success: function (data) {
       $("#spinner-div").hide();
       updateAdminTabs();
+      console.log(data);
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
       console.log(errorThrown);

@@ -40,6 +40,17 @@ require_once plugin_dir_path(__FILE__) . 'partials/FancierEntries/FancierEntries
 require_once plugin_dir_path(__FILE__) . 'partials/EntrySummary/EntrySummaryController.php';
 require_once plugin_dir_path(__FILE__) . 'partials/EntrySummary/EntrySummaryModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/EntrySummary/EntrySummaryView.php';
+
+require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/EntryBookController.php';
+require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/EntryBookModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/EntryBookView.php';
+
+require_once plugin_dir_path(__FILE__) . 'partials/Models/ShowEntry.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/ClassPlacements.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/SinglePlacement.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/NextPenNumber.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/UserClassRegistration.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/ChallengeAwards.php';
 class Micerule_Tables_Public {
 
 	/**

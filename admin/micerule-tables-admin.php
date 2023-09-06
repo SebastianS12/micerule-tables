@@ -10,6 +10,10 @@ require_once plugin_dir_path(__FILE__) . 'partials/ShowOptions/ShowOptionsView.p
 require_once plugin_dir_path(__FILE__) . 'partials/ShowOptions/ShowOptionsController.php';
 require_once plugin_dir_path(__FILE__) . 'partials/ShowOptions/ShowOptionsModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/ShowOptions/ShowClassesModel.php';
+
+require_once plugin_dir_path(__FILE__) . 'partials/Models/ShowClassModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/ShowChallengeModel.php';
+
 class Micerule_Tables_Admin{
 
   private $plugin_name;

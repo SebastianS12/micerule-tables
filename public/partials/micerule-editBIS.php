@@ -7,22 +7,16 @@ $event_id = url_to_postid( $url );
 $prize = $_POST['prize'];
 $section = $_POST['section'];
 $age = $_POST['age'];
-$oppositeAge = $_POST['oppositeAge'];
 $checkValue = $_POST['checkValue'];
 
-$entryBookData = EntryBookData::create($event_id);
-$entry = $entryBookData->entries[$penNumber];
-
 if($prize == "Section Challenge"){
-  $sectionData = $entryBookData->sections[$section];
-  $sectionData->setBIS($age, $oppositeAge, $checkValue);
+  $sectionChallengeAwardsModel = new SectionChallengeAwards($event_id, $section);
+  EntryBookController::editBIS($age,$checkValue, $sectionChallengeAwardsModel);
 }
 
 if($prize == "Grand Challenge"){
-  $grandChallengeData = $entryBookData->grandChallenge;
-  $grandChallengeData->setBIS($age, $oppositeAge, $checkValue);
+  $grandChallengeAwardsModel = new GrandChallengeChallengeAwards($event_id, $section);
+  EntryBookController::editBIS($age,$checkValue, $grandChallengeAwardsModel);
 }
-
-update_post_meta($event_id, 'micerule_data_event_entry_book_test', json_encode($entryBookData, JSON_UNESCAPED_UNICODE));
 
 wp_die();

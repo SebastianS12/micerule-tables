@@ -32,13 +32,13 @@ class ClassSelectOptions {
 
   private static function getClassSelectOptions($locationID, $sectionName){
     $selectOptions = array();
-    $sectionBreedNamesSQL = Breed::getSectionBreedNames($sectionName);
+    $sectionBreedNames = Breed::getSectionBreedNames($sectionName);
     $showClassesModel = new ShowClassesModel();
     $showSectionClassNames = $showClassesModel->getShowSectionClassNames($locationID, $sectionName);
-    if($sectionBreedNamesSQL != null){
-      foreach($sectionBreedNamesSQL as $breedNameSQLResult){
-        if(!in_array($breedNameSQLResult['name'], $showSectionClassNames)){
-          array_push($selectOptions, $breedNameSQLResult['name']);
+    if($sectionBreedNames != null){
+      foreach($sectionBreedNames as $breedName){
+        if(!in_array($breedName, $showSectionClassNames)){
+          array_push($selectOptions, $breedName);
         }
       }
     }

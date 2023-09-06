@@ -9,6 +9,7 @@ $className = $_POST['className'];
 $age = $_POST['age'];
 $userName = $_POST['userName'];
 
+/*
 $juniorMember = EventUser::isJuniorMember($userName);
 $entryBookData = EntryBookData::create($event_id);
 $classData = $entryBookData->classes[$className];
@@ -28,5 +29,6 @@ if($section != "optional"){
 
 update_post_meta($event_id, 'micerule_data_event_entry_book_test', json_encode($entryBookData, JSON_UNESCAPED_UNICODE));
 $eventRegistrationData->updatePostMeta($event_id);
-
+*/
+EntryBookController::addEntry($event_id, $userName, $className, $age);
 wp_die();

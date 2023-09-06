@@ -35,7 +35,7 @@ class AdminTabs{
                   <div class = 'label content' style = 'display : none'>".$label->getHtml()."</div>
                   <div class = 'entrySummary content' style = 'display : none'>".EntrySummaryView::getEntrySummaryHtml($eventID)."</div>
                   <div class = 'judgingSheets content' style = 'display : none'>".$judgingSheets->getHtml()."</div>
-                  <div class = 'entryBook content' style = 'display : none'>".$entryBook->getHtml()."</div>
+                  <div class = 'entryBook content' style = 'display : none'>".EntryBookView::getEntryBookHtml($eventID)."</div>
                   <div class = 'absentees content' style = 'display : none'>".$absentees->getHtml()."</div>
                   <div class = 'prizeCards content' style = 'display : none'>".$prizeCards->getHtml()."</div>";
       }

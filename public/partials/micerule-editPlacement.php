@@ -7,24 +7,27 @@ $event_id = url_to_postid( $url );
 //$section = $_POST['section'];
 $prize = $_POST['prize'];
 $placement = $_POST['placement'];
-$penNumber = $_POST['penNumber'];
-$checkValue = $_POST['checkValue'];
-
-$entryBookData = EntryBookData::create($event_id);
-$entry = $entryBookData->entries[$penNumber];
-//$prizeEntry = new PrizeEntry($entry->penNumber, $entry->userName, $entry->age, $entry->className, $entry->varietyName, $entry->sectionName, $entry->moved, $entry->absent, false);
+$entryID = $_POST['entryID'];
+$checkValue = ($_POST['checkValue'] == "true");
 
 if($prize == "Class"){
-  $entryBookData->classes[$entry->className]->getPlacementData($entry->age)->editPlacement($placement, $entry, $checkValue);
+  $classPlacementModel = new ClassPlacement();
+  EntryBookController::editPlacement($entryID, $placement, $checkValue, $classPlacementModel);
+}
+
+if($prize == "Junior"){
+  $juniorPlacementModel = new JuniorPlacement();
+  EntryBookController::editPlacement($entryID, $placement, $checkValue, $juniorPlacementModel);
 }
 
 if($prize == "Section Challenge"){
-  $entryBookData->sections[$entry->sectionName]->getPlacementData($entry->age)->editPlacement($placement, $entry, $checkValue);
+  $sectionPlacementModel = new SectionPlacement();
+  EntryBookController::editPlacement($entryID, $placement, $checkValue, $sectionPlacementModel);
 }
 
 if($prize == "Grand Challenge"){
-  $entryBookData->grandChallenge->getPlacementData($entry->age)->editPlacement($placement, $entry, $checkValue);
+  $grandChallengePlacementModel = new GrandChallengePlacement();
+  EntryBookController::editPlacement($entryID, $placement, $checkValue, $grandChallengePlacementModel);
 }
 
-update_post_meta($event_id, 'micerule_data_event_entry_book_test', json_encode($entryBookData, JSON_UNESCAPED_UNICODE));
 wp_die();
