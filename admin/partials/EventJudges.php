@@ -89,6 +89,18 @@ class EventJudgesHelper
         $wpdb->delete($table_name, array("event_post_id" => $eventPostID, "judge_no" => $judgeNo));
     }
 
+    public static function getEventJudgeNames($eventPostID){
+        global $wpdb;
+        return $wpdb->get_col("SELECT judge_name FROM ".$wpdb->prefix."micerule_event_judges WHERE event_post_id = ".$eventPostID);
+    }
+
+    public static function getJudgeSections($eventPostID, $judgeName){
+        global $wpdb;
+        return $wpdb->get_col("SELECT section FROM ".$wpdb->prefix."micerule_event_judges_sections SECTIONS
+                               INNER JOIN ".$wpdb->prefix."micerule_event_judges JUDGES ON SECTIONS.event_post_id = JUDGES.event_post_id AND SECTIONS.judge_no = JUDGES.judge_no
+                               WHERE JUDGES.event_post_id = ".$eventPostID." AND judge_name = '".$judgeName."'");
+    }
+
     public static function convertPostMeta(){
         global $wpdb;
         $postMetaResults = $wpdb->get_results("SELECT post_id, meta_value FROM ".$wpdb->prefix."postmeta WHERE meta_key = 'micerule_data_settings' AND meta_value IS NOT NULL", ARRAY_A);

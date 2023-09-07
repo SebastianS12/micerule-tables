@@ -87,9 +87,9 @@ class EntryBookView
     private static function getBreedNameHeader($classModel)
     {
         $html = "<tr class='breed-name-header'>";
-        $html .= "<td class='table-pos'>" . $classModel->classIndex . "</td>";
+        $html .= "<td class='table-pos'>" . $classModel->index . "</td>";
         $html .= "<td class = 'absent-td'>Abs</td>";
-        $html .= "<td class='breed-class'>" . $classModel->className . " " . $classModel->age . "</td>";
+        $html .= "<td class='breed-class'>" . $classModel->name . " " . $classModel->age . "</td>";
         $html .= "<td class='age'></td>";
         $html .= "<td class = 'placement-" . $classModel->age . "'><img src='/wp-content/plugins/micerule-tables/admin/svg/class-ranking.svg'></td>";
         $html .= "<td class = 'sectionBest-" . $classModel->age . "'><img src='/wp-content/plugins/micerule-tables/admin/svg/section-first.svg'></td>";
@@ -199,7 +199,7 @@ class EntryBookView
         $BISChecked = ($challengeAwardsModel->bisChecked($showChallengeModel->age)) ? "checked" : "";
         $BISDisabled = ($challengeAwardsModel->boaChecked($showChallengeModel->age)) ? "disabled" : "";
         $html = "<table><tbody>";
-        $html .= "<tr class='challenge-row'><td class='table-pos'>" . $showChallengeModel->challengeIndex . "</td><td class='breed-class'>" . $showChallengeModel->challengeName . " " . $showChallengeModel->age . "</td><td class='age'></td><td class='placement-" . $showChallengeModel->age . "'></td><td class='sectionBest-" . $showChallengeModel->age . "'><div class='placement-checks'>";
+        $html .= "<tr class='challenge-row'><td class='table-pos'>" . $showChallengeModel->index . "</td><td class='breed-class'>" . $showChallengeModel->name . " " . $showChallengeModel->age . "</td><td class='age'></td><td class='placement-" . $showChallengeModel->age . "'></td><td class='sectionBest-" . $showChallengeModel->age . "'><div class='placement-checks'>";
         $html .= ($agePlacements->isPlacementChecked(1) && $oppositeAgePlacements->isPlacementChecked(1)) ? "<input type = 'checkbox' class = 'BISCheck' id = '" . $prize . "&-&" . $showChallengeModel->age . "&-&" . $showChallengeModel->challengeSection . "&-&BIS&-&check' " . $BISChecked . " " . $BISDisabled . "></input><label for = '" . $prize . "&-&" . $showChallengeModel->age . "&-&" . $showChallengeModel->challengeSection . "&-&BIS&-&check'><span class='is-best'>BEST</span><span class='is-boa'>BOA</span></label>" : "";
         $html .= "</div></td><td class='ageBest-" . $showChallengeModel->age . "'></td></tr>";
         $html .= self::getChallengePlacementOverviewHtml($agePlacements);
@@ -253,9 +253,9 @@ class EntryBookView
     private static function getOptionalClassHeaderRowHtml($optionalClassModel)
     {
         $html = "<tr class='breed-name-header'>";
-        $html .= "<td class='table-pos'>" . $optionalClassModel->classIndex . "</td>";
+        $html .= "<td class='table-pos'>" . $optionalClassModel->index . "</td>";
         $html .= "<td class = 'absent-td'>Abs</td>";
-        $html .= "<td class='breed-class'>" . ucfirst($optionalClassModel->className) . " AA</td>";
+        $html .= "<td class='breed-class'>" . ucfirst($optionalClassModel->name) . " AA</td>";
         $html .= "<td class='age'></td>";
         $html .= "<td class = 'placement-ads'><img src='/wp-content/plugins/micerule-tables/admin/svg/class-ranking.svg'></td>";
         $html .= "</tr>";
@@ -265,7 +265,7 @@ class EntryBookView
 
     private static function getOptionalClassEntryRows($optionalClassModel, $eventPostID, $eventDeadline)
     {
-        $classPlacementsModel = new ClassPlacements($eventPostID, "AA", $optionalClassModel->className);
+        $classPlacementsModel = new ClassPlacements($eventPostID, "AA", $optionalClassModel->name);
         $html = "";
         foreach ($optionalClassModel->penNumbers as $penNumber) {
             $entry = ShowEntry::createWithPenNumber($eventPostID, $penNumber);
@@ -279,7 +279,7 @@ class EntryBookView
             $html .= "<td class = 'editEntry-td'>";
             $html .= (!$classPlacementsModel->entryInPlacements($entry->ID) && time() > strtotime($eventDeadline)) ? "<div class='button-wrapper'><button class = 'moveEntry' id = '" . $entry->penNumber . "&-&move'><img src='/wp-content/plugins/micerule-tables/admin/svg/move.svg'></button>
                   <button class = 'deleteEntry' id = '" . $entry->penNumber . "&-&delete'><img src='/wp-content/plugins/micerule-tables/admin/svg/trash.svg'></button></div>" : "";
-            $html .= ($optionalClassModel->className == "Unstandardised" && $classPlacementsModel->entryInPlacements($entry->ID)) ? "<input type = 'text' class = 'unstandardised-input' id = '" . $entry->ID . "&-&varietySelect' val = '" . $entry->varietyName . "' placeholder = '" . $entry->varietyName . "'></input>" : "";
+            $html .= ($optionalClassModel->name == "Unstandardised" && $classPlacementsModel->entryInPlacements($entry->ID)) ? "<input type = 'text' class = 'unstandardised-input' id = '" . $entry->ID . "&-&varietySelect' val = '" . $entry->varietyName . "' placeholder = '" . $entry->varietyName . "'></input>" : "";
             $html .= "</td>";
             $html .= self::getPlacementEditCell($entry, NULL, $classPlacementsModel, NULL, "AA", "Class");
             $html .= "</tr>";

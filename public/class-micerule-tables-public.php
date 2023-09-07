@@ -45,6 +45,12 @@ require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/EntryBookController
 require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/EntryBookModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/EntryBookView.php';
 
+require_once plugin_dir_path(__FILE__) . 'partials/Label/LabelModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Label/LabelView.php';
+
+require_once plugin_dir_path(__FILE__) . 'partials/JudgingSheets/JudgingSheetsModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/JudgingSheets/JudgingSheetsView.php';
+
 require_once plugin_dir_path(__FILE__) . 'partials/Models/ShowEntry.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/ClassPlacements.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/SinglePlacement.php';

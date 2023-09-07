@@ -2,8 +2,8 @@
 
 class ShowClassModel{
     //TODO: Missing Functions from ShowClassesModel.php 
-    public $className;
-    public $classIndex;
+    public $name;
+    public $index;
     public $age;
     public $penNumbers;
 
@@ -15,8 +15,8 @@ class ShowClassModel{
     private function loadClassData($eventPostID, $className, $age){
         global $wpdb;
         $locationID = EventProperties::getEventLocationID($eventPostID);
-        $this->className = $className;
-        $this->classIndex = $wpdb->get_var("SELECT class_index FROM ".$wpdb->prefix."micerule_show_classes_indices 
+        $this->name = $className;
+        $this->index = $wpdb->get_var("SELECT class_index FROM ".$wpdb->prefix."micerule_show_classes_indices 
                                             WHERE location_id = '".$locationID."' AND class_name = '".$className."' AND age = '".$age."'");
         $this->age = $age;
         $this->penNumbers = $wpdb->get_col("SELECT pen_number FROM ".$wpdb->prefix."micerule_show_user_registrations REGISTRATIONS 

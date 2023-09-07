@@ -202,6 +202,7 @@ class RegistrationTablesView
     return $html;
   }
 
+  //TODO: $registrationCount
   private static function getOptionalClassRowCellHtml($classData, $eventPostID, $eventLocationID, $userName)
   {
     $registrationCount = 0;

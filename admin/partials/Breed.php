@@ -1,5 +1,6 @@
 <?php
 
+//TODO: Rename, split up in single + multiple breeds?
 class Breed {
     //TODO: move add/delete/update breed functions
 
@@ -16,5 +17,10 @@ class Breed {
     public static function getSectionBreedNames($section){
         global $wpdb;
         return $wpdb->get_col("SELECT name FROM ".$wpdb->prefix."micerule_breeds WHERE section = '".$section."'");
+    }
+
+    public static function classIsStandardBreed($className){
+        global $wpdb;
+        return ($wpdb->get_var("SELECT name FROM ".$wpdb->prefix."micerule_breeds WHERE name = '".$className."'") != null);
     }
 }

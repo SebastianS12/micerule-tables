@@ -4,11 +4,12 @@ class EntrySummaryView
 {
     public static function getEntrySummaryHtml($eventPostID)
     {
+        $entrySummaryModel = new EntrySummaryModel();
         $entrySummaryData = EntrySummaryController::getEntrySummaryData($eventPostID);
 
         $html = "<div class = 'entrySummary content'>";
         foreach ($entrySummaryData as $userName => $fancierEntrySummary) {
-            $checkBoxState = ""; //TODO:($this->entryData->allAbsent($userName)) ? "checked" : "";
+            $checkBoxState = ($entrySummaryModel->getAllAbsentCheckValue($eventPostID, $userName)) ? "checked" : "";
             $html .= "<div class='fancier-entry-summary'>
                     <div class='set-absent'>
                         <input type = 'checkbox' id = 'setAllAbsent'  class = 'setAllAbsent' name = 'setAllAbsent' " . $checkBoxState . ">
@@ -18,7 +19,7 @@ class EntrySummaryView
                     <table>
                         <thead class='header-wrapper'>
                         <tr>
-                            <th colspan=3><p>" . $userName . "</p></th>
+                            <th colspan=3><p class = 'fancier-name'>" . $userName . "</p></th>
                         </tr>
                         <tr>
                             <th class='js-pen-no'>№</th>
