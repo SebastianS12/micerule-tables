@@ -192,12 +192,14 @@ class EntryBook implements IAdminTab {
   }
 
 
-  private function getPlacementEditCell($entry, $classPlacementData, $sectionPlacementData){
+  private function getPlacementEditCell($entry, $classPlacementData, $sectionPlacementData, $junior = false){
     $placementCheckDisabled = (isset($sectionPlacementData) && $sectionPlacementData->entryHasPlacement($entry)) ? "checked" : "";
     $firstPlaceChecked = ($classPlacementData->hasPlacement($entry, "1")) ? "checked" : "";
     $secondPlaceChecked = ($classPlacementData->hasPlacement($entry, "2")) ? "checked" : "";
     $thirdPlaceChecked = ($classPlacementData->hasPlacement($entry, "3")) ? "checked" : "";
     $prize = "Class";
+    if($junior)
+      $prize = "Junior";
 
     $html = "<td class = 'placement-".$entry->age."'>";
     $html .= "<div class='placement-checks'>";
@@ -312,7 +314,7 @@ class EntryBook implements IAdminTab {
                   <button class = 'deleteEntry' id = '".$entry->penNumber."&-&delete'><img src='/wp-content/plugins/micerule-tables/admin/svg/trash.svg'></button></div>" : "";
         $html .= ($className == "unstandardised" && $classPlacementData->entryHasPlacement($entry)) ? "<input type = 'text' class = 'unstandardised-input' id = '".$entry->penNumber."&-&varietySelect' val = '".$entry->varietyName."' placeholder = '".$entry->varietyName."'></input>" : "";
         $html .= "</td>";
-        $html .= $this->getPlacementEditCell($entry, $classPlacementData, NULL);
+        $html .= $this->getPlacementEditCell($entry, $classPlacementData, NULL, ($className == "Junior"));
         $html .= "</tr>";
       }
       $html .= "</table></tbody>";
