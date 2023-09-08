@@ -51,6 +51,9 @@ require_once plugin_dir_path(__FILE__) . 'partials/Label/LabelView.php';
 require_once plugin_dir_path(__FILE__) . 'partials/JudgingSheets/JudgingSheetsModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/JudgingSheets/JudgingSheetsView.php';
 
+require_once plugin_dir_path(__FILE__) . 'partials/Absentees/AbsenteesModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Absentees/AbsenteesView.php';
+
 require_once plugin_dir_path(__FILE__) . 'partials/Models/ShowEntry.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/ClassPlacements.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/SinglePlacement.php';

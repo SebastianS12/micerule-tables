@@ -262,7 +262,7 @@ class Micerule_Tables_Activator {
 			entry_id bigint(20) unsigned NOT NULL,
 			placement int(2) NOT NULL,
 			PRIMARY KEY  (class_placement_id),
-			CONSTRAINT fk_entry_id_junior_placement
+			CONSTRAINT fk_entry_id_junior_eplacement
 				FOREIGN KEY (entry_id)
 				REFERENCES ".$show_entries_table_name."(id)
 				ON DELETE CASCADE
