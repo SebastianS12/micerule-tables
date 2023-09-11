@@ -23,14 +23,10 @@ function printPrizeCards(){
 
   $(".prize-cards-print").find(".prize-card").each(function(){
     var prize = $(this).find(".prize").text();
-    var sectionName = $(this).find(".prize-card-section-name").text();
-    var placement = $(this).find(".prize-card-placement").not(".card-info").text();
-    var className = $(this).find(".prize-card-class-name").text();
-    var age = $(this).find(".prize-card-age").text();
+    var penNumber = $(this).find(".pen-no").text();
 
-    prizeCardsData.push({prize : prize, sectionName : sectionName, placement : placement, className : className, age : age});
+    prizeCardsData.push({prize : prize, penNumber : penNumber});
   });
-  console.log(prizeCardsData);
 
   jQuery.ajax({
     type: 'POST',
@@ -43,9 +39,10 @@ function printPrizeCards(){
     },
     success: function (data) {
       updateAdminTabs();
+      console.log(data);
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
-      alert(errorThrown);
+      console.log(errorThrown);
     }
   });
 }
@@ -54,12 +51,9 @@ function moveToUnprinted(clickedCard){
   var prizeCardsData = [];
 
   var prize = clickedCard.parents(".class-card").find(".prize").text();
-  var sectionName = clickedCard.parents(".class-card").find(".prize-card-section-name").text();
-  var placement = clickedCard.parents(".class-card").find(".prize-card-placement").text();
-  var className = clickedCard.parents(".class-card").find(".prize-card-class-name").text();
-  var age = clickedCard.parents(".class-card").find(".prize-card-age").text();
+  var penNumber = clickedCard.parents(".class-card").find(".pen-no").text();
 
-  prizeCardsData.push({prize : prize, sectionName : sectionName, placement : placement, className : className, age : age});
+  prizeCardsData.push({prize : prize, penNumber : penNumber});
   jQuery.ajax({
     type: 'POST',
     url: my_ajax_obj.ajax_url,
@@ -73,7 +67,7 @@ function moveToUnprinted(clickedCard){
       updateAdminTabs();
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
-      alert(errorThrown);
+      console.log(errorThrown);
     }
   });
 }

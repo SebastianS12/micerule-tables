@@ -87,7 +87,7 @@ class SectionChallengeAwards extends ChallengeAwards
         return $wpdb->get_row("SELECT entry_id, age FROM " . $wpdb->prefix . "micerule_show_user_registrations REGISTRATIONS 
                                 INNER JOIN " . $wpdb->prefix . "micerule_show_entries ENTRIES ON REGISTRATIONS.class_registration_id = ENTRIES.class_registration_id 
                                 INNER JOIN " . $wpdb->prefix . "micerule_show_section_placements PLACEMENTS ON ENTRIES.id = PLACEMENTS.entry_id
-                                INNER JOIN " . $wpdb->prefix . "micerule_show_classes CLASSES ON REGISTRATIONS.class_name = CLASSES.class_name AND REGISTRATIONS.location_id = CLASSES.location_id
+                                INNER JOIN " . $wpdb->prefix . "micerule_show_classes CLASSES ON REGISTRATIONS.class_id = CLASSES.id
                                 WHERE event_post_id = " . $this->eventPostID . " AND section= '" . $this->challengeSection . "' AND award = '" . $award . "'", ARRAY_A);
     }
 
@@ -99,7 +99,7 @@ class SectionChallengeAwards extends ChallengeAwards
         return $wpdb->get_var("SELECT entry_id FROM " . $wpdb->prefix . "micerule_show_user_registrations REGISTRATIONS 
                         INNER JOIN " . $wpdb->prefix . "micerule_show_entries ENTRIES ON REGISTRATIONS.class_registration_id = ENTRIES.class_registration_id 
                         INNER JOIN " . $wpdb->prefix . "micerule_show_section_placements PLACEMENTS ON ENTRIES.id = PLACEMENTS.entry_id
-                        INNER JOIN " . $wpdb->prefix . "micerule_show_classes CLASSES ON REGISTRATIONS.class_name = CLASSES.class_name AND REGISTRATIONS.location_id = CLASSES.location_id
+                        INNER JOIN " . $wpdb->prefix . "micerule_show_classes CLASSES ON REGISTRATIONS.class_id = CLASSES.id
                         WHERE event_post_id = " . $this->eventPostID . " AND section = '" . $this->challengeSection . "' AND placement = 1 AND age = '" . $age . "'");
     }
 }
@@ -119,7 +119,7 @@ class GrandChallengeAwards extends ChallengeAwards
         return $wpdb->get_row("SELECT entry_id, age FROM " . $wpdb->prefix . "micerule_show_user_registrations REGISTRATIONS 
                                 INNER JOIN " . $wpdb->prefix . "micerule_show_entries ENTRIES ON REGISTRATIONS.class_registration_id = ENTRIES.class_registration_id 
                                 INNER JOIN " . $wpdb->prefix . "micerule_show_grand_challenge_placements PLACEMENTS ON ENTRIES.id = PLACEMENTS.entry_id
-                                INNER JOIN " . $wpdb->prefix . "micerule_show_classes CLASSES ON REGISTRATIONS.class_name = CLASSES.class_name AND REGISTRATIONS.location_id = CLASSES.location_id
+                                INNER JOIN " . $wpdb->prefix . "micerule_show_classes CLASSES ON REGISTRATIONS.class_id = CLASSES.id
                                 WHERE event_post_id = " . $this->eventPostID . " AND award = '" . $award . "'", ARRAY_A);
     }
 
@@ -131,7 +131,7 @@ class GrandChallengeAwards extends ChallengeAwards
         return $wpdb->get_var("SELECT entry_id FROM " . $wpdb->prefix . "micerule_show_user_registrations REGISTRATIONS 
                         INNER JOIN " . $wpdb->prefix . "micerule_show_entries ENTRIES ON REGISTRATIONS.class_registration_id = ENTRIES.class_registration_id 
                         INNER JOIN " . $wpdb->prefix . "micerule_show_grand_challenge_placements PLACEMENTS ON ENTRIES.id = PLACEMENTS.entry_id
-                        INNER JOIN " . $wpdb->prefix . "micerule_show_classes CLASSES ON REGISTRATIONS.class_name = CLASSES.class_name AND REGISTRATIONS.location_id = CLASSES.location_id
+                        INNER JOIN " . $wpdb->prefix . "micerule_show_classes CLASSES ON REGISTRATIONS.class_id = CLASSES.id
                         WHERE event_post_id = " . $this->eventPostID . " AND placement = 1 AND age = '" . $age . "'");
     }
 }

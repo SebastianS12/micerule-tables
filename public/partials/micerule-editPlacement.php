@@ -12,22 +12,22 @@ $checkValue = ($_POST['checkValue'] == "true");
 
 if($prize == "Class"){
   $classPlacementModel = new ClassPlacement();
-  EntryBookController::editPlacement($entryID, $placement, $checkValue, $classPlacementModel);
+  EntryBookController::editPlacement($entryID, $placement, $checkValue, $classPlacementModel, EventProperties::getEventLocationID($event_id));
 }
 
 if($prize == "Junior"){
   $juniorPlacementModel = new JuniorPlacement();
-  EntryBookController::editPlacement($entryID, $placement, $checkValue, $juniorPlacementModel);
+  EntryBookController::editPlacement($entryID, $placement, $checkValue, $juniorPlacementModel, EventProperties::getEventLocationID($event_id));
 }
 
 if($prize == "Section Challenge"){
   $sectionPlacementModel = new SectionPlacement();
-  EntryBookController::editPlacement($entryID, $placement, $checkValue, $sectionPlacementModel);
+  EntryBookController::editPlacement($entryID, $placement, $checkValue, $sectionPlacementModel, EventProperties::getEventLocationID($event_id));
 }
 
 if($prize == "Grand Challenge"){
   $grandChallengePlacementModel = new GrandChallengePlacement();
-  EntryBookController::editPlacement($entryID, $placement, $checkValue, $grandChallengePlacementModel);
+  EntryBookController::editPlacement($entryID, $placement, $checkValue, $grandChallengePlacementModel, EventProperties::getEventLocationID($event_id));
 }
 
 wp_die();

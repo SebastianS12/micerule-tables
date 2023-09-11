@@ -22,8 +22,9 @@ class EntrySummaryModel{
     }
 
     public function getFancierEntries($eventPostID, $userName){
-        return $this->wpdb->get_results("SELECT INDICES.class_name, INDICES.class_index, REGISTRATIONS.age, user_name, pen_number FROM ".$this->classIndicesTable." INDICES 
-                                         INNER JOIN ".$this->showUserClassRegistrationsTable." REGISTRATIONS ON REGISTRATIONS.location_id = INDICES.location_id AND REGISTRATIONS.class_name = INDICES.class_name AND REGISTRATIONS.age = INDICES.age 
+        return $this->wpdb->get_results("SELECT class_name, INDICES.class_index, REGISTRATIONS.age, user_name, pen_number FROM ".$this->classIndicesTable." INDICES
+                                         INNER JOIN ".$this->wpdb->prefix."micerule_show_classes CLASSES ON INDICES.class_id = CLASSES.id 
+                                         INNER JOIN ".$this->showUserClassRegistrationsTable." REGISTRATIONS ON REGISTRATIONS.class_id = INDICES.class_id AND REGISTRATIONS.age = INDICES.age 
                                          INNER JOIN ".$this->showClassRegistrationsOrderTable." REG_ORDER ON REGISTRATIONS.class_registration_id = REG_ORDER.class_registration_id 
                                          INNER JOIN ".$this->entriesTable." ENTRIES ON REG_ORDER.class_registration_id = ENTRIES.class_registration_id AND REG_ORDER.registration_order = ENTRIES.registration_order 
                                          WHERE event_post_id = ".$eventPostID." AND user_name = '".$userName."' ORDER BY class_index, pen_number", ARRAY_A);

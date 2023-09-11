@@ -34,8 +34,8 @@ class RegistrationTablesView
       }
 
       //add challenge row
-      $sectionAdRegistrationCount = RegistrationTablesController::getSectionRegistrationCount($eventPostID, $eventLocationID, $sectionName, "Ad");
-      $sectionU8RegistrationCount = RegistrationTablesController::getSectionRegistrationCount($eventPostID, $eventLocationID, $sectionName, "U8");
+      $sectionAdRegistrationCount = RegistrationTablesController::getSectionRegistrationCount($eventPostID, $sectionName, "Ad");
+      $sectionU8RegistrationCount = RegistrationTablesController::getSectionRegistrationCount($eventPostID, $sectionName, "U8");
       $html .= self::getSectionChallengeRowHtml(EventProperties::getChallengeName($sectionName), $sectionAdRegistrationCount, $sectionU8RegistrationCount, $eventPostID, $eventLocationID);
 
       $html .= "</tbody>";
@@ -80,7 +80,7 @@ class RegistrationTablesView
     $userRegistrations = $userClassRegistrationModel->getUserClassRegistrationCount();
     $html = "<td class = 'positionCell Ad'>" . $classData['ad_index'] . "</td>";
     if (RegistrationTablesController::getAllowOnlineRegistrations($eventLocationID)) {
-      $html .= (time() > EventProperties::getEventDeadline($eventPostID)) ? "<td class='entries-count-Ad'>(" . $classAdRegistrationCount . ")</td>" : "";
+      $html .= (time() > EventProperties::getEventDeadline($eventPostID)) ? "<td class='entries-count-Ad'>(" . $classAdRegistrationCount .")</td>" : "";
       $html .= (time() < EventProperties::getEventDeadline($eventPostID) && is_user_logged_in() && (EventUser::isMember($userName) || current_user_can('administrator'))) ? "<td id = '" . $classData['class_name'] . "&-&Ad&-&RegistrationInput' class = 'registrationInput'><input type = 'number' min = '0' value = '" . $userRegistrations . "'></input></td>" : "";
       $html .= (time() < EventProperties::getEventDeadline($eventPostID) && !is_user_logged_in()) ? "<td></td>" : "";
     } else {

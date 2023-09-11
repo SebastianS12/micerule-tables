@@ -64,6 +64,7 @@ class ClassPlacements extends Placements
         return $wpdb->get_var("SELECT entry_id FROM " . $wpdb->prefix . "micerule_show_user_registrations REGISTRATIONS 
                                INNER JOIN " . $wpdb->prefix . "micerule_show_entries ENTRIES ON REGISTRATIONS.class_registration_id = ENTRIES.class_registration_id 
                                INNER JOIN " . $wpdb->prefix . "micerule_show_class_placements PLACEMENTS ON ENTRIES.id = PLACEMENTS.entry_id 
+                               INNER JOIN " . $wpdb->prefix . "micerule_show_classes CLASSES ON REGISTRATIONS.class_id = CLASSES.id
                                WHERE event_post_id = " . $eventPostID . " AND class_name = '" . $classCondition . "' AND age = '" . $age . "' AND placement = " . $placement);
     }
 
@@ -98,7 +99,7 @@ class SectionPlacements extends Placements
         return $wpdb->get_var("SELECT entry_id FROM " . $wpdb->prefix . "micerule_show_user_registrations REGISTRATIONS 
                                INNER JOIN " . $wpdb->prefix . "micerule_show_entries ENTRIES ON REGISTRATIONS.class_registration_id = ENTRIES.class_registration_id 
                                INNER JOIN " . $wpdb->prefix . "micerule_show_section_placements PLACEMENTS ON ENTRIES.id = PLACEMENTS.entry_id
-                               INNER JOIN " . $wpdb->prefix . "micerule_show_classes CLASSES ON REGISTRATIONS.class_name = CLASSES.class_name AND REGISTRATIONS.location_id = CLASSES.location_id
+                               INNER JOIN " . $wpdb->prefix . "micerule_show_classes CLASSES ON REGISTRATIONS.class_id = CLASSES.id
                                WHERE event_post_id = " . $eventPostID . " AND section= '" . $classCondition . "' AND age = '" . $age . "' AND placement = " . $placement);
     }
 
@@ -106,7 +107,8 @@ class SectionPlacements extends Placements
     protected function getClassName($entryID)
     {
         global $wpdb;
-        return $wpdb->get_var("SELECT class_name FROM " . $wpdb->prefix . "micerule_show_user_registrations REGISTRATIONS 
+        return $wpdb->get_var("SELECT class_name FROM " . $wpdb->prefix . "micerule_show_user_registrations REGISTRATIONS
+                               INNER JOIN " . $wpdb->prefix . "micerule_show_classes CLASSES ON REGISTRATIONS.class_id = CLASSES.id 
                                INNER JOIN " . $wpdb->prefix . "micerule_show_entries ENTRIES ON REGISTRATIONS.class_registration_id = ENTRIES.class_registration_id
                                WHERE ENTRIES.id = " . $entryID);
     }
@@ -120,7 +122,7 @@ class GrandChallengePlacements extends Placements
         return $wpdb->get_var("SELECT entry_id FROM " . $wpdb->prefix . "micerule_show_user_registrations REGISTRATIONS 
                                INNER JOIN " . $wpdb->prefix . "micerule_show_entries ENTRIES ON REGISTRATIONS.class_registration_id = ENTRIES.class_registration_id 
                                INNER JOIN " . $wpdb->prefix . "micerule_show_grand_challenge_placements PLACEMENTS ON ENTRIES.id = PLACEMENTS.entry_id
-                               INNER JOIN " . $wpdb->prefix . "micerule_show_classes CLASSES ON REGISTRATIONS.class_name = CLASSES.class_name AND REGISTRATIONS.location_id = CLASSES.location_id
+                               INNER JOIN " . $wpdb->prefix . "micerule_show_classes CLASSES ON REGISTRATIONS.class_id = CLASSES.id
                                WHERE event_post_id = " . $eventPostID . " AND section != 'optional' AND age = '" . $age . "' AND placement = " . $placement);
     }
 
@@ -130,7 +132,7 @@ class GrandChallengePlacements extends Placements
         global $wpdb;
         return $wpdb->get_var("SELECT section FROM " . $wpdb->prefix . "micerule_show_user_registrations REGISTRATIONS 
                                INNER JOIN " . $wpdb->prefix . "micerule_show_entries ENTRIES ON REGISTRATIONS.class_registration_id = ENTRIES.class_registration_id
-                               INNER JOIN " . $wpdb->prefix . "micerule_show_classes CLASSES ON REGISTRATIONS.class_name = CLASSES.class_name AND REGISTRATIONS.location_id = CLASSES.location_id
+                               INNER JOIN " . $wpdb->prefix . "micerule_show_classes CLASSES ON REGISTRATIONS.class_id = CLASSES.id
                                WHERE ENTRIES.id = " . $entryID);
     }
 }

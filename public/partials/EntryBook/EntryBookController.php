@@ -1,9 +1,9 @@
 <?php
 
 class EntryBookController{
-    public static function editPlacement($entryID, $placement, $checkValue, $placementModel){
+    public static function editPlacement($entryID, $placement, $checkValue, $placementModel, $locationID){
         if($checkValue)
-            $placementModel->addPlacement($entryID, $placement);
+            $placementModel->addPlacement($entryID, $placement, $locationID);
         else
             $placementModel->removePlacement($entryID);
     }

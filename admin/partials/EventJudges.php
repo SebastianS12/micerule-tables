@@ -101,6 +101,22 @@ class EventJudgesHelper
                                WHERE JUDGES.event_post_id = ".$eventPostID." AND judge_name = '".$judgeName."'");
     }
 
+    public static function getSectionJudge($eventPostID, $section){
+        global $wpdb;
+        return $wpdb->get_var("SELECT judge_name FROM ".$wpdb->prefix."micerule_event_judges JUDGES
+                               INNER JOIN ".$wpdb->prefix."micerule_event_judges_sections SECTIONS ON JUDGES.event_post_id = SECTIONS.event_post_id AND JUDGES.judge_no = SECTIONS.judge_no
+                               WHERE section = '".$section."' AND SECTIONS.event_post_id = ".$eventPostID);
+    }
+
+    public static function getGrandChallengeJudges($eventPostID){
+        $grandChallengeJudgeName = "";
+        foreach (self::getEventJudgeNames($eventPostID) as $judgeName) {
+            $grandChallengeJudgeName .= $judgeName . "  ";
+        }
+        
+        return $grandChallengeJudgeName;
+    }
+
     public static function convertPostMeta(){
         global $wpdb;
         $postMetaResults = $wpdb->get_results("SELECT post_id, meta_value FROM ".$wpdb->prefix."postmeta WHERE meta_key = 'micerule_data_settings' AND meta_value IS NOT NULL", ARRAY_A);

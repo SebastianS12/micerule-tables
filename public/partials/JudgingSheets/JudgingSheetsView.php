@@ -8,7 +8,7 @@ class JudgingSheetsView
         $html = "<div class = 'judgingSheets content' style = 'display : none'>";
         $html .= "<div class = 'sheet-set'>";
 
-        $html .= self::getGrandChallengeSheetsHtml($eventPostID, $eventJudgesModel);
+        $html .= self::getGrandChallengeSheetsHtml($eventPostID);
         foreach ($eventJudgesModel->getEventJudgeNames($eventPostID) as $judgeName) {
             foreach ($eventJudgesModel->getJudgeSections($eventPostID, $judgeName) as $sectionName) {
                 $html .= self::getSectionClassSheetsHtml($eventPostID, $sectionName, $judgeName);
@@ -22,13 +22,10 @@ class JudgingSheetsView
         return $html;
     }
 
-    private static function getGrandChallengeSheetsHtml($eventPostID, $eventJudgesModel)
+    private static function getGrandChallengeSheetsHtml($eventPostID)
     {
         $html = "";
-        $grandChallengeJudgeName = "";
-        foreach ($eventJudgesModel->getEventJudgeNames($eventPostID) as $judgeName) {
-            $grandChallengeJudgeName .= $judgeName . "  ";
-        }
+        $grandChallengeJudgeName = EventJudgesHelper::getGrandChallengeJudges($eventPostID);
         
         $html .= self::getChallengeSheetHtml($eventPostID, EventProperties::GRANDCHALLENGE, "Grand Challenge", "Ad", $grandChallengeJudgeName, false);
         $html .= self::getChallengeSheetHtml($eventPostID, EventProperties::GRANDCHALLENGE, "Grand Challenge", "U8", $grandChallengeJudgeName, true);

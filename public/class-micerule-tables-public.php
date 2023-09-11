@@ -54,10 +54,15 @@ require_once plugin_dir_path(__FILE__) . 'partials/JudgingSheets/JudgingSheetsVi
 require_once plugin_dir_path(__FILE__) . 'partials/Absentees/AbsenteesModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Absentees/AbsenteesView.php';
 
+require_once plugin_dir_path(__FILE__) . 'partials/PrizeCards/PrizeCardsController.php';
+require_once plugin_dir_path(__FILE__) . 'partials/PrizeCards/PrizeCardsModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/PrizeCards/PrizeCardsView.php';
+
 require_once plugin_dir_path(__FILE__) . 'partials/Models/ShowEntry.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/ClassPlacements.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/SinglePlacement.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/NextPenNumber.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/PrizeCards.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/UserClassRegistration.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/ChallengeAwards.php';
 class Micerule_Tables_Public {

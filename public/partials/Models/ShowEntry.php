@@ -5,6 +5,7 @@ class ShowEntry{
     public $penNumber;
     public $userName;
     public $className;
+    public $sectionName;
     public $age;
     public $varietyName;
     public $absent;
@@ -32,12 +33,18 @@ class ShowEntry{
 
     private static function getEntryDatawithPenNumber($eventPostID, $penNumber){
         global $wpdb;
-        return $wpdb->get_row("SELECT id, pen_number, variety_name, absent, moved, added, user_name, class_name, age FROM ".$wpdb->prefix."micerule_show_entries ENTRIES INNER JOIN ".$wpdb->prefix."micerule_show_user_registrations REGISTRATIONS ON ENTRIES.class_registration_id = REGISTRATIONS.class_registration_id WHERE event_post_id = ".$eventPostID." AND pen_number = ".$penNumber, ARRAY_A);
+        return $wpdb->get_row("SELECT ENTRIES.id, pen_number, variety_name, absent, moved, added, user_name, class_name, section, age FROM ".$wpdb->prefix."micerule_show_entries ENTRIES 
+                               INNER JOIN ".$wpdb->prefix."micerule_show_user_registrations REGISTRATIONS ON ENTRIES.class_registration_id = REGISTRATIONS.class_registration_id
+                               INNER JOIN ".$wpdb->prefix."micerule_show_classes CLASSES ON REGISTRATIONS.class_id = CLASSES.id 
+                               WHERE event_post_id = ".$eventPostID." AND pen_number = ".$penNumber, ARRAY_A);
     }
 
     private static function getEntryDatawithEntryID($entryID){
         global $wpdb;
-        return $wpdb->get_row("SELECT id, pen_number, variety_name, absent, moved, added, user_name, class_name, age FROM ".$wpdb->prefix."micerule_show_entries ENTRIES INNER JOIN ".$wpdb->prefix."micerule_show_user_registrations REGISTRATIONS ON ENTRIES.class_registration_id = REGISTRATIONS.class_registration_id  WHERE id = ".$entryID, ARRAY_A);
+        return $wpdb->get_row("SELECT ENTRIES.id, pen_number, variety_name, absent, moved, added, user_name, class_name, section, age FROM ".$wpdb->prefix."micerule_show_entries ENTRIES 
+                               INNER JOIN ".$wpdb->prefix."micerule_show_user_registrations REGISTRATIONS ON ENTRIES.class_registration_id = REGISTRATIONS.class_registration_id 
+                               INNER JOIN ".$wpdb->prefix."micerule_show_classes CLASSES ON REGISTRATIONS.class_id = CLASSES.id  
+                               WHERE ENTRIES.id = ".$entryID, ARRAY_A);
     }
 
     private function loadEntryData($entryData){
@@ -46,6 +53,7 @@ class ShowEntry{
             $this->penNumber = $entryData['pen_number'];
             $this->userName = $entryData['user_name'];
             $this->className = $entryData['class_name'];
+            $this->sectionName = $entryData['section'];
             $this->age = $entryData['age'];
             $this->varietyName = $entryData['variety_name'];
             $this->absent = $entryData['absent'];

@@ -243,6 +243,7 @@ function editPlacement(prize, placement, entryID, checkValue){
     success: function (data) {
       $("#spinner-div").hide();
       updateAdminTabs();
+      console.log(data);
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
       alert(errorThrown);

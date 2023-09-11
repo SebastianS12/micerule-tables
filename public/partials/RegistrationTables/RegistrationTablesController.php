@@ -51,19 +51,19 @@ class RegistrationTablesController{
         }
     }
 
-    public static function getClassRegistrationCount($eventPostID, $className, $age){
+    public static function getClassRegistrationCount($eventPostID, $classID, $age){
         $registrationTablesModel = new RegistrationTablesModel();
-        return $registrationTablesModel->getClassRegistrationCount($eventPostID, $className, $age);
+        return $registrationTablesModel->getClassRegistrationCount($eventPostID, $classID, $age);
     }
 
-    public static function getSectionRegistrationCount($eventPostID, $locationID, $sectionName, $age){
+    public static function getSectionRegistrationCount($eventPostID, $sectionName, $age){
         $registrationTablesModel = new RegistrationTablesModel();
-        return $registrationTablesModel->getSectionRegistrationCount($eventPostID,$locationID, $sectionName, $age);
+        return $registrationTablesModel->getSectionRegistrationCount($eventPostID, $sectionName, $age);
     }
 
-    public static function getGrandChallengeRegistrationCount($eventPostID, $locationID, $age){
+    public static function getGrandChallengeRegistrationCount($eventPostID, $age){
         $registrationTablesModel = new RegistrationTablesModel();
-        return $registrationTablesModel->getGrandChallengeRegistrationCount($eventPostID, $locationID, $age);
+        return $registrationTablesModel->getGrandChallengeRegistrationCount($eventPostID, $age);
     }
 
     public static function getUserRegistrations($eventPostID, $userName){
