@@ -31,10 +31,11 @@ function sectionTablesFrontend($atts)
   $html .= "</div>";
 
   if ($eventOptionalSettings->allowOnlineRegistrations && current_user_can('administrator')) {
-    $html .= "<button type ='button' id = 'create-show-post'>Create Show Report</button>";
+    $html .= "<div class = 'show-report-gen'><button type ='button' id = 'create-show-post'>Create Show Report</button>";
     $showReportPostID = get_post_meta($post->ID, "show_report_post_id", true);
     if (isset($showReportPostID))
-      $html .= "<div class = 'show-report-gen'><a href = '" . get_post_permalink($showReportPostID) . "'>Show Report Draft</a></div>";
+      $html .= "<a href = '" . get_post_permalink($showReportPostID) . "'>Show Report Draft</a>";
+    $html .= "</div>";
   }
 
   $html .= AdminTabs::getAdminTabsHtml($post->ID);

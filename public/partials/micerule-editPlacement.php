@@ -12,7 +12,6 @@ $checkValue = $_POST['checkValue'];
 
 $entryBookData = EntryBookData::create($event_id);
 $entry = $entryBookData->entries[$penNumber];
-//$prizeEntry = new PrizeEntry($entry->penNumber, $entry->userName, $entry->age, $entry->className, $entry->varietyName, $entry->sectionName, $entry->moved, $entry->absent, false);
 
 if($prize == "Class"){
   $entryBookData->classes[$entry->className]->getPlacementData($entry->age)->editPlacement($placement, $entry, $checkValue);
@@ -24,6 +23,10 @@ if($prize == "Section Challenge"){
 
 if($prize == "Grand Challenge"){
   $entryBookData->grandChallenge->getPlacementData($entry->age)->editPlacement($placement, $entry, $checkValue);
+}
+
+if($prize == "Junior"){
+  $entryBookData->classes["Junior"]->getPlacementData("AA")->editPlacement($placement, $entry, $checkValue);
 }
 
 update_post_meta($event_id, 'micerule_data_event_entry_book_test', json_encode($entryBookData, JSON_UNESCAPED_UNICODE));
