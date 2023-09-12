@@ -33,7 +33,7 @@ function sectionTablesFrontend($atts)
   if ($eventOptionalSettings->allowOnlineRegistrations && current_user_can('administrator')) {
     $html .= "<div class = 'show-report-gen'><button type ='button' id = 'create-show-post'>Create Show Report</button>";
     $showReportPostID = get_post_meta($post->ID, "show_report_post_id", true);
-    if (isset($showReportPostID))
+    if ($showReportPostID != "")
       $html .= "<a href = '" . get_post_permalink($showReportPostID) . "'>Show Report Draft</a>";
     $html .= "</div>";
   }
