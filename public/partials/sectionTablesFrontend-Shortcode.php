@@ -1,6 +1,7 @@
 <?php
 
-function sectionTablesFrontend($atts){
+function sectionTablesFrontend($atts)
+{
   global $post;
   global $wpdb;
 
@@ -11,7 +12,7 @@ function sectionTablesFrontend($atts){
   $challengeNames = EventProperties::CHALLENGENAMES;
 
   $locationID = EventProperties::getEventLocationID($post->ID);
-  $eventRegistrationData = EventRegistrationData::create($post->ID);//get_post_meta($post->ID, 'micerule_data_event_class_registrations', true);
+  $eventRegistrationData = EventRegistrationData::create($post->ID); //get_post_meta($post->ID, 'micerule_data_event_class_registrations', true);
   $eventOptionalSettings = EventOptionalSettings::create($locationID);
 
   $html = "<div id='eventSectionTables'>";
@@ -22,30 +23,36 @@ function sectionTablesFrontend($atts){
   $html .= $registrationTables->getHtml();
   $html .= "</div>";
   $html .= "<div class = 'header-info'>";
-  if($eventOptionalSettings->allowOnlineRegistrations){
-    $html .= "<h3>Total Entries: ".$eventRegistrationData->getEntryCount()."</h3>";
-    $html .= "<h3>Total Exhibits: ".$eventRegistrationData->getExhibitCount()."</h3>";
+  if ($eventOptionalSettings->allowOnlineRegistrations) {
+    $html .= "<h3>Total Entries: " . $eventRegistrationData->getEntryCount() . "</h3>";
+    $html .= "<h3>Total Exhibits: " . $eventRegistrationData->getExhibitCount() . "</h3>";
   }
   $html .= "<hr>";
   $html .= "</div>";
 
-  $html .= ($eventOptionalSettings->allowOnlineRegistrations && current_user_can('administrator')) ? "<button type ='button' id = 'create-show-post'>Create Show Report</button>" : "";
+  if ($eventOptionalSettings->allowOnlineRegistrations && current_user_can('administrator')) {
+    $html .= "<button type ='button' id = 'create-show-post'>Create Show Report</button>";
+    $showReportPostID = get_post_meta($post->ID, "show_report_post_id", true);
+    if (isset($showReportPostID))
+      $html .= "<div class = 'show-report-gen'><a href = '" . get_post_permalink($showReportPostID) . "'>Show Report Draft</a></div>";
+  }
 
   $html .= AdminTabs::getAdminTabsHtml($post->ID);
 
-  $html .= "<div id = 'spinner-div' style = 'display:none'><div class = 'spinner-wrapper'><img src = '".get_stylesheet_directory_uri()."/Assets/mouse-loader.svg'></div></div>";
+  $html .= "<div id = 'spinner-div' style = 'display:none'><div class = 'spinner-wrapper'><img src = '" . get_stylesheet_directory_uri() . "/Assets/mouse-loader.svg'></div></div>";
 
   return $html;
 }
 
-add_shortcode('sectionTablesFrontend','sectionTablesFrontend');
+add_shortcode('sectionTablesFrontend', 'sectionTablesFrontend');
 
 
-function addClassToShowCalendar($output, $event){
-  if(is_page(2862)){
+function addClassToShowCalendar($output, $event)
+{
+  if (is_page(2862)) {
     $eventOptionalSettings = EventOptionalSettings::create($event->location_id);
-    if($eventOptionalSettings->allowOnlineRegistrations){
-      $output = "<div class = 'online-registration'>".$output."</div>";
+    if ($eventOptionalSettings->allowOnlineRegistrations) {
+      $output = "<div class = 'online-registration'>" . $output . "</div>";
     }
   }
 
