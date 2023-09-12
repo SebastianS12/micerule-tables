@@ -13,6 +13,7 @@ if($postID == 0){
   echo("Something went wrong");
 }else{
   echo("Show Post successfully created");
+  update_post_meta($event_id, "show_report_post_id", $postID);
 }
 
 wp_die();
