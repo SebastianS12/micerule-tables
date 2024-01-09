@@ -49,10 +49,14 @@ function submitReport(buttonElement){
     },
     success: function (data) {
       $("#spinner-div").hide();
-      buttonElement.text("Submitted")
-      setTimeout(function() {
-        buttonElement.text("Submit Changes");
-      }, 3000);
+      if(data != -1){
+        buttonElement.text("Submitted")
+        setTimeout(function() {
+          buttonElement.text("Submit Changes");
+        }, 3000);
+      }else{
+        alert("Something went wrong!");
+      }
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
       alert(errorThrown);

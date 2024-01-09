@@ -19,7 +19,7 @@ if($submitType == "classReport"){
     foreach($placementReportData as $placementReport){
       $prizeData->placements[$placementReport->placement]->buck = $placementReport->buckChecked;
       $prizeData->placements[$placementReport->placement]->doe = $placementReport->doeChecked;
-      $prizeData->placements[$placementReport->placement]->judgesComments = $placementReport->reportText;
+      $prizeData->placements[$placementReport->placement]->judgesComments = sanitize_text_field($placementReport->reportText);
     }
   }
 }
@@ -29,9 +29,12 @@ if($submitType == "generalComment"){
   $text = html_entity_decode(stripslashes($_POST['text']));
 
   if($judgeName != "")
-    $entryBookData->judgesComments[$judgeName] = $text;
+    $entryBookData->judgesComments[$judgeName] = sanitize_text_field($text);
 }
 
-
-update_post_meta($event_id, 'micerule_data_event_entry_book_test', json_encode($entryBookData, JSON_UNESCAPED_UNICODE));
+$entryBookJson = json_encode($entryBookData, JSON_UNESCAPED_UNICODE);
+if($entryBookJson)
+  update_post_meta($event_id, 'micerule_data_event_entry_book_test', $entryBookJson);
+else
+  echo(-1);
 wp_die();
