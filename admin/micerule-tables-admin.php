@@ -263,31 +263,19 @@ class Micerule_Tables_Admin{
       global $post;
 
       if(isset($post->ID)){
-        //update_post_meta($post->ID, 'micerule_data_settings', $_POST['micerule_table_data']);
-        /*
-        if(isset($_POST['event_end_date'])) 
-          update_post_meta( $post->ID, 'micerule_data_time', $_POST['event_end_date']);
-        if(isset($_POST['scCheck']))
-          update_post_meta( $post->ID, 'micerule_data_scCheck', $_POST['scCheck']);
-        if(isset($_POST['micerule_table_data_deadline']))
-          update_post_meta($post->ID, 'micerule_data_event_deadline', $_POST['micerule_table_data_deadline']);
-        if(isset($_POST['micerule_breeds_table_data']))
-          update_post_meta($post->ID, 'micerule_data_breeds', $_POST['micerule_breeds_table_data']);
-        
-          */
-
-          //ResultTable::saveTableData($post->ID, $_POST['micerule_table_data']);
-          //ResultTable::saveOptionalTableData($post->ID, $_POST['micerule_table_data_optional']);
-          //EventJudgesHelper::saveEventJudges($post->ID, $_POST['judge_data']);
+          ResultTable::saveTableData($post->ID, $_POST['micerule_table_data']);
+          ResultTable::saveOptionalTableData($post->ID, $_POST['micerule_table_data_optional']);
+          EventJudgesHelper::saveEventJudges($post->ID, $_POST['judge_data']);
 
           //ResultTable::convertPostmeta();
           //EventJudgesHelper::convertPostMeta();
-
+          
           if(isset($_POST['micerule_table_location_secretaries_names']))
             LocationSecretaries::saveLocationSecretaryNames($post->ID, $_POST['micerule_table_location_secretaries_names']);
 
           if(isset($_POST['micerule_table_data_deadline']))
             EventProperties::saveEventDeadline($post->ID, $_POST['micerule_table_data_deadline']);
+          
       }
       
     }

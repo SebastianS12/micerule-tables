@@ -166,6 +166,7 @@ class Micerule_Tables_Activator {
 		$sql_create_show_challenges_indices_table = "CREATE TABLE IF NOT EXISTS ".$show_challenges_indices_table_name. " (
 			id bigint(20) unsigned NOT NULL auto_increment,
 			location_id bigint(20) unsigned NOT NULL,
+			section text NOT NULL,
 			challenge_name varchar(30) NOT NULL,
 			age varchar(10) NOT NULL,
 			challenge_index int NOT NULL,
@@ -319,6 +320,69 @@ class Micerule_Tables_Activator {
 				ON DELETE CASCADE
 			) $charset_collate; ";
 		dbDelta($sql_create_show_grand_challenge_placements_table);
+
+		//TODO: One table for placements? -> id reference to awards table 
+		/*
+		$show_awards_table_name = $wpdb->prefix."micerule_show_awards";
+		$sql_create_show_awards_table = "CREATE TABLE IF NOT EXISTS ".$show_awards_table_name. " (
+			award_id bigint(20) unsigned NOT NULL,
+			award text NOT NULL,
+			PRIMARY KEY  (award_id),
+		dbDelta($sql_create_show_awards_table);*/
+
+		$show_judges_general_comments_table_name = $wpdb->prefix."micerule_show_judges_general_comments";
+		$sql_create_show_judges_general_comments_table = "CREATE TABLE IF NOT EXISTS ".$show_judges_general_comments_table_name. " (
+			id bigint(20) unsigned NOT NULL auto_increment,
+			event_post_id bigint(20) unsigned NOT NULL,
+			judge_no int unsigned NOT NULL,
+			comment text,
+			PRIMARY KEY  (id),
+			CONSTRAINT fk_event_post_id_judge_no_general_comment
+				FOREIGN KEY (event_post_id, judge_no)
+				REFERENCES ".$event_judges_table_name."(event_post_id, judge_no)
+				ON DELETE CASCADE
+			) $charset_collate; ";
+		dbDelta($sql_create_show_judges_general_comments_table);
+
+		$show_judges_class_comments_table_name = $wpdb->prefix."micerule_show_judges_class_comments";
+		$sql_create_show_judges_class_comments_table = "CREATE TABLE IF NOT EXISTS ".$show_judges_class_comments_table_name. " (
+			id bigint(20) unsigned NOT NULL auto_increment,
+			class_index_id bigint(20) unsigned NOT NULL,
+			event_post_id bigint(20) unsigned NOT NULL,
+			judge_no int unsigned NOT NULL,
+			comment text,
+			PRIMARY KEY  (id),
+			CONSTRAINT fk_event_post_id_judge_no_class_comment
+				FOREIGN KEY (event_post_id, judge_no)
+				REFERENCES ".$event_judges_table_name."(event_post_id, judge_no)
+				ON DELETE CASCADE,
+			CONSTRAINT fk_class_index_id_class_comment
+				FOREIGN KEY (class_index_id)
+				REFERENCES ".$show_classes_indices_table_name."(id)
+				ON DELETE CASCADE
+			) $charset_collate; ";
+		dbDelta($sql_create_show_judges_class_comments_table);
+
+		$show_judges_class_reports_table_name = $wpdb->prefix."micerule_show_judges_class_reports";
+		$sql_create_show_judges_class_reports_table = "CREATE TABLE IF NOT EXISTS ".$show_judges_class_reports_table_name. " (
+			id bigint(20) unsigned NOT NULL auto_increment,
+			class_index_id bigint(20) unsigned NOT NULL,
+			event_post_id bigint(20) unsigned NOT NULL,
+			judge_no int unsigned NOT NULL,
+			comment text,
+			gender text,
+			placement int(2) NOT NULL,
+			PRIMARY KEY  (id),
+			CONSTRAINT fk_event_post_id_judge_no_class_gender
+				FOREIGN KEY (event_post_id, judge_no)
+				REFERENCES ".$event_judges_table_name."(event_post_id, judge_no)
+				ON DELETE CASCADE,
+			CONSTRAINT fk_class_index_id_class_gender
+				FOREIGN KEY (class_index_id)
+				REFERENCES ".$show_classes_indices_table_name."(id)
+				ON DELETE CASCADE
+			) $charset_collate; ";
+		dbDelta($sql_create_show_judges_class_reports_table);
 
 		//file_put_contents(__DIR__.'/my_loggg.txt', ob_get_contents());
 	}

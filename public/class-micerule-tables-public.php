@@ -58,6 +58,10 @@ require_once plugin_dir_path(__FILE__) . 'partials/PrizeCards/PrizeCardsControll
 require_once plugin_dir_path(__FILE__) . 'partials/PrizeCards/PrizeCardsModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/PrizeCards/PrizeCardsView.php';
 
+require_once plugin_dir_path(__FILE__) . 'partials/JudgesReport/JudgesReportController.php';
+require_once plugin_dir_path(__FILE__) . 'partials/JudgesReport/JudgesReportModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/JudgesReport/JudgesReportView.php';
+
 require_once plugin_dir_path(__FILE__) . 'partials/Models/ShowEntry.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/ClassPlacements.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/SinglePlacement.php';
@@ -65,6 +69,9 @@ require_once plugin_dir_path(__FILE__) . 'partials/Models/NextPenNumber.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/PrizeCards.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/UserClassRegistration.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/ChallengeAwards.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/PlacementReport.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/ClassComment.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/GeneralComment.php';
 class Micerule_Tables_Public {
 
 	/**

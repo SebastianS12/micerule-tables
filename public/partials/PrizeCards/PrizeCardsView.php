@@ -22,7 +22,7 @@ class PrizeCardsView
                       <div class='card-per-exhibitor'>
                         <div  class='card-wrapper firsts'>";
 
-        foreach ($prizeCardsModel->getPrizeCards(true) as $prizeCardData) {
+        foreach ($prizeCardsModel->getPrizeCards($eventPostID, true) as $prizeCardData) {
             $html .= "<div class = 'user-cards'>";
             $html .= self::getPrizeCardHtml($eventPostID, $prizeCardData, true);
             $html .= "</div>";
@@ -44,7 +44,7 @@ class PrizeCardsView
                   <div class='print-tray-header'><h3>Labels to Print <span class='print-alert'>On Mac, these must be printed from Safari</span></h3><a class='print-button'><img src='/wp-content/plugins/micerule-tables/admin/svg/print.svg'></a></div>
                     <div class='card-container'>";
 
-        foreach ($prizeCardsModel->getPrizeCards(false) as $prizeCardData) {
+        foreach ($prizeCardsModel->getPrizeCards($eventPostID, false) as $prizeCardData) {
             $html .= self::getPrizeCardHtml($eventPostID, $prizeCardData, false);
         }
 

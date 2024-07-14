@@ -91,7 +91,7 @@ class EventJudgesHelper
 
     public static function getEventJudgeNames($eventPostID){
         global $wpdb;
-        return $wpdb->get_col("SELECT judge_name FROM ".$wpdb->prefix."micerule_event_judges WHERE event_post_id = ".$eventPostID);
+        return $wpdb->get_col("SELECT judge_name FROM ".$wpdb->prefix."micerule_event_judges WHERE event_post_id = ".$eventPostID." ORDER BY judge_no");
     }
 
     public static function getJudgeSections($eventPostID, $judgeName){

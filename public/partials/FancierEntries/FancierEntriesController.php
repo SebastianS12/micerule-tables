@@ -1,6 +1,8 @@
 <?php 
 
 class FancierEntriesController{
+
+    //TODO: move both functions to model
     public static function getFancierEntries($eventPostID){
         $registrationTablesModel = new RegistrationTablesModel();
         $fancierEntries = array();

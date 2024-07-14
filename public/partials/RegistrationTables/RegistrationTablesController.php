@@ -79,7 +79,7 @@ class RegistrationTablesController{
             $sectionName = strtolower($sectionName);
             foreach($showClassesModel->getShowSectionClassNames($locationID, $sectionName) as $className){
                 foreach($registrationTablesModel->getClassRegistrations($eventPostID, $className) as $classRegistration){
-                    $entry = ShowEntry::createWithPenNumber($eventPostID, $agePenNumbers[$classRegistration['age']]);
+                    $entry = ShowEntry::createWithClassRegistration($agePenNumbers[$classRegistration['age']], $classRegistration['class_registration_id'], $classRegistration['registration_order']);
                     $entry->save($classRegistration['class_registration_id'], $classRegistration['registration_order'], $className, false, false);
                     $agePenNumbers[$classRegistration['age']]++;
                 }
@@ -90,6 +90,7 @@ class RegistrationTablesController{
             }
         }
 
+        /*
         $penNumber = (floor($agePenNumbers["Ad"] / 20) + 2) * 20 + 1;
         foreach($showClassesModel->getShowSectionClassNames($locationID, "optional") as $className){
             foreach($registrationTablesModel->getClassRegistrations($eventPostID, $className) as $classRegistration){
@@ -99,6 +100,6 @@ class RegistrationTablesController{
             }
             NextPenNumber::saveNextPennumber($locationID, $className, "AA", $penNumber);
             $penNumber = (floor($penNumber / 20) + 1) * 20;
-        }
+        }*/
     }
 }

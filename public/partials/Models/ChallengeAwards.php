@@ -56,15 +56,14 @@ abstract class ChallengeAwards
     {
         global $wpdb;
         $entryID = $this->getFirstPlaceEntryID($age);
-        echo (var_dump($entryID));
         if ($entryID != null)
-            $wpdb->update($this->placementTable, array("award" => $award), array("entry_id" => $entryID));
+            //$wpdb->update($this->placementTable, array("award" => $award, "printed" => false), array("entry_id" => $entryID));
     }
 
     public function removeAward($entryID)
     {
         global $wpdb;
-        $wpdb->update($this->placementTable, array("award" => null), array("entry_id" => $entryID));
+        $wpdb->update($this->placementTable, array("award" => null, "printed" => false), array("entry_id" => $entryID));
     }
 
     abstract protected function getAward($award);
@@ -94,8 +93,6 @@ class SectionChallengeAwards extends ChallengeAwards
     protected function getFirstPlaceEntryID($age)
     {
         global $wpdb;
-        echo ($this->eventPostID);
-        echo ($this->challengeSection);
         return $wpdb->get_var("SELECT entry_id FROM " . $wpdb->prefix . "micerule_show_user_registrations REGISTRATIONS 
                         INNER JOIN " . $wpdb->prefix . "micerule_show_entries ENTRIES ON REGISTRATIONS.class_registration_id = ENTRIES.class_registration_id 
                         INNER JOIN " . $wpdb->prefix . "micerule_show_section_placements PLACEMENTS ON ENTRIES.id = PLACEMENTS.entry_id

@@ -7,7 +7,7 @@ $event_id = url_to_postid( $url );
 $prize = $_POST['prize'];
 $section = $_POST['section'];
 $age = $_POST['age'];
-$checkValue = $_POST['checkValue'];
+$checkValue = ($_POST['checkValue'] == "true");
 
 if($prize == "Section Challenge"){
   $sectionChallengeAwardsModel = new SectionChallengeAwards($event_id, $section);
@@ -15,7 +15,7 @@ if($prize == "Section Challenge"){
 }
 
 if($prize == "Grand Challenge"){
-  $grandChallengeAwardsModel = new GrandChallengeChallengeAwards($event_id, $section);
+  $grandChallengeAwardsModel = new GrandChallengeAwards($event_id, $section);
   EntryBookController::editBIS($age,$checkValue, $grandChallengeAwardsModel);
 }
 

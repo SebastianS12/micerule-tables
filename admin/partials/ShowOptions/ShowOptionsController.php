@@ -57,13 +57,13 @@ class ShowOptionsController{
                 $showClassesModel->updateClassIndex($locationID, $showClass['class_name'], 'U8', $index + 1);
                 $index += 2;
             }
-            $showClassesModel->updateChallengeIndex($locationID, EventProperties::getChallengeName(strtolower($section)), "Ad", $index);
-            $showClassesModel->updateChallengeIndex($locationID, EventProperties::getChallengeName(strtolower($section)), "U8", $index + 1);
+            $showClassesModel->updateChallengeIndex($locationID, strtolower($section), EventProperties::getChallengeName(strtolower($section)), "Ad", $index);
+            $showClassesModel->updateChallengeIndex($locationID, strtolower($section), EventProperties::getChallengeName(strtolower($section)), "U8", $index + 1);
             $index += 2;
         }
 
-        $showClassesModel->updateChallengeIndex($locationID, EventProperties::GRANDCHALLENGE, "Ad", $index);
-        $showClassesModel->updateChallengeIndex($locationID, EventProperties::GRANDCHALLENGE, "U8", $index + 1);
+        $showClassesModel->updateChallengeIndex($locationID, "", EventProperties::GRANDCHALLENGE, "Ad", $index);
+        $showClassesModel->updateChallengeIndex($locationID, "", EventProperties::GRANDCHALLENGE, "U8", $index + 1);
         $index += 2;   
 
         $optionalShowClasses = $showClassesModel->getShowSectionClassesData($locationID, "optional");

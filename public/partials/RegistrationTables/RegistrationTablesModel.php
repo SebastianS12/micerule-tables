@@ -58,20 +58,20 @@ class RegistrationTablesModel{
 
     public function getUserRegistrations($eventPostID, $userName){
         global $wpdb;
-        return $this->wpdb->get_results("SELECT class_name, class_index, age, COUNT(class_name) AS registration_count FROM (
-                                         SELECT event_post_id, user_name, REGISTRATIONS.class_registration_id, class_name, class_index, REGISTRATIONS.age
-                                         FROM ".$wpdb->prefix."micerule_show_user_registrations REGISTRATIONS  
-                                         INNER JOIN ".$wpdb->prefix."micerule_show_user_registrations_order REGISTRATIONS_ORDER on REGISTRATIONS.class_registration_id = REGISTRATIONS_ORDER.class_registration_id
-                                         INNER JOIN ".$wpdb->prefix."micerule_show_classes CLASSES ON REGISTRATIONS.class_id = CLASSES.id
-                                         INNER JOIN ".$wpdb->prefix."micerule_show_classes_indices INDICES ON CLASSES.id = INDICES.class_id AND INDICES.age = REGISTRATIONS.age
-                                            UNION  
-                                        SELECT event_post_id, user_name, JUNIOR_REGISTRATIONS.class_registration_id, class_name, class_index, 'AA' as age 
-                                        FROM ".$wpdb->prefix."micerule_show_user_junior_registrations JUNIOR_REGISTRATIONS 
-                                        INNER JOIN ".$wpdb->prefix."micerule_show_user_registrations REGISTRATIONS ON JUNIOR_REGISTRATIONS.class_registration_id = REGISTRATIONS.class_registration_id
-                                        INNER JOIN ".$wpdb->prefix."micerule_show_classes CLASSES ON class_name = 'Junior'
-                                        INNER JOIN ".$wpdb->prefix."micerule_show_classes_indices INDICES ON CLASSES.id = INDICES.class_id) USER_REGISTRATIONS
-                                        WHERE event_post_id = ".$eventPostID." AND user_name = '".$userName."'
-                                        GROUP BY class_name, age ORDER BY class_index", ARRAY_A);
+        return $this->wpdb->get_results("SELECT class_name, class_index, age, registration_count FROM (
+            SELECT event_post_id, user_name, class_name, class_index, REGISTRATIONS.age, COUNT(class_name) AS registration_count
+            FROM sm1_micerule_show_user_registrations REGISTRATIONS  
+            INNER JOIN sm1_micerule_show_user_registrations_order REGISTRATIONS_ORDER on REGISTRATIONS.class_registration_id = REGISTRATIONS_ORDER.class_registration_id
+            INNER JOIN sm1_micerule_show_classes CLASSES ON REGISTRATIONS.class_id = CLASSES.id
+            INNER JOIN sm1_micerule_show_classes_indices INDICES ON CLASSES.id = INDICES.class_id AND INDICES.age = REGISTRATIONS.age 
+            WHERE event_post_id = ".$eventPostID."  AND user_name = '".$userName."' GROUP BY class_name, age 
+            UNION  
+            SELECT event_post_id, user_name, class_name, class_index, REGISTRATIONS.age, COUNT(class_name) AS registration_count
+            FROM sm1_micerule_show_user_registrations REGISTRATIONS  
+            INNER JOIN sm1_micerule_show_user_registrations_order REGISTRATIONS_ORDER on REGISTRATIONS.class_registration_id = REGISTRATIONS_ORDER.class_registration_id
+            INNER JOIN sm1_micerule_show_classes CLASSES ON REGISTRATIONS.class_id = CLASSES.id
+            INNER JOIN sm1_micerule_show_classes_indices INDICES ON CLASSES.id = INDICES.class_id AND INDICES.age = REGISTRATIONS.age 
+            WHERE event_post_id = ".$eventPostID."  AND user_name = '".$userName."' GROUP BY class_name, age) USER_REGISTRATIONS  ORDER BY class_index", ARRAY_A);
     }
 
     public function getClassRegistrations($eventPostID, $className){

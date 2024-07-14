@@ -1,7 +1,7 @@
 <?php
 
 class PrizeCardsModel{
-    public function getPrizeCards($printed){
+    public function getPrizeCards($eventPostID, $printed){
         global $wpdb;
         return $wpdb->get_results("SELECT placement, award, prize, age, user_name, class_index, variety_name, pen_number, PLACEMENTS.class_name, section, printed FROM 
                                     (SELECT entry_id, placement, '' as award, 'Class' as prize, class_index, class_name, printed FROM ".$wpdb->prefix."micerule_show_class_placements PLACEMENTS
@@ -16,10 +16,10 @@ class PrizeCardsModel{
                                     INNER JOIN ".$wpdb->prefix."micerule_show_entries ENTRIES ON PLACEMENTS.entry_id = ENTRIES.id
                                     INNER JOIN ".$wpdb->prefix."micerule_show_user_registrations REGISTRATIONS ON ENTRIES.class_registration_id = REGISTRATIONS.class_registration_id
                                     INNER JOIN ".$wpdb->prefix."micerule_show_classes CLASSES ON REGISTRATIONS.class_id = CLASSES.id
-                                    WHERE printed = ".var_export($printed, true), ARRAY_A);
+                                    WHERE printed = ".var_export($printed, true)." AND event_post_id = ".$eventPostID." ORDER BY user_name, class_index, placement", ARRAY_A);
     }
 
-    public function getSinglePrizeCard($printed, $penNumber, $prize){
+    public function getSinglePrizeCard($eventPostID, $printed, $penNumber, $prize){
         global $wpdb;
         return $wpdb->get_row("SELECT placement, award, prize, age, user_name, class_index, variety_name, pen_number, PLACEMENTS.class_name, section, printed FROM 
                                     (SELECT entry_id, placement, '' as award, 'Class' as prize, class_index, class_name, printed FROM ".$wpdb->prefix."micerule_show_class_placements PLACEMENTS
@@ -34,6 +34,6 @@ class PrizeCardsModel{
                                     INNER JOIN ".$wpdb->prefix."micerule_show_entries ENTRIES ON PLACEMENTS.entry_id = ENTRIES.id
                                     INNER JOIN ".$wpdb->prefix."micerule_show_user_registrations REGISTRATIONS ON ENTRIES.class_registration_id = REGISTRATIONS.class_registration_id
                                     INNER JOIN ".$wpdb->prefix."micerule_show_classes CLASSES ON REGISTRATIONS.class_id = CLASSES.id
-                                    WHERE printed = ".var_export($printed, true)." AND prize = '".$prize."' AND pen_number = ".$penNumber, ARRAY_A);
+                                    WHERE printed = ".var_export($printed, true)." AND prize = '".$prize."' AND pen_number = ".$penNumber." AND event_post_id = ".$eventPostID, ARRAY_A);
     }
 }

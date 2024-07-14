@@ -9,7 +9,7 @@ class Micerule_Tables{
 
   public function __construct(){
     $this->plugin_name = 'micerule_tables';
-    $this->version = '1.0';
+    $this->version = '2.0';
     $this->define_constants();
     $this->load_dependencies();
     $this->define_admin_hooks();

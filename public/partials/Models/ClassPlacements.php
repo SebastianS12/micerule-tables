@@ -52,6 +52,10 @@ abstract class Placements
         return isset($this->placements[$placement]);
     }
 
+    public function noEntriesChecked(){
+        return (!isset($this->placements[1]) && !isset($this->placements[2]) && !isset($this->placements[3]));
+    }
+
     abstract protected function getPlacement($eventPostID, $age, $classCondition, $placement);
     abstract protected function getClassName($entryID);
 }

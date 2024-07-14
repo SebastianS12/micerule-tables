@@ -35,12 +35,12 @@ class ShowClassesModel{
             $this->wpdb->insert($this->showClassesIndicesTable, array("class_id" => $classID, "age" => $age, "class_index" => $index));
     }
 
-    public function updateChallengeIndex($locationID, $challengeName, $age, $index){
+    public function updateChallengeIndex($locationID, $section, $challengeName, $age, $index){
         $challengeIndexID = $this->getChallengeIndexID($locationID, $challengeName, $age);
         if($challengeIndexID != null)
             $this->wpdb->update($this->showChallengesIndicesTable, array("challenge_index" => $index), array("id" => $challengeIndexID));
         else
-            $this->wpdb->insert($this->showChallengesIndicesTable, array("location_id" => $locationID, "challenge_name" => $challengeName, "age" => $age, "challenge_index" => $index));
+            $this->wpdb->insert($this->showChallengesIndicesTable, array("location_id" => $locationID, "section" => $section, "challenge_name" => $challengeName, "age" => $age, "challenge_index" => $index));
     }
 
     public function addShowClass($locationID, $className, $section, $sectionPosition){

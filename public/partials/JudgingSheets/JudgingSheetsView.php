@@ -62,6 +62,7 @@ class JudgingSheetsView
         } else {
             $html .= "<tr><span>No Entries</span></tr>";
         }
+        
         $html .= self::getEmptyRowHtml();
         $html .= "</tbody></table></div>";
 

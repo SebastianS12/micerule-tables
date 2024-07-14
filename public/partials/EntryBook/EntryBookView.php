@@ -7,6 +7,7 @@ class EntryBookView
     {
         //TODO: Get Data from EntryBookModel?
         $eventDeadline = EventProperties::getEventDeadline($eventPostID);
+        //TODO: Confusing name: showclassesModel/ShowClassModel
         $showClassesModel = new ShowClassesModel();
         $html = "<div class = 'entryBook content' style = 'display : none'>";
         $html .= "<div>";
@@ -171,23 +172,24 @@ class EntryBookView
         $html = "<td class = 'placement-" . $age . "'>";
         $html .= "<div class='placement-checks'>";
 
-        $showFirstPlaceCheck = !isset($lowerPlacementsModel) || $lowerPlacementsModel->entryHasPlacement(1, $entry->ID);
-        if ($showFirstPlaceCheck) {
-            $html .= ($currentPlacementsModel->showPlacementCheck(1, $entry->ID)) ? "<input type = 'checkbox' name = 'firstPlaceCheck' class = 'placementCheck' id = '" . $prize . "&-&1&-&" . $entry->ID . "&-&check' " . $firstPlaceChecked . " " . $sectionBestDisabled . "><label for = '" . $prize . "&-&1&-&" . $entry->ID . "&-&check'>1</label>" : "";
+        if(!$entry->absent){
+            $showFirstPlaceCheck = !isset($lowerPlacementsModel) || $lowerPlacementsModel->entryHasPlacement(1, $entry->ID);
+            if ($showFirstPlaceCheck) {
+                $html .= ($currentPlacementsModel->showPlacementCheck(1, $entry->ID)) ? "<input type = 'checkbox' name = 'firstPlaceCheck' class = 'placementCheck' id = '" . $prize . "&-&1&-&" . $entry->ID . "&-&check' " . $firstPlaceChecked . " " . $sectionBestDisabled . "><label for = '" . $prize . "&-&1&-&" . $entry->ID . "&-&check'>1</label>" : "";
+            }
+    
+            $firstPlaceIsInSameClass = isset($lowerPlacementsModel) && ($lowerPlacementsModel->isPlacementChecked(1) && $currentPlacementsModel->higherPlacementEntryIsInSameClass(1, $entry->ID));
+            $showSecondPlaceCheck = !isset($lowerPlacementsModel) || ($showFirstPlaceCheck || ($lowerPlacementsModel->entryHasPlacement(2, $entry->ID) && $firstPlaceIsInSameClass));
+            if ($showSecondPlaceCheck) {
+                $html .= ($currentPlacementsModel->showPlacementCheck(2, $entry->ID)) ? "<input type = 'checkbox' name = 'secondPlaceCheck' class = 'placementCheck' id = '" . $prize . "&-&2&-&" . $entry->ID . "&-&check' " . $secondPlaceChecked . " " . $sectionBestDisabled . "><label for = '" . $prize . "&-&2&-&" . $entry->ID . "&-&check'>2</label>" : "";
+            }
+    
+            $secondPlaceIsInSameClass = isset($lowerPlacementsModel) && ($lowerPlacementsModel->isPlacementChecked(2) && $currentPlacementsModel->higherPlacementEntryIsInSameClass(2, $entry->ID));
+            $showThirdPlaceCheck = !isset($lowerPlacementsModel) || ($showFirstPlaceCheck || $showSecondPlaceCheck || ($lowerPlacementsModel->entryHasPlacement(3, $entry->ID) && $secondPlaceIsInSameClass));
+            if ($showThirdPlaceCheck) {
+                $html .= ($currentPlacementsModel->showPlacementCheck(3, $entry->ID)) ? "<input type = 'checkbox' name = 'thirdPlaceCheck' class = 'placementCheck' id = '" . $prize . "&-&3&-&" . $entry->ID . "&-&check' " . $thirdPlaceChecked . " " . $sectionBestDisabled . "><label for = '" . $prize . "&-&3&-&" . $entry->ID . "&-&check'>3</label>" : "";
+            }
         }
-
-        $firstPlaceIsInSameClass = isset($lowerPlacementsModel) && ($lowerPlacementsModel->isPlacementChecked(1) && $currentPlacementsModel->higherPlacementEntryIsInSameClass(1, $entry->ID));
-        $showSecondPlaceCheck = !isset($lowerPlacementsModel) || ($showFirstPlaceCheck || ($lowerPlacementsModel->entryHasPlacement(2, $entry->ID) && $firstPlaceIsInSameClass));
-        if ($showSecondPlaceCheck) {
-            $html .= ($currentPlacementsModel->showPlacementCheck(2, $entry->ID)) ? "<input type = 'checkbox' name = 'secondPlaceCheck' class = 'placementCheck' id = '" . $prize . "&-&2&-&" . $entry->ID . "&-&check' " . $secondPlaceChecked . " " . $sectionBestDisabled . "><label for = '" . $prize . "&-&2&-&" . $entry->ID . "&-&check'>2</label>" : "";
-        }
-
-        $secondPlaceIsInSameClass = isset($lowerPlacementsModel) && ($lowerPlacementsModel->isPlacementChecked(2) && $currentPlacementsModel->higherPlacementEntryIsInSameClass(2, $entry->ID));
-        $showThirdPlaceCheck = !isset($lowerPlacementsModel) || ($showFirstPlaceCheck || $showSecondPlaceCheck || ($lowerPlacementsModel->entryHasPlacement(3, $entry->ID) && $secondPlaceIsInSameClass));
-        if ($showThirdPlaceCheck) {
-            $html .= ($currentPlacementsModel->showPlacementCheck(3, $entry->ID)) ? "<input type = 'checkbox' name = 'thirdPlaceCheck' class = 'placementCheck' id = '" . $prize . "&-&3&-&" . $entry->ID . "&-&check' " . $thirdPlaceChecked . " " . $sectionBestDisabled . "><label for = '" . $prize . "&-&3&-&" . $entry->ID . "&-&check'>3</label>" : "";
-        }
-
         $html .= "</div>";
         $html .= "</td>";
 
@@ -199,7 +201,9 @@ class EntryBookView
         $BISChecked = ($challengeAwardsModel->bisChecked($showChallengeModel->age)) ? "checked" : "";
         $BISDisabled = ($challengeAwardsModel->boaChecked($showChallengeModel->age)) ? "disabled" : "";
         $html = "<table><tbody>";
+        //$html .= "<p>".var_export($BISDisabled, true)."</p>";
         $html .= "<tr class='challenge-row'><td class='table-pos'>" . $showChallengeModel->index . "</td><td class='breed-class'>" . $showChallengeModel->name . " " . $showChallengeModel->age . "</td><td class='age'></td><td class='placement-" . $showChallengeModel->age . "'></td><td class='sectionBest-" . $showChallengeModel->age . "'><div class='placement-checks'>";
+        //$html .= "<input class = 'BISCheck' type = 'checkbox' name = '" . $prize . "&-&" . $showChallengeModel->age . "&-&" . $showChallengeModel->challengeSection . "&-&BIS&-&check'></input> <label for = '" . $prize . "&-&" . $showChallengeModel->age . "&-&" . $showChallengeModel->challengeSection . "&-&BIS&-&check'" .$BISDisabled.">Test</label>";
         $html .= ($agePlacements->isPlacementChecked(1) && $oppositeAgePlacements->isPlacementChecked(1)) ? "<input type = 'checkbox' class = 'BISCheck' id = '" . $prize . "&-&" . $showChallengeModel->age . "&-&" . $showChallengeModel->challengeSection . "&-&BIS&-&check' " . $BISChecked . " " . $BISDisabled . "></input><label for = '" . $prize . "&-&" . $showChallengeModel->age . "&-&" . $showChallengeModel->challengeSection . "&-&BIS&-&check'><span class='is-best'>BEST</span><span class='is-boa'>BOA</span></label>" : "";
         $html .= "</div></td><td class='ageBest-" . $showChallengeModel->age . "'></td></tr>";
         $html .= self::getChallengePlacementOverviewHtml($agePlacements);

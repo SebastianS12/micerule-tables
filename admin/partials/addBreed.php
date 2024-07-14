@@ -45,8 +45,9 @@ if(isset($name)){
   );
 }
 
-//move options to DB
 /*
+//move options to DB
+
 $options = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."options WHERE option_name LIKE 'mrTables%'",ARRAY_A);
 $paths = get_option("mrOption_paths");
 foreach($options as $option){
@@ -69,9 +70,9 @@ foreach($options as $option){
       'icon_url' => $iconURL,
     )
   );
-}*/
+}
 
-/*
+
 //move icon files and adjust icon urls
 $breedPaths = $wpdb->get_results("SELECT id, icon_url FROM " . $wpdb->prefix . "micerule_breeds", ARRAY_A);
 foreach($breedPaths as $index => $path){
@@ -80,6 +81,6 @@ foreach($breedPaths as $index => $path){
     //echo(plugin_dir_url(__FILE__)."admin/svg/breed-icons/".basename($path['icon_url']));
   $iconURL = BREED_ICONS_DIR_URL.basename($path['icon_url']);
   $wpdb->update($wpdb->prefix."micerule_breeds", array('icon_url' => $iconURL), array('id' => $path['id']));
-}*/
-
+}
+*/
 wp_die();

@@ -34,7 +34,7 @@ function assignEntryBookListeners(){
     var prize = this.id.split("&-&")[0];
     var age = this.id.split("&-&")[1];
     var section = this.id.split("&-&")[2];
-    var checkValue = $(this).prop('checked');
+    var checkValue = $(this).prop('checked'); //negate because prop is already new value
 
     editBIS(prize, age, section, checkValue);
   });

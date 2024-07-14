@@ -23,6 +23,15 @@ class ShowEntry{
         return $showEntry;
     }
 
+    public static function createWithClassRegistration($penNumber, $classRegistrationID, $classRegistrationOrder){
+        $showEntry = new ShowEntry();
+        $entryData = self::getEntryDataWithClassRegistration($classRegistrationID, $classRegistrationOrder);
+        $showEntry->loadEntryData($entryData);
+        $showEntry->penNumber = $penNumber;
+
+        return $showEntry;
+    }
+
     public static function createWithEntryID($entryID){
         $showEntry = new ShowEntry();
         $entryData = self::getEntryDatawithEntryID($entryID);
@@ -37,6 +46,15 @@ class ShowEntry{
                                INNER JOIN ".$wpdb->prefix."micerule_show_user_registrations REGISTRATIONS ON ENTRIES.class_registration_id = REGISTRATIONS.class_registration_id
                                INNER JOIN ".$wpdb->prefix."micerule_show_classes CLASSES ON REGISTRATIONS.class_id = CLASSES.id 
                                WHERE event_post_id = ".$eventPostID." AND pen_number = ".$penNumber, ARRAY_A);
+    }
+
+    private static function getEntryDataWithClassRegistration($classRegistrationID, $classRegistrationOrder){
+        global $wpdb;
+        return $wpdb->get_row("SELECT ENTRIES.id, pen_number, variety_name, absent, moved, added, user_name, class_name, section, age FROM ".$wpdb->prefix."micerule_show_entries ENTRIES 
+                               INNER JOIN ".$wpdb->prefix."micerule_show_user_registrations REGISTRATIONS ON ENTRIES.class_registration_id = REGISTRATIONS.class_registration_id
+                               INNER JOIN ".$wpdb->prefix."micerule_show_user_registrations_order REGISTRATIONS_ORDER ON ENTRIES.class_registration_id = REGISTRATIONS_ORDER.class_registration_id
+                               INNER JOIN ".$wpdb->prefix."micerule_show_classes CLASSES ON REGISTRATIONS.class_id = CLASSES.id
+                               WHERE REGISTRATIONS.class_registration_id = ".$classRegistrationID." AND ENTRIES.registration_order = ".$classRegistrationOrder."", ARRAY_A);
     }
 
     private static function getEntryDatawithEntryID($entryID){

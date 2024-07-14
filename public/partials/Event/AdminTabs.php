@@ -12,12 +12,13 @@ class AdminTabs{
     $prizeCards = new PriceCards($eventID);
     $judgesReports = new JudgesReport($eventID);
 
-    $html = "<div class = 'adminTabs'>";
+    $showOptionsModel = new ShowOptionsModel();
+    $showOptions = $showOptionsModel->getShowOptions(EventProperties::getEventLocationID($eventID));
 
+    $html = "<div class = 'adminTabs'>";
     $locationSecretaries = EventProperties::getLocationSecretaries(EventProperties::getEventLocationID($eventID));
     $eventJudges = new EventJudges($eventID);
-    $eventOptionalSettings = EventOptionalSettings::create(EventProperties::getEventLocationID($eventID));
-    if(($eventOptionalSettings->allowOnlineRegistrations && is_user_logged_in()) && ((in_array(wp_get_current_user()->display_name, $locationSecretaries['name']) || in_array(wp_get_current_user()->display_name, $eventJudges->judgeNames)) || current_user_can('administrator'))){
+    if(($showOptions['allow_online_registrations'] && is_user_logged_in()) && ((in_array(wp_get_current_user()->display_name, $locationSecretaries['name']) || in_array(wp_get_current_user()->display_name, $eventJudges->judgeNames)) || current_user_can('administrator'))){
       $html .= "<ul class='tabbed-summary' id='admin-tabs'>";
       if((in_array(wp_get_current_user()->display_name, $locationSecretaries['name'])) || current_user_can('administrator')){
         $html .= " <li class = 'fancierEntries tab active' style='height: 26px;'>Entries per Fancier</li>
@@ -39,7 +40,7 @@ class AdminTabs{
                   <div class = 'absentees content' style = 'display : none'>".AbsenteesView::getHtml($eventID)."</div>
                   <div class = 'prizeCards content' style = 'display : none'>".PrizeCardsView::getHtml($eventID)."</div>";
       }
-      $html .= "<div class = 'judgesReport content' style = 'display: none'>".$judgesReports->getHtml()."</div>";
+      $html .= "<div class = 'judgesReport content' style = 'display: none'>".JudgesReportView::getHtml($eventID)."</div>";
     }
     $html .= "</div>";
 
