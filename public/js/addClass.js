@@ -4,10 +4,11 @@ jQuery(document).ready(function($){
 
 function assignAddClassListener(){
   $(".addBreedButton").on('click',function(){
-    var section = this.id.split("AddButton")[0];
+    // var section = this.id.split("AddButton")[0];
 
-    if($(".confirmClass").length == 0)
-      getSelectClassRowHtml(section, $("#locationID").val());
+    // if($(".confirmClass").length == 0)
+    //   getSelectClassRowHtml(section, $("#locationID").val());
+    convertPostMeta();
   });
 }
 
@@ -86,5 +87,22 @@ function addSelectClassRowHtml(section, position, tableID, selectHTML){
 
   $(".cancelClass").on("click", function(){
     $(this).closest('tr').remove();
+  });
+}
+
+function convertPostMeta(){
+  jQuery.ajax({
+    type: 'POST',
+    url: my_ajax_obj.ajax_url,
+    data: {
+      _ajax_nonce: my_ajax_obj.nonce,
+      action: 'addClass',
+    },
+    success: function (data) {
+      console.log(data);
+    },
+    error: function (XMLHttpRequest, textStatus, errorThrown) {
+      alert(errorThrown);
+    }
   });
 }

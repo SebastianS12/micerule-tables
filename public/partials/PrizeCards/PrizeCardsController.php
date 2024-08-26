@@ -6,8 +6,10 @@ class PrizeCardsController
     {
         $prizeCardsModel = new PrizeCardsModel();
         foreach ($prizeCardsData as $prizeCardData) {
-            $prizeCard = PrizeCardFactory::createPrizeCard($eventPostID, $prizeCardsModel->getSinglePrizeCard($eventPostID, !$print, $prizeCardData->penNumber, $prizeCardData->prize));
-            $prizeCard->updatePrinted($print);
+            if($prizeCardData->placementID != null){
+                $prizeCard = PrizeCardFactory::createPrizeCard($eventPostID, $prizeCardsModel->getSinglePrizeCard($prizeCardData->placementID, $prizeCardData->prize));
+                $prizeCard->updatePrinted($print);
+            }
         }
     }
 }

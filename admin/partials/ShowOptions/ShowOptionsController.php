@@ -46,7 +46,7 @@ class ShowOptionsController{
         self::updateIndices($locationID);
     }
 
-    private static function updateIndices($locationID){
+    public static function updateIndices($locationID){
         //TODO: split in functions, pass index by reference
         $showClassesModel = new ShowClassesModel();
         $index = 1;

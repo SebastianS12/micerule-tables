@@ -56,8 +56,9 @@ class PrizeCardsView
 
     private static function getPrizeCardHtml($eventPostID, $prizeCardData, $printed)
     {
+        //TODO: get prize card id and put it in data-attribute for update printed
         $prizeCard = PrizeCardFactory::createPrizeCard($eventPostID, $prizeCardData);
-        $html = " <div class= 'prize-card class-card " . $prizeCard->placementClass . " " . $prizeCard->prizeClass . "'>
+        $html = " <div class= 'prize-card class-card " . $prizeCard->placementClass . " " . $prizeCard->prizeClass . "' data-placementid= ".$prizeCard->placementID.">
                <ul class='card-content-wrapper'>
                 <li style = 'visibility:hidden; position: absolute; top: 0;'><span class = 'prize'>" . $prizeCard->prize . "</span><span class = 'prize-card-section-name'>" . $prizeCard->section . "</span></li>
                 <li style = 'visibility:hidden; position: absolute; top: 0;'><span class = 'prize-card-class-name'>" . $prizeCard->className . "</span><span class = 'prize-card-age'>" . $prizeCard->age . "</span><span class = 'prize-card-placement'>" . $prizeCard->placement . "</span></li>

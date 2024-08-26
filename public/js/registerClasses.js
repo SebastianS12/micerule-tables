@@ -24,7 +24,8 @@ function registerClasses(){
     var age = this.id.split("&-&")[1];
 
     const registrationData = {className : className, age: age, registrationCount : inputVal,};
-    optionalClassRegistrations.push(registrationData);
+    // optionalClassRegistrations.push(registrationData);
+    classRegistrations.push(registrationData);
   });
 
   

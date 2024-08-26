@@ -15,7 +15,7 @@ class JudgesReportModel{
                                          INNER JOIN ".$this->wpdb->prefix."micerule_event_judges_sections JUDGES_SECTIONS ON JUDGES.event_post_id = JUDGES_SECTIONS.event_post_id AND JUDGES.judge_no = JUDGES_SECTIONS.judge_no
                                          INNER JOIN ".$this->wpdb->prefix."micerule_show_classes CLASSES ON JUDGES_SECTIONS.section = CLASSES.section
                                          INNER JOIN ".$this->wpdb->prefix."micerule_show_classes_indices INDICES ON CLASSES.id = INDICES.class_id
-                                         LEFT JOIN ".$this->wpdb->prefix."micerule_show_judges_class_comments COMMENTS ON JUDGES.event_post_id = COMMENTS.event_post_id AND JUDGES.judge_no = COMMENTS.judge_no AND INDICES.id = COMMENTS.class_index_id
+                                         LEFT JOIN ".$this->wpdb->prefix."micerule_show_judges_class_comments COMMENTS ON JUDGES.event_post_id = COMMENTS.event_post_id AND INDICES.id = COMMENTS.class_index_id
                                          UNION
                                          SELECT JUDGES.event_post_id, location_id, judge_name, INDICES.section, challenge_name as class_name, challenge_index as class_index, age, '' as comment, 'Section Challenge' as prize FROM ".$this->wpdb->prefix."micerule_event_judges JUDGES 
                                          INNER JOIN ".$this->wpdb->prefix."micerule_event_judges_sections JUDGES_SECTIONS ON JUDGES.event_post_id = JUDGES_SECTIONS.event_post_id AND JUDGES.judge_no = JUDGES_SECTIONS.judge_no

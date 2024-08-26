@@ -52,12 +52,17 @@ class JudgesReportView
     private static function getJudgeReportHtml($eventPostID, $judgeName, $judgeNo)
     {
         $judgesReportModel = new JudgesReportModel();
+        $registrationTablesModel = new RegistrationTablesModel();
         $html = "";
         foreach ($judgesReportModel->getJudgeClassesData($eventPostID, $judgeName) as $judgeClassData) {
             if ($judgeClassData['prize'] == "Class")
                 $html .= self::getClassReportHtml($eventPostID, $judgeClassData, $judgeNo);
-            if ($judgeClassData['prize'] == "Section Challenge")
-                $html .= self::getChallengeReportHtml($eventPostID, $judgeClassData);
+            if ($judgeClassData['prize'] == "Section Challenge"){
+                $placementsModel = new SectionPlacements($eventPostID, $judgeClassData['age'], $judgeClassData['section']);
+                $registrationCount = $registrationTablesModel->getSectionRegistrationCount($eventPostID, $judgeClassData['section'], $judgeClassData['age']);
+                $html .= self::getChallengeReportHtml($eventPostID, $judgeClassData, $placementsModel, $registrationCount);
+            }
+                
         }
 
         return $html;
@@ -67,12 +72,12 @@ class JudgesReportView
     {
         $registrationTablesModel = new RegistrationTablesModel();
         $placementsModel = new ClassPlacements($eventPostID, $judgeClassData['age'], $judgeClassData['class_name']);
-        $classCommentModel = ClassComment::loadFromDB($eventPostID, $judgeClassData['class_name'], $judgeClassData['age'], $judgeNo);
+        //$classCommentModel = ClassComment::loadFromDB($eventPostID, $judgeClassData['class_name'], $judgeClassData['age'], $judgeNo);
         $html = "";
         $html .= "<tr class='body-row'>
                         <td style='background-color: transparent'>
                            <div class='class-report' data-class_name = '".$judgeClassData['class_name']."' data-age = ".$judgeClassData['age']." data-judge_no = ".$judgeNo.">
-                            <textarea style='height: 60px; font-size: 16px' name='report' class = 'jr-class-report' placeholder='Optional class comment'>" . $classCommentModel->comment . "</textarea>
+                            <textarea style='height: 60px; font-size: 16px' name='report' class = 'jr-class-report' placeholder='Optional class comment'>" . $judgeClassData['comment'] . "</textarea>
                             <div class='report-form'>";
 
         $html .= self::getReportClassDataHtml($judgeClassData, $registrationTablesModel->getClassRegistrationCount($eventPostID, $judgeClassData['class_name'], $judgeClassData['age']));
@@ -152,12 +157,12 @@ class JudgesReportView
         $html .= "<div style='display: flex'>
                    <div style='display: flex; flex-direction: column; justify-content: space-around;'>
                     <div style='display: flex; align-items: center; width: 62px;'>
-                     <input type='radio' class='buck' id = '".$entry->className."-".$placement."-B' name = 'gender-radio-".$entry->className."-".$placement."' value='B' " . $buckChecked . ">
-                     <label for='".$entry->className."-".$placement."-B'>B</label>
+                     <input type='radio' class='buck' id = '".$entry->className."-".$placement."-".$entry->age."-B' name = 'gender-radio-".$entry->className."-".$placement."-".$entry->age."' value='B' " . $buckChecked . ">
+                     <label for='".$entry->className."-".$placement."-".$entry->age."-B'>B</label>
                     </div>
                    <div style='display: flex; align-items: center;'>
-                    <input type='radio' class='doe'id = '".$entry->className."-".$placement."-D' name = 'gender-radio-".$entry->className."-".$placement."' value='D' " . $doeChecked . ">
-                    <label for='".$entry->className."-".$placement."-D'>D</label>
+                    <input type='radio' class='doe'id = '".$entry->className."-".$placement."-".$entry->age."-D' name = 'gender-radio-".$entry->className."-".$placement."-".$entry->age."' value='D' " . $doeChecked . ">
+                    <label for='".$entry->className."-".$placement."-".$entry->age."-D'>D</label>
                    </div>
                   </div>
                   <textarea style='height: 60px; font-size: 16px' name='report' class = 'jr-report'>" . $placementReport->comment . "</textarea>";
@@ -166,16 +171,14 @@ class JudgesReportView
         return $html;
     }
 
-    private static function getChallengeReportHtml($eventPostID, $judgeClassData)
+    private static function getChallengeReportHtml($eventPostID, $judgeClassData, $placementsModel, $registrationCount)
     {
-        $registrationTablesModel = new RegistrationTablesModel();
-        $placementsModel = new SectionPlacements($eventPostID, $judgeClassData['age'], $judgeClassData['section']);
         $html = "<tr class='body-row'>
                   <td style='background-color: transparent'>
                      <div class='section-report'>
                       <div class='report-form'>";
 
-        $html .= self::getReportClassDataHtml($judgeClassData, $registrationTablesModel->getSectionRegistrationCount($eventPostID, $judgeClassData['section'], $judgeClassData['age']));
+        $html .= self::getReportClassDataHtml($judgeClassData, $registrationCount);
         $html .= "        <table class='section-table'>";
 
         foreach ($placementsModel->placements as $placement => $placementEntryID) {

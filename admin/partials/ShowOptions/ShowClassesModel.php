@@ -100,4 +100,25 @@ class ShowClassesModel{
     public function deleteClass($locationID, $className){
         $this->wpdb->delete($this->showClassesTable, array("location_id" => $locationID, "class_name" => $className));
     }
+
+    public function convertPostMeta(){
+        global $wpdb;
+        $postMetaResults = $wpdb->get_results("SELECT post_id, meta_value FROM ".$wpdb->prefix."postmeta WHERE meta_key = 'micerule_data_event_classes' AND meta_value IS NOT NULL", ARRAY_A);
+        foreach($postMetaResults as $eventResult){
+            $locationID = $eventResult['post_id'];
+            $metaValue = json_decode(get_post_meta($locationID, 'micerule_data_event_classes', true), true);
+            foreach($metaValue["sectionClasses"] as $section => $sectionClasses){
+                foreach($sectionClasses as $position => $className){
+                    $this->addShowClass($locationID, $className, $section, $position);
+                }   
+            }
+
+            foreach($metaValue["optionalClasses"] as $position => $className){
+                $this->addShowClass($locationID, $className, "optional", $position);
+            }
+
+            sleep(5);
+            ShowOptionsController::updateIndices($locationID);
+        }
+    }
 }

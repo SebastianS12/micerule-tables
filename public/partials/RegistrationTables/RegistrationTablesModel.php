@@ -74,12 +74,28 @@ class RegistrationTablesModel{
             WHERE event_post_id = ".$eventPostID."  AND user_name = '".$userName."' GROUP BY class_name, age) USER_REGISTRATIONS  ORDER BY class_index", ARRAY_A);
     }
 
+    public function getUserJuniorRegistrationCount($eventPostID, $userName){
+        global $wpdb;
+        return $wpdb->get_var("SELECT COUNT(*) AS registration_count
+                                FROM ".$wpdb->prefix."micerule_show_user_registrations R
+                                INNER JOIN ".$wpdb->prefix."micerule_show_user_registrations_order RO ON R.class_registration_id = RO.class_registration_id
+                                INNER JOIN ".$wpdb->prefix."micerule_show_user_junior_registrations JR ON JR.class_registration_id = RO.class_registration_id AND JR.registration_order = RO.registration_order
+                                WHERE user_name = '".$userName."' AND event_post_id = ".$eventPostID);    
+    }
+
     public function getClassRegistrations($eventPostID, $className){
         return $this->wpdb->get_results("SELECT class_name, class_index, REGISTRATIONS.age AS age, REGISTRATIONS.class_registration_id, registration_order 
         FROM ".$this->showUserClassRegistrationsTable." REGISTRATIONS  INNER JOIN ".$this->showClassRegistrationsOrderTable." REGISTRATIONS_ORDER ON REGISTRATIONS.class_registration_id = REGISTRATIONS_ORDER.class_registration_id
         INNER JOIN ".$this->showClassesTable." CLASSES ON REGISTRATIONS.class_id = CLASSES.id
         INNER JOIN ".$this->classIndicesTable." INDICES ON REGISTRATIONS.class_id = INDICES.class_id AND REGISTRATIONS.age = INDICES.age
         WHERE REGISTRATIONS.event_post_id = ".$eventPostID." AND class_name != 'Junior' AND class_name = '".$className."' ORDER BY class_index, REGISTRATIONS_ORDER.registration_order", ARRAY_A);
+    }
+
+    public function getJuniorRegistrationCount($eventPostID){
+        global $wpdb;
+        return $wpdb->get_var("SELECT COUNT(registration_order) FROM ".$wpdb->prefix."micerule_show_user_registrations R
+                                INNER JOIN ".$wpdb->prefix."micerule_show_user_junior_registrations JR ON R.class_registration_id = JR.class_registration_id
+                                WHERE event_post_id = ".$eventPostID);
     }
 
     public function getFancierNames($eventPostID){

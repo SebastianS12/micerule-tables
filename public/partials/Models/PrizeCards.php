@@ -10,11 +10,14 @@ class PrizeCardFactory
             return new SectionPrizeCard($eventPostID, $prizeCardData);
         if ($prizeCardData['prize'] == "Grand Challenge")
             return new GrandChallengePrizeCard($eventPostID, $prizeCardData);
+        if ($prizeCardData['prize'] == "Junior Challenge")
+            return new JuniorChallengePrizeCard($eventPostID, $prizeCardData);
     }
 }
 
 abstract class PrizeCard
 {
+    public $placementID;
     public $eventPostID;
     public $placement;
     public $prize;
@@ -42,6 +45,7 @@ abstract class PrizeCard
 
     private function loadPrizeCardData($prizeCardData)
     {
+        $this->placementID = $prizeCardData['placement_id'];
         $this->placement = $prizeCardData['placement'];
         $this->prize = $prizeCardData['prize'];
         $this->age = $prizeCardData['age'];
@@ -95,8 +99,8 @@ class ClassPrizeCard extends PrizeCard
 
     public function updatePrinted($printed){
         global $wpdb;
-        $placementEntry = ShowEntry::createWithPenNumber($this->eventPostID, $this->penNumber);
-        $wpdb->update($wpdb->prefix."micerule_show_class_placements", array("printed" => $printed), array("entry_id" => $placementEntry->ID));
+        //$placementEntry = ShowEntry::createWithPenNumber($this->eventPostID, $this->penNumber);
+        $wpdb->update($wpdb->prefix."micerule_show_class_placements", array("printed" => $printed), array("class_placement_id" => $this->placementID));
     }
 }
 
@@ -132,8 +136,8 @@ class SectionPrizeCard extends PrizeCard
 
     public function updatePrinted($printed){
         global $wpdb;
-        $placementEntry = ShowEntry::createWithPenNumber($this->eventPostID, $this->penNumber);
-        $wpdb->update($wpdb->prefix."micerule_show_section_placements", array("printed" => $printed), array("entry_id" => $placementEntry->ID));
+        //$placementEntry = ShowEntry::createWithPenNumber($this->eventPostID, $this->penNumber);
+        $wpdb->update($wpdb->prefix."micerule_show_section_placements", array("printed" => $printed), array("section_placement_id" => $this->placementID));
     }
 }
 
@@ -169,7 +173,38 @@ class GrandChallengePrizeCard extends PrizeCard
 
     public function updatePrinted($printed){
         global $wpdb;
-        $placementEntry = ShowEntry::createWithPenNumber($this->eventPostID, $this->penNumber);
-        $wpdb->update($wpdb->prefix."micerule_show_grand_challenge_placements", array("printed" => $printed), array("entry_id" => $placementEntry->ID));
+        // $placementEntry = ShowEntry::createWithPenNumber($this->eventPostID, $this->penNumber);
+        $wpdb->update($wpdb->prefix."micerule_show_grand_challenge_placements", array("printed" => $printed), array("grand_challenge_placement_id" => $this->placementID));
+    }
+}
+
+class JuniorChallengePrizeCard extends PrizeCard
+{
+    public function __construct($eventPostID, $prizeCardData)
+    {
+        parent::__construct($eventPostID, $prizeCardData);
+        $this->prizeClass = "junior-challenge";
+    }
+
+    protected function getJudge()
+    {
+        return "";
+    }
+
+    protected function getEntryCount()
+    {
+        $registrationTablesModel = new RegistrationTablesModel();
+        return $registrationTablesModel->getJuniorRegistrationCount($this->eventPostID);
+    }
+
+    protected function getDisplayedPlacement($prizeCardData)
+    {
+        return "Best Junior";
+    }
+
+    public function updatePrinted($printed){
+        global $wpdb;
+        // $placementEntry = ShowEntry::createWithPenNumber($this->eventPostID, $this->penNumber);
+        $wpdb->update($wpdb->prefix."micerule_show_junior_placements", array("printed" => $printed), array("class_placement_id" => $this->placementID));
     }
 }

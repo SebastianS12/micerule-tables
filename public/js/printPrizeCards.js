@@ -24,8 +24,9 @@ function printPrizeCards(){
   $(".prize-cards-print").find(".prize-card").each(function(){
     var prize = $(this).find(".prize").text();
     var penNumber = $(this).find(".pen-no").text();
+    var placementID = $(this).data("placementid");
 
-    prizeCardsData.push({prize : prize, penNumber : penNumber});
+    prizeCardsData.push({prize : prize, penNumber : penNumber, placementID : placementID});
   });
 
   jQuery.ajax({
@@ -39,7 +40,6 @@ function printPrizeCards(){
     },
     success: function (data) {
       updateAdminTabs();
-      console.log(data);
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
       console.log(errorThrown);
@@ -52,8 +52,10 @@ function moveToUnprinted(clickedCard){
 
   var prize = clickedCard.parents(".class-card").find(".prize").text();
   var penNumber = clickedCard.parents(".class-card").find(".pen-no").text();
+  var placementID = clickedCard.parents(".class-card").data("placementid");
 
-  prizeCardsData.push({prize : prize, penNumber : penNumber});
+  prizeCardsData.push({prize : prize, penNumber : penNumber, placementID : placementID});
+
   jQuery.ajax({
     type: 'POST',
     url: my_ajax_obj.ajax_url,

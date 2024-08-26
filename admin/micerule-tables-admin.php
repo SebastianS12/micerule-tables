@@ -267,8 +267,8 @@ class Micerule_Tables_Admin{
           ResultTable::saveOptionalTableData($post->ID, $_POST['micerule_table_data_optional']);
           EventJudgesHelper::saveEventJudges($post->ID, $_POST['judge_data']);
 
-          //ResultTable::convertPostmeta();
-          //EventJudgesHelper::convertPostMeta();
+          // ResultTable::convertPostmeta();
+          // EventJudgesHelper::convertPostMeta();
           
           if(isset($_POST['micerule_table_location_secretaries_names']))
             LocationSecretaries::saveLocationSecretaryNames($post->ID, $_POST['micerule_table_location_secretaries_names']);

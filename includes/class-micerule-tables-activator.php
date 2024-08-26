@@ -201,6 +201,8 @@ class Micerule_Tables_Activator {
 			) $charset_collate; ";
 		dbDelta($sql_create_show_user_registrations_order_table);
 
+		//TODO: Change junior registrations: Add user_junior_registrations table which extends normal user_registrations table
+		//by reference to user_registration. Junior registrations can then be joined to results
 		$show_user_junior_registrations_table_name = $wpdb->prefix."micerule_show_user_junior_registrations";
 		$sql_create_show_user_junior_registrations_table = "CREATE TABLE IF NOT EXISTS ".$show_user_junior_registrations_table_name. " (
 			class_registration_id bigint(20) unsigned NOT NULL,
@@ -349,13 +351,8 @@ class Micerule_Tables_Activator {
 			id bigint(20) unsigned NOT NULL auto_increment,
 			class_index_id bigint(20) unsigned NOT NULL,
 			event_post_id bigint(20) unsigned NOT NULL,
-			judge_no int unsigned NOT NULL,
 			comment text,
 			PRIMARY KEY  (id),
-			CONSTRAINT fk_event_post_id_judge_no_class_comment
-				FOREIGN KEY (event_post_id, judge_no)
-				REFERENCES ".$event_judges_table_name."(event_post_id, judge_no)
-				ON DELETE CASCADE,
 			CONSTRAINT fk_class_index_id_class_comment
 				FOREIGN KEY (class_index_id)
 				REFERENCES ".$show_classes_indices_table_name."(id)
@@ -368,14 +365,13 @@ class Micerule_Tables_Activator {
 			id bigint(20) unsigned NOT NULL auto_increment,
 			class_index_id bigint(20) unsigned NOT NULL,
 			event_post_id bigint(20) unsigned NOT NULL,
-			judge_no int unsigned NOT NULL,
 			comment text,
 			gender text,
-			placement int(2) NOT NULL,
+			placement_id bigint(20) unsigned NOT NULL,
 			PRIMARY KEY  (id),
-			CONSTRAINT fk_event_post_id_judge_no_class_gender
-				FOREIGN KEY (event_post_id, judge_no)
-				REFERENCES ".$event_judges_table_name."(event_post_id, judge_no)
+			CONSTRAINT fk_placement_id_gender
+				FOREIGN KEY (placement_id)
+				REFERENCES ".$show_class_placements_table_name."(class_placement_id)
 				ON DELETE CASCADE,
 			CONSTRAINT fk_class_index_id_class_gender
 				FOREIGN KEY (class_index_id)

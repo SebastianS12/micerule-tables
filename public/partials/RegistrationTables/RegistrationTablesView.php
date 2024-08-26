@@ -233,7 +233,7 @@ class RegistrationTablesView
     $html .= "<select autocomplete = 'off' id = 'userSelectRegistration'>";
     foreach ($users as $user) {
       if (EventUser::isMember($user->display_name))
-        $html .= "<option value = '" . $user->display_name . "' " . (($user->display_name == $userName) ? 'selected = selected' : '') . ">" . $user->display_name . "</option>";
+        $html .= "<option value = '" . html_entity_decode($user->display_name) . "' " . ((html_entity_decode($user->display_name) == $userName) ? 'selected = selected' : '') . ">" . html_entity_decode($user->display_name) . "</option>";
     }
     $html .= "</select>";
     $html .= "</div>";

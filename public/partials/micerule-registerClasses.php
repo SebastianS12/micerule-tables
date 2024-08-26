@@ -59,6 +59,7 @@
   echo($userRegistrationData->getUserRegistrationOverviewHtml(EventProperties::getEventLocationID($event_id)));
   include("micerule-registerClasses-entryBookData.php");
   */
+
   RegistrationTablesController::registerEntries($event_id, $classRegistrations, $optionalClassRegistrations, $userName);
   RegistrationTablesController::createEntriesFromRegistrations($event_id, EventProperties::getEventLocationID($event_id));
   echo(RegistrationTablesView::getUserRegistrationOverviewHtml($event_id, $userName));
