@@ -33,7 +33,8 @@ class EventProperties {
 
   public static function getEventDeadline($eventPostID){
     global $wpdb;
-    return $wpdb->get_var("SELECT event_deadline FROM ".$wpdb->prefix."micerule_event_deadline WHERE event_post_id = ".$eventPostID);
+    return $wpdb->get_var("SELECT event_deadline FROM ".$wpdb->prefix."micerule_event_deadline WHERE event_post_id = ".$eventPostID) ?? time();
+
   }
 
   public static function getEventMetaData($eventID){

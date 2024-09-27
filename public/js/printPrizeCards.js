@@ -19,26 +19,15 @@ function updatePrizeCardsHtml(prizeCardsHtml){
 }
 
 function printPrizeCards(){
-  var prizeCardsData = [];
-
-  $(".prize-cards-print").find(".prize-card").each(function(){
-    var prize = $(this).find(".prize").text();
-    var penNumber = $(this).find(".pen-no").text();
-    var placementID = $(this).data("placementid");
-
-    prizeCardsData.push({prize : prize, penNumber : penNumber, placementID : placementID});
-  });
-
   jQuery.ajax({
     type: 'POST',
     url: my_ajax_obj.ajax_url,
     data: {
       _ajax_nonce: my_ajax_obj.nonce,
-      action: 'setPrinted',
-      prizeCardsData : JSON.stringify(prizeCardsData),
-      print : true,
+      action: 'printAll',
     },
     success: function (data) {
+      console.log(data);
       updateAdminTabs();
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -48,24 +37,21 @@ function printPrizeCards(){
 }
 
 function moveToUnprinted(clickedCard){
-  var prizeCardsData = [];
 
-  var prize = clickedCard.parents(".class-card").find(".prize").text();
-  var penNumber = clickedCard.parents(".class-card").find(".pen-no").text();
+  var prizeID = clickedCard.parents(".class-card").data("prize-id");
   var placementID = clickedCard.parents(".class-card").data("placementid");
-
-  prizeCardsData.push({prize : prize, penNumber : penNumber, placementID : placementID});
 
   jQuery.ajax({
     type: 'POST',
     url: my_ajax_obj.ajax_url,
     data: {
       _ajax_nonce: my_ajax_obj.nonce,
-      action: 'setPrinted',
-      prizeCardsData : JSON.stringify(prizeCardsData),
-      print : false,
+      action: 'moveToUnprinted',
+      placementID : placementID,
+      prizeID : prizeID,
     },
     success: function (data) {
+      console.log(data);
       updateAdminTabs();
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {

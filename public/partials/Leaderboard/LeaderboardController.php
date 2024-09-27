@@ -17,7 +17,7 @@ class LeaderboardController{
                 array_push($topTwentyData, $topTwentyEntry);
             }
         }
-        $col = array_column( $topTwentyData, "grandTotal" );
+        $col = array_column( $topTwentyData, "adjustedPoints" );
         array_multisort($col, SORT_DESC, $topTwentyData);
         $topTwentyData = array_slice($topTwentyData, 0, 20);
 

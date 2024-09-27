@@ -4,11 +4,11 @@ jQuery(document).ready(function($){
 
 function assignAddClassListener(){
   $(".addBreedButton").on('click',function(){
-    // var section = this.id.split("AddButton")[0];
+    var section = this.id.split("AddButton")[0];
 
-    // if($(".confirmClass").length == 0)
-    //   getSelectClassRowHtml(section, $("#locationID").val());
-    convertPostMeta();
+    if($(".confirmClass").length == 0)
+      getSelectClassRowHtml(section, $("#locationID").val());
+    // convertPostMeta();
   });
 }
 

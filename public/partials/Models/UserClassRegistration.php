@@ -31,7 +31,6 @@ class UserClassRegistration{
         $registrationOrder = $this->getNextRegistrationOrder();
         $wpdb->insert($wpdb->prefix."micerule_show_user_registrations_order", array("class_registration_id" => $this->registrationID, "registration_order" => $registrationOrder));
         $showOptionsModel = new ShowOptionsModel();
-        echo($this->userName);
         if(EventUser::isJuniorMember($this->userName) && $showOptionsModel->getShowOptions(EventProperties::getEventLocationID($this->eventPostID))['allow_junior'])
             $this->addJuniorRegistration($this->registrationID, $registrationOrder);
     }

@@ -23,8 +23,8 @@ function sectionTablesFrontend($atts){
   $html .= "</div>";
   $html .= "<div class = 'header-info'>";
   if($eventOptionalSettings->allowOnlineRegistrations){
-    $html .= "<h3>Total Entries: ".$eventRegistrationData->getEntryCount()."</h3>";
-    $html .= "<h3>Total Exhibits: ".$eventRegistrationData->getExhibitCount()."</h3>";
+    $html .= "<h3>Total Entries: ".RegistrationTablesController::getEntryCount($post->ID)."</h3>";
+    $html .= "<h3>Total Exhibits: ".RegistrationTablesController::getExhibitCount($post->ID)."</h3>";
   }
   $html .= "<hr>";
   $html .= "</div>";

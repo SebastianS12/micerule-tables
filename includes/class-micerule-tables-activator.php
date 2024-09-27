@@ -247,18 +247,19 @@ class Micerule_Tables_Activator {
 
 		$show_class_placements_table_name = $wpdb->prefix."micerule_show_class_placements";
 		$sql_create_show_class_placements_table = "CREATE TABLE IF NOT EXISTS ".$show_class_placements_table_name. " (
-			class_placement_id bigint(20) unsigned NOT NULL auto_increment,
+			id bigint(20) unsigned NOT NULL auto_increment,
 			entry_id bigint(20) unsigned NOT NULL,
-			class_index_id bigint(20) unsigned NOT NULL,
+			index_id bigint(20) unsigned NOT NULL,
+			prize int(2) NOT NULL,
 			placement int(2) NOT NULL,
 			printed bool DEFAULT False,
-			PRIMARY KEY  (class_placement_id),
+			PRIMARY KEY  (id),
 			CONSTRAINT fk_entry_id_placement
 				FOREIGN KEY (entry_id)
 				REFERENCES ".$show_entries_table_name."(id)
 				ON DELETE CASCADE,
-			CONSTRAINT fk_class_index_placement
-				FOREIGN KEY (class_index_id)
+			CONSTRAINT fk_index_id_placement
+				FOREIGN KEY (index_id)
 				REFERENCES ".$show_classes_indices_table_name."(id)
 				ON DELETE CASCADE
 			) $charset_collate; ";
@@ -266,18 +267,19 @@ class Micerule_Tables_Activator {
 
 		$show_junior_placements_table_name = $wpdb->prefix."micerule_show_junior_placements";
 		$sql_create_show_junior_placements_table = "CREATE TABLE IF NOT EXISTS ".$show_junior_placements_table_name. " (
-			class_placement_id bigint(20) unsigned NOT NULL auto_increment,
+			id bigint(20) unsigned NOT NULL auto_increment,
 			entry_id bigint(20) unsigned NOT NULL,
-			class_index_id bigint(20) unsigned NOT NULL,
+			index_id bigint(20) unsigned NOT NULL,
+			prize int(2) NOT NULL,
 			placement int(2) NOT NULL,
 			printed bool DEFAULT False,
-			PRIMARY KEY  (class_placement_id),
+			PRIMARY KEY  (id),
 			CONSTRAINT fk_entry_id_junior_eplacement
 				FOREIGN KEY (entry_id)
 				REFERENCES ".$show_entries_table_name."(id)
 				ON DELETE CASCADE,
-			CONSTRAINT fk_class_index_junior_placement
-				FOREIGN KEY (class_index_id)
+			CONSTRAINT fk_index_id_junior_placement
+				FOREIGN KEY (index_id)
 				REFERENCES ".$show_classes_indices_table_name."(id)
 				ON DELETE CASCADE
 			) $charset_collate; ";
@@ -288,6 +290,7 @@ class Micerule_Tables_Activator {
 			section_placement_id bigint(20) unsigned NOT NULL auto_increment,
 			entry_id bigint(20) unsigned NOT NULL,
 			class_index_id bigint(20) unsigned NOT NULL,
+			prize int(2) NOT NULL,
 			placement int(2) NOT NULL,
 			printed bool DEFAULT False,
 			award text DEFAULT NULL,
@@ -302,6 +305,41 @@ class Micerule_Tables_Activator {
 				ON DELETE CASCADE
 			) $charset_collate; ";
 		dbDelta($sql_create_show_section_placements_table);
+
+		$show_challenge_placements_table_name = $wpdb->prefix."micerule_show_challenge_placements";
+		$sql_create_show_challenge_placements_table = "CREATE TABLE IF NOT EXISTS ".$show_challenge_placements_table_name. " (
+			id bigint(20) unsigned NOT NULL auto_increment,
+			entry_id bigint(20) unsigned NOT NULL,
+			index_id bigint(20) unsigned NOT NULL,
+			prize int(2) NOT NULL,
+			placement int(2) NOT NULL,
+			printed bool DEFAULT False,
+			PRIMARY KEY  (id),
+			CONSTRAINT fk_entry_id_challenge_placement
+				FOREIGN KEY (entry_id)
+				REFERENCES ".$show_entries_table_name."(id)
+				ON DELETE CASCADE,
+			CONSTRAINT fk_index_id_challenge_placement
+				FOREIGN KEY (index_id)
+				REFERENCES ".$show_challenges_indices_table_name."(id)
+				ON DELETE CASCADE
+			) $charset_collate; ";
+		dbDelta($sql_create_show_challenge_placements_table);
+
+		$show_challenge_awards_table_name = $wpdb->prefix."micerule_show_challenge_awards";
+		$sql_create_show_challenge_awards_table = "CREATE TABLE IF NOT EXISTS ".$show_challenge_awards_table_name. " (
+			id bigint(20) unsigned NOT NULL auto_increment,
+			challenge_placement_id bigint(20) unsigned NOT NULL,
+			award varchar(3) NOT NULL,
+			printed bool DEFAULT False,
+			prize int(2) NOT NULL,
+			PRIMARY KEY  (id),
+			CONSTRAINT fk_placement_id_challenge_placement
+				FOREIGN KEY (challenge_placement_id)
+				REFERENCES ".$show_challenge_placements_table_name."(id)
+				ON DELETE CASCADE
+			) $charset_collate; ";
+		dbDelta($sql_create_show_challenge_awards_table);
 
 		$show_grand_challenge_placements_table_name = $wpdb->prefix."micerule_show_grand_challenge_placements";
 		$sql_create_show_grand_challenge_placements_table = "CREATE TABLE IF NOT EXISTS ".$show_grand_challenge_placements_table_name. " (
@@ -371,7 +409,7 @@ class Micerule_Tables_Activator {
 			PRIMARY KEY  (id),
 			CONSTRAINT fk_placement_id_gender
 				FOREIGN KEY (placement_id)
-				REFERENCES ".$show_class_placements_table_name."(class_placement_id)
+				REFERENCES ".$show_class_placements_table_name."(id)
 				ON DELETE CASCADE,
 			CONSTRAINT fk_class_index_id_class_gender
 				FOREIGN KEY (class_index_id)

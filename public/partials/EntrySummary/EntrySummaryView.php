@@ -12,8 +12,8 @@ class EntrySummaryView
             $checkBoxState = ($entrySummaryModel->getAllAbsentCheckValue($eventPostID, $userName)) ? "checked" : "";
             $html .= "<div class='fancier-entry-summary'>
                     <div class='set-absent'>
-                        <input type = 'checkbox' id = 'setAllAbsent'  class = 'setAllAbsent' name = 'setAllAbsent' " . $checkBoxState . ">
-                        <label for = 'setAllAbsent'>Set all absent</label>
+                        <input type = 'checkbox' id = 'setAllAbsent-".$userName."'  class = 'setAllAbsent' name = 'setAllAbsent' " . $checkBoxState . ">
+                        <label for = 'setAllAbsent-".$userName."'>Set all absent</label>
                     </div>
                     <div class='table-wrapper'>
                     <table>

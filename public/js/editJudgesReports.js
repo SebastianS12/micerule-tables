@@ -23,19 +23,19 @@ function assignJudgesReportsListeners(){
 }
 
 function submitReport(buttonElement){
-  var className = buttonElement.parent().data('class_name');
-  var age = buttonElement.parent().data('age');
-  var judgeNo = buttonElement.parent().data('judge_no');
-  var classReportData = {className: className, age: age, judgeNo: judgeNo};
+  var commentID = buttonElement.parent().data('comment-id');
+  var indexID = buttonElement.parent().data('index-id');
   var classComment = buttonElement.parent().find(".jr-class-report").val();
   var placementReportData = [];
   buttonElement.prev().find(".placement-report").each(function(){
-    var placement = $(this).data('placement');
+    var id = $(this).data('report-id');
+    var placementID = $(this).data('placement-id');
     var buckChecked = $(this).find(".buck").eq(0).prop('checked');
     var doeChecked = $(this).find(".doe").eq(0).prop('checked');
     var comment = $(this).find(".jr-report").val();
-    placementReportData.push({placement : placement, buckChecked : buckChecked, doeChecked : doeChecked, comment : comment});
+    placementReportData.push({id: id, placementID : placementID, buckChecked : buckChecked, doeChecked : doeChecked, comment : comment});
   });
+
   
   $("#spinner-div").show();
   jQuery.ajax({
@@ -44,7 +44,8 @@ function submitReport(buttonElement){
     data: {
       _ajax_nonce: my_ajax_obj.nonce,
       action: 'submitReport',
-      classReportData: JSON.stringify(classReportData),
+      commentID: commentID,
+      indexID: indexID,
       classComment: classComment,
       placementReportData : JSON.stringify(placementReportData),
       submitType: "classReport",
@@ -64,7 +65,8 @@ function submitReport(buttonElement){
 }
 
 function submitGeneralComment(buttonElement){
-  var judgeNo = buttonElement.parent().data('judge_no');
+  var commentID = buttonElement.parent().data('comment-id');
+  var judgeNo = buttonElement.parent().data('judge-no');
   var comment = buttonElement.prev().find("textarea").eq(0).val();
   jQuery.ajax({
     type: 'POST',
@@ -72,6 +74,7 @@ function submitGeneralComment(buttonElement){
     data: {
       _ajax_nonce: my_ajax_obj.nonce,
       action: 'submitReport',
+      commentID: commentID,
       judgeNo: judgeNo,
       comment: comment,
       submitType: "generalComment"

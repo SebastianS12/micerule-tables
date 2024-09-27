@@ -2,51 +2,66 @@
 
 class JudgesReportController
 {
+    private JudgesReportService $judgesReportService;
+    
+    public function __construct(JudgesReportService $judgesReportService)
+    {
+        $this->judgesReportService = $judgesReportService;
+    }
+
+    public function prepareReportData(int $eventPostID): array{
+        return $this->judgesReportService->prepareReportData($eventPostID);
+    }
+
     public static function submitPlacementReport($eventPostID, $className, $age, $judgeNo, $placement, $gender, $comment)
     {
         $placementReport = PlacementReport::create($eventPostID, $className, $age, $judgeNo, $placement, $gender, $comment);
         $placementReport->saveToDB();
     }
 
-    public static function submit($eventPostID, $submitType)
+    public function submit($submitType)
     {
         if ($submitType == "classReport") {
-            self::submitClassReport($eventPostID);
+            $this->submitClassReport();
         }
         if ($submitType == "generalComment") {
-            self::submitGeneralComment($eventPostID);
+            self::submitGeneralComment();
         }
     }
 
-    private static function submitClassReport($eventPostID)
+    private function submitClassReport()
     {
-        $classReportData = json_decode(html_entity_decode(stripslashes($_POST['classReportData'])));
-        $placementReportData = json_decode(html_entity_decode(stripslashes($_POST['placementReportData'])));
-        self::submitClassComment($eventPostID, $classReportData);
-        self::submitPlacementReports($eventPostID, $classReportData, $placementReportData);
+        $commentID = isset($_POST['commentID']) && $_POST['commentID'] !== '' ? intval($_POST['commentID']) : null;
+        $indexID = intval($_POST['indexID']);
+        $comment = $_POST['classComment'];
+        $placementReports = json_decode(html_entity_decode(stripslashes($_POST['placementReportData'])));
+
+        $this->judgesReportService->submitClassReport($commentID, $comment, $indexID);
+        $this->judgesReportService->submitPlacementReports($placementReports, $indexID);
     }
 
-    private static function submitClassComment($eventPostID, $classReportData)
+    private static function submitClassComment($classReportData)
     {
-        $classComment = $_POST['classComment'];
-        $classComment = ClassComment::create($eventPostID, $classReportData->className, $classReportData->age, $classReportData->judgeNo, $classComment);
-        $classComment->saveToDB();
+        // $classComment = $_POST['classComment'];
+        // $classComment = ClassComment::create($eventPostID, $classReportData->className, $classReportData->age, $classReportData->judgeNo, $classComment);
+        // $classComment->saveToDB();
     }
 
-    private static function submitPlacementReports($eventPostID, $classReportData, $placementReportData)
-    {
-        foreach ($placementReportData as $placementReport) {
-            $gender = ($placementReport->buckChecked == "true") ? "Buck" : "Doe";
-            $placementReport = PlacementReport::create($eventPostID, $classReportData->className, $classReportData->age, $classReportData->judgeNo, $placementReport->placement, $gender, $placementReport->comment);
-            $placementReport->saveToDB();
-        }
-    }
+    // private function submitPlacementReports(array $placementReports, int $indexID)
+    // {
+    //     foreach ($placementReports as $placementReport) {
+    //         $gender = ($placementReport->buckChecked == "true") ? "Buck" : "Doe";
+    //         $placementReport = PlacementReport::create($classReportData->className, $classReportData->age, $classReportData->judgeNo, $placementReport->placement, $gender, $placementReport->comment);
+    //         $placementReport->saveToDB();
+    //     }
+    // }
 
-    private static function submitGeneralComment($eventPostID)
+    private function submitGeneralComment()
     {
-        $judgeNo = $_POST['judgeNo'];
+        $commentID = isset($_POST['commentID']) && $_POST['commentID'] !== '' ? intval($_POST['commentID']) : null;
+        $judgeNo = intval($_POST['judgeNo']);
         $comment = $_POST['comment'];
-        $generalComment = GeneralComment::create($eventPostID, $judgeNo, $comment);
-        $generalComment->saveToDB();
+
+        $this->judgesReportService->submitGeneralComment($commentID, $judgeNo, $comment);
     }
 }

@@ -41,3 +41,51 @@ class ShowClassModel{
                                WHERE event_post_id = ".$eventPostID." ORDER BY pen_number");
     }
 }
+
+
+class ClassIndexModel{
+    public $id;
+    public $index;
+    public $classID;
+    public $age;
+    private $indexTable;
+
+    private function __construct($index, $classID, $age)
+    {
+        $this->index = $index;
+        $this->classID = $classID;
+        $this->age = $age;
+
+        global $wpdb;
+        $this->indexTable = $wpdb->prefix."micerule_show_classes_indices";
+    }
+
+    public static function create($index, $classID, $age){
+        $instance = new self($index, $classID, $age);
+        return $instance;
+    }
+
+    public static function createWithID($id, $index, $classID, $age){
+        $instance = self::create($index, $classID, $age);
+        $instance->id = $id;
+        return $instance;
+    }
+
+    public function save(){
+        global $wpdb;
+        if($this->id){
+            $wpdb->update($this->indexTable, $this->getValues(), array('id' => $this->id));
+        }else{
+            $wpdb->insert($this->indexTable, $this->getValues());
+        }
+    }
+
+    private function getValues(){
+        return array('class_id' => $this->classID, 'age' => $this->age, 'class_index' => $this->index);
+    }
+
+    public function delete(){
+        global $wpdb;
+        $wpdb->delete($this->indexTable, array('id' => $this->id));
+    }
+}

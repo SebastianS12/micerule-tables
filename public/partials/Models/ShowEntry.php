@@ -108,3 +108,51 @@ class ShowEntry{
         $wpdb->update($wpdb->prefix."micerule_show_entries", array("variety_name" => $varietyName), array("id" => $this->ID));
     }
 }
+
+class EntryModel{
+    public int $ID;
+    public int $classRegistrationID;
+    public int $registrationOrder;
+    public int $penNumber;
+    public string $varietyName;
+    public bool $absent;
+    public bool $added;
+    public bool $moved;
+    public UserRegistrationModel $userRegistration;
+
+    private function __construct($classRegistrationID, $registrationOrder, $penNumber, $varietyName, $absent, $added, $moved)
+    {
+        $this->classRegistrationID = $classRegistrationID;
+        $this->registrationOrder = $registrationOrder;
+        $this->penNumber = $penNumber;
+        $this->varietyName = $varietyName;
+        $this->absent = $absent;
+        $this->added = $added;
+        $this->moved = $moved;
+    }
+
+    public static function create($classRegistrationID, $registrationOrder, $penNumber, $varietyName, $absent, $added, $moved){
+        $instance = new self($classRegistrationID, $registrationOrder, $penNumber, $varietyName, $absent, $added, $moved);
+        return $instance;
+    }
+
+    public static function createWithID($id, $classRegistrationID, $registrationOrder, $penNumber, $varietyName, $absent, $added, $moved){
+        $instance = self::create($classRegistrationID, $registrationOrder, $penNumber, $varietyName, $absent, $added, $moved);
+        $instance->ID = $id;
+        return $instance;
+    }
+
+    public function getClassName(): string{
+        if(!(isset($this->userRegistration)))
+            return "";
+
+        return $this->userRegistration->getClassName();
+    }
+
+    public function getSectionName(): string{
+        if(!(isset($this->userRegistration)))
+            return "";
+
+        return $this->userRegistration->getSectionName();
+    }
+}

@@ -104,4 +104,120 @@ class RegistrationTablesController{
             $penNumber = (floor($penNumber / 20) + 1) * 20;
         }
     }
+
+    public static function getEntryCount(int $eventPostID): int{
+        global $wpdb;
+        $query = <<<SQL
+                    WITH
+                    StandardCount AS (
+                    SELECT 
+                        3*COUNT(*) AS entry_count
+                    FROM 
+                        sm1_micerule_show_user_registrations Registrations
+                    INNER JOIN
+                        sm1_micerule_show_user_registrations_order RegistrationsOrder
+                    ON
+                        Registrations.class_registration_id = RegistrationsOrder.class_registration_id
+                    INNER JOIN 
+                        sm1_micerule_show_classes Classes
+                    ON 
+                        Classes.id = Registrations.class_id
+                    WHERE 
+                        event_post_id = {$eventPostID} AND section != "optional"),
+
+                    OptionalCount AS (
+                    SELECT 
+                        COUNT(*) AS entry_count
+                    FROM 
+                        sm1_micerule_show_user_registrations Registrations
+                    INNER JOIN
+                        sm1_micerule_show_user_registrations_order RegistrationsOrder
+                    ON
+                        Registrations.class_registration_id = RegistrationsOrder.class_registration_id
+                    INNER JOIN 
+                        sm1_micerule_show_classes Classes
+                    ON 
+                        Classes.id = Registrations.class_id
+                    WHERE 
+                        event_post_id = {$eventPostID} AND section = "optional"),
+
+                    JuniorCount AS (
+                    SELECT
+                        COUNT(*) AS entry_count
+                    FROM
+                        sm1_micerule_show_user_junior_registrations JuniorRegistrations
+                    INNER JOIN
+                        sm1_micerule_show_user_registrations Registrations
+                    ON
+                        JuniorRegistrations.class_registration_id = Registrations.class_registration_id
+                    WHERE 
+                        event_post_id = {$eventPostID}
+                    )
+
+                    SELECT 
+                        SUM(entry_count) 
+                    FROM 
+                        (SELECT * FROM StandardCount 
+                            UNION 
+                        SELECT * FROM OptionalCount 
+                            UNION 
+                        SELECT * FROM JuniorCount) Counts
+                    SQL;
+
+        $entryCount = $wpdb->get_var($query);
+        if(!isset($entryCount)){
+            return 0;
+        }
+
+        return $entryCount;
+    }
+
+    public static function getExhibitCount(int $eventPostID): int{
+        global $wpdb;
+        $query = <<<SQL
+                    WITH
+                    ClassCount AS (
+                    SELECT 
+                        COUNT(*) AS exhibit_count
+                    FROM 
+                        sm1_micerule_show_user_registrations Registrations
+                    INNER JOIN
+                        sm1_micerule_show_user_registrations_order RegistrationsOrder
+                    ON
+                        Registrations.class_registration_id = RegistrationsOrder.class_registration_id
+                    INNER JOIN 
+                        sm1_micerule_show_classes Classes
+                    ON 
+                        Classes.id = Registrations.class_id
+                    WHERE
+                        event_post_id = {$eventPostID}),
+
+                    JuniorCount AS (
+                    SELECT
+                        COUNT(*) AS exhibit_count
+                    FROM
+                        sm1_micerule_show_user_junior_registrations JuniorRegistrations
+                    INNER JOIN
+                        sm1_micerule_show_user_registrations Registrations
+                    ON
+                        JuniorRegistrations.class_registration_id = Registrations.class_registration_id
+                    WHERE 
+                        event_post_id = {$eventPostID}
+                    )
+
+                    SELECT 
+                        SUM(exhibit_count) 
+                    FROM 
+                        (SELECT * FROM ClassCount 
+                            UNION 
+                        SELECT * FROM JuniorCount) Counts
+                    SQL;
+        
+        $exhibitCount = $wpdb->get_var($query);
+        if(!isset($exhibitCount)){
+            return 0;
+        }
+
+        return $exhibitCount;
+    }
 }

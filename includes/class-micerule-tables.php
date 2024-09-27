@@ -91,7 +91,8 @@ class Micerule_Tables{
     $this->loader->add_action('wp_ajax_editAbsent', $plugin_public, 'editAbsent');
     $this->loader->add_action('wp_ajax_setAllAbsent', $plugin_public, 'setAllAbsent');
     $this->loader->add_action('wp_ajax_setCustomClassVariety', $plugin_public, 'setCustomClassVariety');
-    $this->loader->add_action('wp_ajax_setPrinted', $plugin_public, 'setPrinted');
+    $this->loader->add_action('wp_ajax_printAll', $plugin_public, 'printAll');
+    $this->loader->add_action('wp_ajax_moveToUnprinted', $plugin_public, 'moveToUnprinted');
     $this->loader->add_action('wp_ajax_submitReport', $plugin_public, 'submitReport');
     $this->loader->add_action('wp_ajax_createShowPost', $plugin_public, 'createShowPost');
     $this->loader->add_action('wp_ajax_getAdminTabsHtml', $plugin_public, 'getAdminTabsHtml');

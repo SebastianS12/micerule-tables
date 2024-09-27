@@ -13,15 +13,32 @@ class EntryBookView
         $html .= "<div>";
         $html .= (time() > strtotime($eventDeadline)) ? "<a class = 'button addEntry'>Add Entry</a>" : "";
 
-        $adGrandChallengePlacements = new GrandChallengePlacements($eventPostID, "Ad");
-        $u8GrandChallengePlacements = new GrandChallengePlacements($eventPostID, "U8");
+        $challengePlacementsRepository = new PlacementsRepository(new ChallengePlacementDAO());
+        $classPlacementsRepository = new PlacementsRepository(new ClassPlacementDAO());
+        $classIndexRepository = new ClassIndexRepository(EventProperties::getEventLocationID($eventPostID));
+        $challengeIndexRepository = new ChallengeIndexRepository(EventProperties::getEventLocationID($eventPostID));
+        $entryRepository = new EntryRepository($eventPostID);
+        $entriesService = new EntriesService($entryRepository, new UserRegistrationsRepository($eventPostID), new ShowClassesRepository(EventProperties::getEventLocationID($eventPostID)));
+        $entries = $entriesService->getAllEntries();
+        $adGrandChallengeIndexModel = $challengeIndexRepository->getChallengeIndexModel(EventProperties::GRANDCHALLENGE, "Ad");
+        $u8GrandChallengeIndexModel = $challengeIndexRepository->getChallengeIndexModel(EventProperties::GRANDCHALLENGE, "U8");
+        $adGrandChallengePlacements = $challengePlacementsRepository->getAllPlacements($eventPostID, $adGrandChallengeIndexModel->id);//new GrandChallengePlacements($eventPostID, "Ad");
+        $u8GrandChallengePlacements = $challengePlacementsRepository->getAllPlacements($eventPostID, $u8GrandChallengeIndexModel->id);//new GrandChallengePlacements($eventPostID, "U8");
+        $challengeRowService = new ChallengeRowService($eventPostID, $challengePlacementsRepository, $challengeIndexRepository, $entryRepository, new UserRegistrationsRepository($eventPostID), new AwardsRepository());
+        $challengeRowController = new ChallengeRowController($challengeRowService);
+        $breedsService = new BreedsService(new BreedsRepository(EventProperties::getEventLocationID($eventPostID)), EventProperties::getEventLocationID($eventPostID));
+        $rowService = new EntryRowService($eventDeadline, new EntryBookPlacementController(), $entries, $breedsService);
+        $entryBookRowController = new EntryBookRowController($rowService);
         foreach (EventProperties::SECTIONNAMES as $sectionName) {
             $sectionName = strtolower($sectionName);
-            $adSectionPlacementsModel = new SectionPlacements($eventPostID, "Ad", $sectionName);
-            $u8SectionPlacementsModel = new SectionPlacements($eventPostID, "U8", $sectionName);
+            $adSectionIndexModel = $challengeIndexRepository->getChallengeIndexModel(EventProperties::getChallengeName($sectionName), "Ad");
+            $u8SectionIndexModel = $challengeIndexRepository->getChallengeIndexModel(EventProperties::getChallengeName($sectionName), "U8");
+            $adSectionPlacements = $challengePlacementsRepository->getAllPlacements($eventPostID, $adSectionIndexModel->id);//new SectionPlacements($eventPostID, "Ad", $sectionName);
+            $u8SectionPlacements = $challengePlacementsRepository->getAllPlacements($eventPostID, $u8SectionIndexModel->id);//new SectionPlacements($eventPostID, "U8", $sectionName);
             
             $sectionStandardBreeds = Breed::getSectionBreedNames($sectionName);
             $html .= "<div class = '" . $sectionName . "-div'>";
+            //$html .= "<div>".var_export(PlacementsService::placementsInSameClass("Section Challenge", $challengePlacementsRepository->getAllPlacements(1)[1], $challengePlacementsRepository->getAllPlacements(1)[2], $entries) , true)."</div>";
             foreach ($showClassesModel->getShowSectionClassNames(EventProperties::getEventLocationID($eventPostID), $sectionName) as $className) {
                 //$classData = $this->entryBookData->classes[$className];
                 $adClassModel = new ShowClassModel($eventPostID, $className, "Ad");
@@ -34,16 +51,21 @@ class EntryBookView
 
                 $adRowCount = 0;
                 $u8RowCount = 0;
-                $adClassPlacementsModel = new ClassPlacements($eventPostID, "Ad", $className);
-                $u8ClassPlacementsModel = new ClassPlacements($eventPostID, "U8", $className);
+                $adClassIndexModel = $classIndexRepository->getClassIndexModel($className, "Ad");
+                $u8ClassIndexModel = $classIndexRepository->getClassIndexModel($className, "U8");
+                $adClassPlacements = $classPlacementsRepository->getAllPlacements($eventPostID, $adClassIndexModel->id);//new ClassPlacements($eventPostID, "Ad", $className);
+                $u8ClassPlacements = $classPlacementsRepository->getAllPlacements($eventPostID, $u8ClassIndexModel->id);//new ClassPlacements($eventPostID, "U8", $className);
+                $adsTableHtml .= "<div>".$adClassIndexModel->id."</div>";
                 foreach ($adClassModel->penNumbers as $penNumber) {
                     $entry = ShowEntry::createWithPenNumber($eventPostID, $penNumber);
-                    $adsTableHtml .= self::getEntryRow($entry, $eventDeadline, "Ad", $adClassPlacementsModel, $adSectionPlacementsModel, $adGrandChallengePlacements, $sectionStandardBreeds, $sectionName, EventProperties::getEventLocationID($eventPostID));
+                    $rowplacementData = new RowPlacementData($adClassIndexModel->id, $adClassPlacements, $adSectionIndexModel->id, $adSectionPlacements, $adGrandChallengeIndexModel->id, $adGrandChallengePlacements);
+                    $adsTableHtml .= $entryBookRowController->render($entry, $rowplacementData);
                     $adRowCount++;
                 }
                 foreach ($u8ClassModel->penNumbers as $penNumber) {
                     $entry = ShowEntry::createWithPenNumber($eventPostID, $penNumber);
-                    $u8TableHtml .= self::getEntryRow($entry, $eventDeadline, "U8", $u8ClassPlacementsModel, $u8SectionPlacementsModel, $u8GrandChallengePlacements, $sectionStandardBreeds, $sectionName, EventProperties::getEventLocationID($eventPostID));
+                    $rowplacementData = new RowPlacementData($u8ClassIndexModel->id, $u8ClassPlacements, $u8SectionIndexModel->id, $u8SectionPlacements, $u8GrandChallengeIndexModel->id, $u8GrandChallengePlacements);
+                    $u8TableHtml .= $entryBookRowController->render($entry, $rowplacementData);
                     $u8RowCount++;
                 }
 
@@ -58,11 +80,7 @@ class EntryBookView
             }
 
             $html .= "<div class = 'class-pairing'>";
-            $prize = "Section Challenge";
-            $challengeName = EventProperties::getChallengeName($sectionName);
-            $challengeAwardsModel = new SectionChallengeAwards($eventPostID, $sectionName);
-            $html .= self::getChallengeRow(new ShowChallengeModel($eventPostID, $challengeName, $sectionName, "Ad"), $challengeAwardsModel, $prize, $adSectionPlacementsModel, $u8SectionPlacementsModel);
-            $html .= self::getChallengeRow(new ShowChallengeModel($eventPostID, $challengeName, $sectionName, "U8"), $challengeAwardsModel, $prize, $u8SectionPlacementsModel, $adSectionPlacementsModel);
+            $html .= ChallengeRowView::render($challengeRowController->prepareChallengeRowData(EventProperties::getChallengeName($sectionName), Prize::SECTION_AWARD));
             $html .= "</div>";
 
             $html .= "</div>";
@@ -72,11 +90,12 @@ class EntryBookView
         //TODO: Enum
         $prize = "Grand Challenge";
         $grandChallengeAwardsModel = new GrandChallengeAwards($eventPostID);
-        $html .= self::getChallengeRow(new ShowChallengeModel($eventPostID, EventProperties::GRANDCHALLENGE, "", "Ad"), $grandChallengeAwardsModel, $prize, $adGrandChallengePlacements, $u8GrandChallengePlacements);
-        $html .= self::getChallengeRow(new ShowChallengeModel($eventPostID, EventProperties::GRANDCHALLENGE, "", "U8"), $grandChallengeAwardsModel, $prize, $u8GrandChallengePlacements, $adGrandChallengePlacements);
+        $html .= ChallengeRowView::render($challengeRowController->prepareChallengeRowData(EventProperties::GRANDCHALLENGE, Prize::GC_AWARD));
+        //$html .= self::getChallengeRow(new ShowChallengeModel($eventPostID, EventProperties::GRANDCHALLENGE, "", "Ad"), $grandChallengeAwardsModel, $prize, $adGrandChallengePlacements, $u8GrandChallengePlacements);
+        //$html .= self::getChallengeRow(new ShowChallengeModel($eventPostID, EventProperties::GRANDCHALLENGE, "", "U8"), $grandChallengeAwardsModel, $prize, $u8GrandChallengePlacements, $adGrandChallengePlacements);
         $html .= "</div>";
 
-        $html .= self::getOptionalClassHtml($eventDeadline, $showClassesModel, $eventPostID);
+        $html .= self::getOptionalClassHtml($eventDeadline, $showClassesModel, $eventPostID, $classIndexRepository, $entries);
 
         $html .= "<div id = 'editEntryModal' style = 'hidden'></div>";
         $html .= "</div>";
@@ -231,22 +250,31 @@ class EntryBookView
         return $html;
     }
 
-    private static function getOptionalClassHtml($eventDeadline, $showClassesModel, $eventPostID)
+    private static function getOptionalClassHtml($eventDeadline, $showClassesModel, $eventPostID, ClassIndexRepository $classIndexRepository, array $entries)
     {
         $html = "";
 
         $sectionName = 'optional';
+        $rowService = new OptionalClassRowService($eventDeadline, new EntryBookPlacementController(), $entries);
         foreach ($showClassesModel->getShowSectionClassnames(EventProperties::getEventLocationID($eventPostID), $sectionName) as $className) {
             $optionalClassModel = new ShowClassModel($eventPostID, $className, "AA");
+            $classIndexModel = $classIndexRepository->getClassIndexModel($className, "AA");
+            $entryBookRowController = new EntryBookRowController($rowService);
+            $classPlacementsRepository = new PlacementsRepository(new ClassPlacementDAO());
+            //TODO: Factory
+            if($className == "Junior"){
+                $entryBookRowController = new EntryBookRowController(new JuniorRowService($rowService));
+            }
+            $classPlacements = $classPlacementsRepository->getAllPlacements($eventPostID, $classIndexModel->id);
             //TODO: ENUM
 
             $html .= "<table class='optional'><tbody>";
             $html .= self::getOptionalClassHeaderRowHtml($optionalClassModel);
-            //TODO: ENUM
-            if($className != "Junior")
-                $html .= self::getOptionalClassEntryRows($optionalClassModel, $eventPostID, $eventDeadline);
-            else
-                $html .= self::getJuniorEntryRows($optionalClassModel, $eventPostID);
+            foreach ($optionalClassModel->penNumbers as $penNumber) {
+                $entry = ShowEntry::createWithPenNumber($eventPostID, $penNumber);
+                $rowplacementData = new RowPlacementData($classIndexModel->id, $classPlacements, null, null, null, null);
+                $html .= $entryBookRowController->render($entry, $rowplacementData);
+            }
 
             $html .= "</table></tbody>";
         }

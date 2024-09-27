@@ -5,6 +5,7 @@ $url     = wp_get_referer();
 $event_id = url_to_postid($url);
 $submitType = $_POST['submitType'];
 
-JudgesReportController::submit($event_id, $submitType);
+$judgesReportController = new JudgesReportController(new JudgesReportService(new JudgesReportRepository($event_id)));
+$judgesReportController->submit($submitType);
 
 wp_die();

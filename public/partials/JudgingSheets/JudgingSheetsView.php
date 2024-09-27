@@ -25,7 +25,8 @@ class JudgingSheetsView
     private static function getGrandChallengeSheetsHtml($eventPostID)
     {
         $html = "";
-        $grandChallengeJudgeName = EventJudgesHelper::getGrandChallengeJudges($eventPostID);
+        $judgesService = new JudgesService(new JudgesRepository());
+        $grandChallengeJudgeName = $judgesService->getJudgesNamesString($eventPostID);
         
         $html .= self::getChallengeSheetHtml($eventPostID, EventProperties::GRANDCHALLENGE, "Grand Challenge", "Ad", $grandChallengeJudgeName, false);
         $html .= self::getChallengeSheetHtml($eventPostID, EventProperties::GRANDCHALLENGE, "Grand Challenge", "U8", $grandChallengeJudgeName, true);

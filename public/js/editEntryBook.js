@@ -20,23 +20,21 @@ function assignEntryBookListeners(){
     openDeleteModal(penNumber);
   });
 
-
   $(".placementCheck").on('change', function(){
-    var prize = this.id.split("&-&")[0];
-    var placement = this.id.split("&-&")[1];
-    var entryID = this.id.split("&-&")[2];
-    var checkValue = $(this).prop('checked');
+    var prize = $(this).data("prize");
+    var placement = $(this).data("placement");
+    var indexID = $(this).parent().data("index-id");
+    var entryID = $(this).parent().data("entry-id");
 
-    editPlacement(prize, placement, entryID, checkValue)
+    editPlacement(prize, placement, indexID, entryID);
   });
 
   $(".BISCheck").on('change', function(){
-    var prize = this.id.split("&-&")[0];
-    var age = this.id.split("&-&")[1];
-    var section = this.id.split("&-&")[2];
-    var checkValue = $(this).prop('checked'); //negate because prop is already new value
+    var prizeID = $(this).data("prize-id");
+    var challengeIndexID = $(this).data("index-id");
+    var oaChallengeIndexID = $(this).data("oa-index-id");
 
-    editBIS(prize, age, section, checkValue);
+    editBIS(prizeID, challengeIndexID, oaChallengeIndexID);
   });
 
   $(".absentCheck").on('change', function(){
@@ -227,7 +225,7 @@ function deleteEntry(penNumber){
   });
 }
 
-function editPlacement(prize, placement, entryID, checkValue){
+function editPlacement(prize, placement, indexID, entryID){
   $("#spinner-div").show();
   jQuery.ajax({
     type: 'POST',
@@ -237,8 +235,8 @@ function editPlacement(prize, placement, entryID, checkValue){
       action: 'editPlacement',
       prize: prize,
       placement: placement,
+      indexID: indexID,
       entryID: entryID,
-      checkValue: checkValue,
     },
     success: function (data) {
       $("#spinner-div").hide();
@@ -246,13 +244,13 @@ function editPlacement(prize, placement, entryID, checkValue){
       console.log(data);
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
-      alert(errorThrown);
+      console.log(errorThrown);
     }
   });
 }
 
 
-function editBIS(prize, age, section, checkValue){
+function editBIS(prizeID, challengeIndexID, oaChallengeIndexID){
   $("#spinner-div").show();
   jQuery.ajax({
     type: 'POST',
@@ -260,10 +258,9 @@ function editBIS(prize, age, section, checkValue){
     data: {
       _ajax_nonce: my_ajax_obj.nonce,
       action: 'editBIS',
-      prize: prize,
-      section: section.toLowerCase(),
-      age: age,
-      checkValue: checkValue,
+      prizeID: prizeID,
+      challengeIndexID: challengeIndexID,
+      oaChallengeIndexID: oaChallengeIndexID,
     },
     success: function (data) {
       $("#spinner-div").hide();

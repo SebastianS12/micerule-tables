@@ -2,14 +2,21 @@
 
 class PrizeCardsController
 {
-    public static function updatePrizeCardsPrinted($eventPostID, $prizeCardsData, $print)
+    private PrizeCardsService $prizeCardsService;
+
+    public function __construct(PrizeCardsService $prizeCardsService)
     {
-        $prizeCardsModel = new PrizeCardsModel();
-        foreach ($prizeCardsData as $prizeCardData) {
-            if($prizeCardData->placementID != null){
-                $prizeCard = PrizeCardFactory::createPrizeCard($eventPostID, $prizeCardsModel->getSinglePrizeCard($prizeCardData->placementID, $prizeCardData->prize));
-                $prizeCard->updatePrinted($print);
-            }
-        }
+        $this->prizeCardsService = $prizeCardsService;
+    }
+    public function preparePrizeCardsData(int $eventPostID, JudgesService $judgesService): array{
+        return $this->prizeCardsService->preparePrizeCardsData($eventPostID, $judgesService);
+    }
+
+    public function printAll(int $eventPostID){
+        $this->prizeCardsService->printAll($eventPostID);
+    }
+
+    public function moveToUnprinted(int $placementID, int $prizeID){
+        $this->prizeCardsService->moveToUnprinted($placementID, $prizeID);
     }
 }

@@ -51,7 +51,7 @@ class RegistrationTablesView
     $html  = "<tr class = 'headerRow'>";
     $html .= "<td class = 'headerCell Ad'>Ad</td>";
     if (RegistrationTablesController::getAllowOnlineRegistrations($eventLocationID)) {
-      $html .= (time() > EventProperties::getEventDeadline($eventPostID)) ? "<td class='entries-count-Ad'>Entries</td><td></td><td class='entries-count-U8'>Entries</td>" : "";
+      $html .= (time() >= EventProperties::getEventDeadline($eventPostID)) ? "<td class='entries-count-Ad'>Entries</td><td></td><td class='entries-count-U8'>Entries</td>" : "";
       $html .= (time() < EventProperties::getEventDeadline(($eventPostID))) ? "<td class='test' colspan='3'></td>" : "";
     } else {
       $html .= "<td class = 'registrationsDisabled'></td><td class = 'registrationsDisabled'></td><td class = 'registrationsDisabled'></td>";
@@ -80,7 +80,7 @@ class RegistrationTablesView
     $userRegistrations = $userClassRegistrationModel->getUserClassRegistrationCount();
     $html = "<td class = 'positionCell Ad'>" . $classData['ad_index'] . "</td>";
     if (RegistrationTablesController::getAllowOnlineRegistrations($eventLocationID)) {
-      $html .= (time() > EventProperties::getEventDeadline($eventPostID)) ? "<td class='entries-count-Ad'>(" . $classAdRegistrationCount .")</td>" : "";
+      $html .= (time() >= EventProperties::getEventDeadline($eventPostID)) ? "<td class='entries-count-Ad'>(" . $classAdRegistrationCount .")</td>" : "";
       $html .= (time() < EventProperties::getEventDeadline($eventPostID) && is_user_logged_in() && (EventUser::isMember($userName) || current_user_can('administrator'))) ? "<td id = '" . $classData['class_name'] . "&-&Ad&-&RegistrationInput' class = 'registrationInput'><input type = 'number' min = '0' value = '" . $userRegistrations . "'></input></td>" : "";
       $html .= (time() < EventProperties::getEventDeadline($eventPostID) && !is_user_logged_in()) ? "<td></td>" : "";
     } else {
@@ -98,7 +98,7 @@ class RegistrationTablesView
     if (RegistrationTablesController::getAllowOnlineRegistrations($eventLocationID)) {
       $html .= (time() < EventProperties::getEventDeadline($eventPostID) && is_user_logged_in() && (EventUser::isMember($userName) || current_user_can('administrator'))) ? "<td id = '" . $classData['class_name'] . "&-&U8&-&RegistrationInput' class = 'registrationInput'><input type = 'number' min = '0' value = '" . $userRegistrations . "'></input></td>" : "";
       $html .= (time() < EventProperties::getEventDeadline($eventPostID) && !is_user_logged_in()) ? "<td></td>" : "";
-      $html .= (time() > EventProperties::getEventDeadline($eventPostID)) ? "<td class='entries-count-U8'>(" . $classU8RegistrationCount . ")</td>" : "";
+      $html .= (time() >= EventProperties::getEventDeadline($eventPostID)) ? "<td class='entries-count-U8'>(" . $classU8RegistrationCount . ")</td>" : "";
     } else {
       $html .= "<td class = 'registrationsDisabled U8Registrations'></td>";
     }
@@ -112,9 +112,9 @@ class RegistrationTablesView
     $html  = "<tr class='classRowMobile'><td  colspan='5' class = 'classNameCell challenge'>" . $challengeName . "</td></tr>";
     $html .= "<tr class = 'classRow challenge' id = '" . $challengeName . "-tr'>";
     $html .= "<td class = 'positionCell ad'>" . RegistrationTablesController::getChallengeIndex($eventLocationID, $challengeName, "Ad") . "</td>";
-    $html .= (time() > EventProperties::getEventDeadline($eventPostID) && RegistrationTablesController::getAllowOnlineRegistrations($eventLocationID)) ? "<td class='entries-count-Ad' id = '" . $challengeName . "&-&Ad'>(" . $sectionAdRegistrationCount . ")</td>" : "<td class = 'registrationsDisabled'></td>";
+    $html .= (time() >= EventProperties::getEventDeadline($eventPostID) && RegistrationTablesController::getAllowOnlineRegistrations($eventLocationID)) ? "<td class='entries-count-Ad' id = '" . $challengeName . "&-&Ad'>(" . $sectionAdRegistrationCount . ")</td>" : "<td class = 'registrationsDisabled'></td>";
     $html .= "<td class = 'classNameCell challenge'><span>" . $challengeName . "</span></td>";
-    $html .= (time() > EventProperties::getEventDeadline($eventPostID) && RegistrationTablesController::getAllowOnlineRegistrations($eventLocationID)) ? "<td class='entries-count-U8' id = '" . $challengeName . "&-&U8'>(" . $sectionU8RegistrationCount . ")</td>" : "<td class = 'registrationsDisabled'></td>";
+    $html .= (time() >= EventProperties::getEventDeadline($eventPostID) && RegistrationTablesController::getAllowOnlineRegistrations($eventLocationID)) ? "<td class='entries-count-U8' id = '" . $challengeName . "&-&U8'>(" . $sectionU8RegistrationCount . ")</td>" : "<td class = 'registrationsDisabled'></td>";
     $html .= "<td class = 'positionCell u8'>" . RegistrationTablesController::getChallengeIndex($eventLocationID, $challengeName, "U8") . "</td>";
     $html .= "</tr>";
 
@@ -181,7 +181,7 @@ class RegistrationTablesView
     $registrationCount = 0;
     $html = "<td class = 'positionCell AA'>" . $classData['aa_index'] . "</td>";
     if (RegistrationTablesController::getAllowOnlineRegistrations($eventLocationID)) {
-      $html .= (time() > EventProperties::getEventDeadline($eventPostID)) ? "<td id = 'entries-count-AA'>(" . $registrationCount . ")</td>" : "<td></td>";
+      $html .= (time() >= EventProperties::getEventDeadline($eventPostID)) ? "<td id = 'entries-count-AA'>(" . $registrationCount . ")</td>" : "<td></td>";
     } else {
       $html .= "<td class = 'registrationsDisabled'></td>";
     }
@@ -210,7 +210,7 @@ class RegistrationTablesView
     if (RegistrationTablesController::getAllowOnlineRegistrations($eventLocationID)) {
       $html .= (time() < EventProperties::getEventDeadline($eventPostID) && is_user_logged_in() && (EventUser::isMember($userName) || current_user_can('administrator'))) ? "<td id = '" . $classData['class_name'] . "&-&AA&-&RegistrationInput' class = 'registrationInput-optionalClass'><input type = 'number' min = '0' value = '" . $registrationCount . "'></input></td>" : "";
       $html .= (time() < EventProperties::getEventDeadline($eventPostID) && !is_user_logged_in()) ? "<td></td>" : "";
-      $html .= (time() > EventProperties::getEventDeadline($eventPostID)) ? "<td class='entries-count-AA'>(" . $registrationCount . ")</td>" : "";
+      $html .= (time() >= EventProperties::getEventDeadline($eventPostID)) ? "<td class='entries-count-AA'>(" . $registrationCount . ")</td>" : "";
     } else {
       $html .= "<td class = 'registrationsDisabled'></td>";
     }
