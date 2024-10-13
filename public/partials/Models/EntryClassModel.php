@@ -1,7 +1,7 @@
 <?php
 
-class EntryClassModel{
-    public $id;
+class EntryClassModel extends Model{
+    public int $id;
     public $locationID;
     public $className;
     public $sectionName;

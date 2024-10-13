@@ -25,25 +25,16 @@ function micerule_shortcode_judges($atts){
   //header
   $html .= "<p>--Judges--</p>";
 
-  //create rows with names of judges and their classes
-  for($i=0;$i<3;$i++){
-    if($table_post_meta['judges'][$i] != ''){
-      $html .= "<span>".$table_post_meta['judges'][$i].":  ";
-      $index=0;
-      foreach($table_post_meta['classes'][$i] as $value){
-        if(isset($table_post_meta['classes'][$i][$index+1])){
-          $html .= $value.", ";
-          $index++;
-        }else{
-          $html .= $value;
-          $index++;
-        }
+  foreach(EventJudgesHelper::getEventJudgeNames($id) as $judgeName){
+    $html .= "<span>".$judgeName.":  ";
+      foreach(EventJudgesHelper::getJudgeSections($id, $judgeName) as $judgeSection){
+          $html .= $judgeSection.", ";
       }
+      $html = rtrim($html, ', ');
+
       $html .= "</span>";
       $html .= "<br>";
-    }
   }
-
 
   //end html
   $html .= '</div>';

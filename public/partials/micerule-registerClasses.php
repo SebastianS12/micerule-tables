@@ -6,62 +6,23 @@
   $event_id = url_to_postid( $url );
 
   $classRegistrations = $_POST['classRegistrations'];
-  $optionalClassRegistrations = $_POST['optionalClassRegistrations'];
+  // $optionalClassRegistrations = $_POST['optionalClassRegistrations'];
   $userName = $_POST['userName'];
 
-  /*
-  $isJuniorMember = EventUser::isJuniorMember($userName);
-  $eventRegistrationData = EventRegistrationData::create($event_id);
+  $userRegistrationsRepository = new UserRegistrationsRepository($event_id);
+  $registrationOrderRepository = new RegistrationOrderRepository($event_id);
+  $registrationCountRepository = new RegistrationCountRepository($event_id, EventProperties::getEventLocationID($event_id));
+  $classIndexRepository = new ClassIndexRepository(EventProperties::getEventLocationID($event_id));
 
-  $userRegistrationData = $eventRegistrationData->getUserRegistrationData($userName);
-  foreach($classRegistrations as $classRegistrationData){
-    $className = $classRegistrationData['className'];
-    $registrationCount = intval($classRegistrationData['registrationCount']);
-    $classIndex = intval($classRegistrationData['classIndex']);
-    $age = $classRegistrationData['age'];
-    $currentRegistrationCount = $userRegistrationData->getUserClassRegistrationCount($className, $age);
+  $registrationService = new RegistrationService($event_id, $userRegistrationsRepository, $registrationOrderRepository, $registrationCountRepository, $classIndexRepository);
+  $registrations = $registrationService->registerEntries($classRegistrations, $userName);
 
-    if($currentRegistrationCount < $registrationCount){
-      //add
-      for($i = $currentRegistrationCount; $i < $registrationCount; $i++){
-        $eventRegistrationData->addClassRegistration($userName, $className, $age, $isJuniorMember);
-      }
-    }
-    if($currentRegistrationCount > $registrationCount){
-      //remove
-      for($i = $currentRegistrationCount; $i > $registrationCount; $i--){
-        $eventRegistrationData->removeClassRegistration($userName, $className, $age, $isJuniorMember);
-      }
-    }
-  }
+  $entriesService = new EntriesService(new EntryRepository($event_id));
+  $entriesService->createEntriesFromRegistrations(EventProperties::getEventLocationID($event_id), $event_id);
 
-  foreach($optionalClassRegistrations as $optionalClassRegistrationData){
-    $className = $optionalClassRegistrationData['className'];
-    $registrationCount = intval($optionalClassRegistrationData['registrationCount']);
-    $classIndex = intval($adRegistrationData['classIndex']);
-    $currentRegistrationCount = $userRegistrationData->getUserClassRegistrationCount($className, "AA");
 
-    if($currentRegistrationCount < $registrationCount){
-      //add
-      for($i = $currentRegistrationCount; $i < $registrationCount; $i++){
-        $eventRegistrationData->addOptionalClassRegistration($userName, $className, "AA");
-      }
-    }
-    if($currentRegistrationCount > $registrationCount){
-      //remove
-      for($i = $currentRegistrationCount; $i > $registrationCount; $i--){
-        $eventRegistrationData->removeOptionalClassRegistration($userName, $className, "AA");
-      }
-    }
-  }
-
-  $eventRegistrationData->updatePostMeta($event_id);
-  echo($userRegistrationData->getUserRegistrationOverviewHtml(EventProperties::getEventLocationID($event_id)));
-  include("micerule-registerClasses-entryBookData.php");
-  */
-
-  RegistrationTablesController::registerEntries($event_id, $classRegistrations, $optionalClassRegistrations, $userName);
-  RegistrationTablesController::createEntriesFromRegistrations($event_id, EventProperties::getEventLocationID($event_id));
-  echo(RegistrationTablesView::getUserRegistrationOverviewHtml($event_id, $userName));
+  // RegistrationTablesController::registerEntries($event_id, $classRegistrations, $optionalClassRegistrations, $userName);
+  // RegistrationTablesController::createEntriesFromRegistrations($event_id, EventProperties::getEventLocationID($event_id));
+  echo(RegistrationTablesView::getUserRegistrationOverviewHtml($userName, $registrations));
 
   wp_die();

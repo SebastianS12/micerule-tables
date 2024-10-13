@@ -74,6 +74,7 @@ jQuery(document).ready(function($){
       data.addRow([chartData[i]['variety_name'], parseInt(chartData[i]['times_won'])]);
       colours[i] = { color: chartData[i]['colour']};
       circleFill.push(chartData[i]['css_class']);
+      console.log(chartData[i]['css_class']);
     }
   
   
@@ -83,13 +84,13 @@ jQuery(document).ready(function($){
     pieSliceText:'none',
     pieSliceTextStyle:{fontName: 'Bree Serif', fontSize: 25},
     slices:{},
-    chartArea:{width:'100%',height:'360px', top: 0},
+    chartArea:{width:'100%',height:'80%', top: 0},
     pieSliceBorderColor:'white',
     backgroundColor:'transparent',
     enableInteractivity: 'false',
     legend: {position: "labeled",alignment:"center",textStyle: {fontName: 'Bree Serif', fontSize: 16, color:'white'}},
     'pieHole': 0.4};
-  
+
   
     for(var index in colours){
       options.slices[index]= colours[index];

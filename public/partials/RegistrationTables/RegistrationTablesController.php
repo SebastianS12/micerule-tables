@@ -2,6 +2,17 @@
 
 //TODO: Duplicate Code from ShowOptionsController -> create ShowOptions Model
 class RegistrationTablesController{
+    private RegistrationTablesService $registrationTablesService;
+
+    public function __construct(RegistrationTablesService $registrationTablesService)
+    {
+        $this->registrationTablesService = $registrationTablesService;
+    }
+
+    public function prepareViewModel(int $eventPostID, int $locationID, string $userName): RegistrationTablesViewModel{
+        return $this->registrationTablesService->prepareViewModel($eventPostID, $locationID, $userName);
+    }
+
     public static function getShowSectionClassesData($locationID, $section){
         $showClassesModel = new ShowClassesModel();
         $showSectionClassesData = $showClassesModel->getShowSectionClassesData($locationID, $section);
@@ -33,7 +44,6 @@ class RegistrationTablesController{
         return $challengeIndex;
     }
 
-    //TODO:optional classes
     public static function registerEntries($eventPostID, $classRegistrations, $optionalClassRegistrations, $userName){
         foreach($classRegistrations as $classRegistrationData){
             $className = $classRegistrationData['className'];

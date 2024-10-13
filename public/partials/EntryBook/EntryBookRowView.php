@@ -10,8 +10,8 @@ class EntryBookRowView{
 
         //TODO: Enums for Prize
         $html .= EntryBookPlacementView::render($data['classPlacementData']);
-        $html .= EntryBookPlacementView::render($data['sectionPlacementData']);
-        $html .= EntryBookPlacementView::render($data['grandChallengePlacementData']);
+        // $html .= EntryBookPlacementView::render($data['sectionPlacementData']);
+        // $html .= EntryBookPlacementView::render($data['grandChallengePlacementData']);
         $html .= "</tr>";
 
         return $html;

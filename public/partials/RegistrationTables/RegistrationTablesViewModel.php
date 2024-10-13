@@ -1,10 +1,13 @@
 <?php
 
-class EntryBookViewModel{
-    public bool $pastDeadline;
-    public array $grandChallengeData;
+class RegistrationTablesViewModel{
     public array $challengeData;
     public array $classData;
+    public bool $allowOnlineRegistrations;
+    public bool $beforeDeadline;
+    public bool $isLoggedIn;
+    public bool $isMember;
+    public bool $isAdmin;
 
     public function __construct()
     {

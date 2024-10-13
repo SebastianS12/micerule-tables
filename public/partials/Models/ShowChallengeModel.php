@@ -23,8 +23,8 @@ class ShowChallengeModel{
     }
 }
 
-class ChallengeIndexModel{
-    public $id;
+class ChallengeIndexModel extends Model{
+    public int $id;
     public $locationID;
     public $section;
     public $challengeName;

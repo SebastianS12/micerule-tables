@@ -1,6 +1,6 @@
 <?php
 
-class ShowClassesRepository{
+class ShowClassesRepository implements IRepository{
     public $locationID;
 
     public function __construct($locationID)
@@ -8,18 +8,18 @@ class ShowClassesRepository{
         $this->locationID = $locationID;
     }
 
-    public function getAll(): array{
-        $showClasses = array();
-
+    public function getAll(): Collection{
         global $wpdb;
         $classesData = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."micerule_show_classes
                                            WHERE location_id = ".$this->locationID, ARRAY_A);
 
+        $collection = new Collection();
         foreach($classesData as $row){
-            $showClasses[$row['id']] = EntryClassModel::createWithID($row['id'], $row['location_id'], $row['class_name'], $row['section'], $row['section_position']);
+            $showClassModel = EntryClassModel::createWithID($row['id'], $row['location_id'], $row['class_name'], $row['section'], $row['section_position']);
+            $collection->add($showClassModel);
         }
 
-        return $showClasses;
+        return $collection;
     }
 
     public function getByID($id): EntryClassModel{

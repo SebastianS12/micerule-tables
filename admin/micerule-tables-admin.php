@@ -11,11 +11,6 @@ require_once plugin_dir_path(__FILE__) . 'partials/ShowOptions/ShowOptionsContro
 require_once plugin_dir_path(__FILE__) . 'partials/ShowOptions/ShowOptionsModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/ShowOptions/ShowClassesModel.php';
 
-require_once plugin_dir_path(__FILE__) . 'partials/Models/ChallengeIndexRepository.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Models/ClassIndexRepository.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Models/ShowClassModel.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Models/ShowChallengeModel.php';
-
 class Micerule_Tables_Admin{
 
   private $plugin_name;

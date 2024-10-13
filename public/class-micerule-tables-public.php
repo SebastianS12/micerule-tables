@@ -3,6 +3,22 @@
 /**
 * The public-facing functionality of the plugin.
 */
+require_once plugin_dir_path(__FILE__) . 'partials/Enums/Prizes.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Enums/Awards.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Enums/Tables.php';
+
+require_once plugin_dir_path(__FILE__) . 'core/database/Collection.php';
+require_once plugin_dir_path(__FILE__) . 'core/database/Model.php';
+require_once plugin_dir_path(__FILE__) . 'core/database/IQueryCombine.php';
+require_once plugin_dir_path(__FILE__) . 'core/database/IQueryWhere.php';
+require_once plugin_dir_path(__FILE__) . 'core/database/QueryJoin.php';
+require_once plugin_dir_path(__FILE__) . 'core/database/QueryJoinSub.php';
+require_once plugin_dir_path(__FILE__) . 'core/database/QueryWhere.php';
+require_once plugin_dir_path(__FILE__) . 'core/database/QueryWhereNull.php';
+require_once plugin_dir_path(__FILE__) . 'core/database/QueryWhereNested.php';
+require_once plugin_dir_path(__FILE__) . 'core/database/QueryBuilder.php';
+require_once plugin_dir_path(__FILE__) . 'core/database/ModelHydrator.php';
+
 include_once plugin_dir_path(__FILE__)."partials/Location/EventClasses.php";
 include_once plugin_dir_path(__FILE__)."partials/Event/EventRegistrationData.php";
 include_once plugin_dir_path(__FILE__)."partials/Event/EventProperties.php";
@@ -30,9 +46,26 @@ require_once plugin_dir_path(__FILE__) . 'partials/Leaderboard/LeaderboardContro
 require_once plugin_dir_path(__FILE__) . 'partials/Leaderboard/LeaderboardModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Leaderboard/LeaderboardView.php';
 
+require_once plugin_dir_path(__FILE__) . 'partials/Repositories/IRepository.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Repositories/EntryRepository.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Repositories/ShowClassesRepository.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Repositories/UserRegistrationsRepository.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Repositories/AwardsRepository.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Repositories/PrizeCardsRepository.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Repositories/JudgesRepository.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Repositories/BreedsRepository.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Repositories/ShowSectionRepository.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Repositories/JudgesReportRepository.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Repositories/ChallengeIndexRepository.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Repositories/ClassIndexRepository.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Repositories/RegistrationCountRepository.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Repositories/RegistrationOrderRepository.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Repositories/PlacementsRepository.php';
+
 require_once plugin_dir_path(__FILE__) . 'partials/RegistrationTables/RegistrationTablesController.php';
 require_once plugin_dir_path(__FILE__) . 'partials/RegistrationTables/RegistrationTablesModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/RegistrationTables/RegistrationTablesView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/RegistrationTables/RegistrationTablesViewModel.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/FancierEntries/FancierEntriesController.php';
 require_once plugin_dir_path(__FILE__) . 'partials/FancierEntries/FancierEntriesView.php';
@@ -51,6 +84,7 @@ require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/EntryBookRowView.ph
 require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/RowPlacementData.php';
 require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/ChallengeRowView.php';
 require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/ChallengeRowController.php';
+require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/EntryBookViewModel.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/Label/LabelModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Label/LabelView.php';
@@ -71,9 +105,11 @@ require_once plugin_dir_path(__FILE__) . 'partials/JudgesReport/JudgesReportView
 
 require_once plugin_dir_path(__FILE__) . 'partials/DAOs/IPrintDAO.php';
 require_once plugin_dir_path(__FILE__) . 'partials/DAOs/AwardsDAO.php';
+require_once plugin_dir_path(__FILE__) . 'partials/DAOs/IPlacementDAO.php';
+require_once plugin_dir_path(__FILE__) . 'partials/DAOs/PlacementDAO.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/Models/ShowEntry.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Models/ClassPlacements.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/PlacementModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/SinglePlacement.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/NextPenNumber.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/PrizeCards.php';
@@ -84,16 +120,9 @@ require_once plugin_dir_path(__FILE__) . 'partials/Models/ClassComment.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/GeneralComment.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/EntryClassModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/UserRegistrationModel.php';
-
-require_once plugin_dir_path(__FILE__) . 'partials/Repositories/EntryRepository.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Repositories/ShowClassesRepository.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Repositories/UserRegistrationsRepository.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Repositories/AwardsRepository.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Repositories/PrizeCardsRepository.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Repositories/JudgesRepository.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Repositories/BreedsRepository.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Repositories/ShowSectionRepository.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Repositories/JudgesReportRepository.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/ShowClassModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/ShowChallengeModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/RegistrationOrderModel.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/Services/PlacementsService.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Services/EntriesService.php';
@@ -106,12 +135,14 @@ require_once plugin_dir_path(__FILE__) . 'partials/Services/JudgesService.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Services/PrizeCardsService.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Services/BreedsService.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Services/JudgesReportService.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Services/RegistrationTablesService.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Services/RegistrationService.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Services/EntryBookService.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Services/PlacementsRowService.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/Factories/PrizeCardFactory.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Factories/PrintDAOFactory.php';
 
-require_once plugin_dir_path(__FILE__) . 'partials/Enums/Prizes.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Enums/Awards.php';
 class Micerule_Tables_Public {
 
 	/**

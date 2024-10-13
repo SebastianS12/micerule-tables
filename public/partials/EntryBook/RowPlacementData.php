@@ -1,20 +1,20 @@
 <?php
 
 class RowPlacementData{
-    public $classIndexID;
-    public $classPlacements;
-    public $sectionIndexID;
-    public $sectionPlacements;
-    public $grandChallengeIndexID;
-    public $grandChallengePlacements;
+    public int $classIndexID;
+    public Collection $classPlacements;
+    public int $sectionIndexID;
+    public Collection $sectionPlacements;
+    public int $grandChallengeIndexID;
+    public Collection $grandChallengePlacements;
 
-    public function __construct($classIndexID, $classPlacements, $sectionIndexID, $sectionPlacements, $grandChallengeIndexID, $grandChallengePlacements)
+    public function __construct(int $classIndexID, Collection $classPlacements, int $sectionIndexID, Collection $sectionPlacements, int $grandChallengeIndexID, Collection $grandChallengePlacements)
     {
         $this->classIndexID = $classIndexID;
-        $this->classPlacements = $classPlacements;
+        $this->classPlacements = $classPlacements->groupBy("placement");
         $this->sectionIndexID = $sectionIndexID;
-        $this->sectionPlacements = $sectionPlacements;
+        $this->sectionPlacements = $sectionPlacements->groupBy("placements");
         $this->grandChallengeIndexID = $grandChallengeIndexID;
-        $this->grandChallengePlacements = $grandChallengePlacements;
+        $this->grandChallengePlacements = $grandChallengePlacements->groupBy("placements");
     }
 }

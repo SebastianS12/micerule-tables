@@ -23,6 +23,7 @@ function updateEntryFields(userName){
       userName: userName,
     },
     success: function (data) {
+      console.log(data);
       $("#registrationTables").replaceWith(data);
       initRegistrationTablesJS();
     },

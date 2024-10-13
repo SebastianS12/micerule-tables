@@ -1,27 +1,25 @@
 <?php
 
-class UserRegistrationModel{
+class UserRegistrationModel extends Model{
     public int $id;
     public int $eventPostID;
     public string $userName;
-    public int $classID;
-    public string $age;
+    public int $classIndexID;
     public EntryClassModel $showClass;
 
-    private function __construct($eventPostID, $userName, $classID, $age)
+    private function __construct(int $eventPostID, string $userName, int $classIndexID)
     {
         $this->eventPostID = $eventPostID;
         $this->userName = $userName;
-        $this->classID = $classID;
-        $this->age = $age;
+        $this->classIndexID = $classIndexID;
     }
 
-    public static function create($eventPostID, $userName, $classID, $age){
-        return new self($eventPostID, $userName, $classID, $age);
+    public static function create(int $eventPostID, string $userName, int $classIndexID){
+        return new self($eventPostID, $userName, $classIndexID);
     }
 
-    public static function createWithID($id, $eventPostID, $userName, $classID, $age){
-        $instance = self::create($eventPostID, $userName, $classID, $age);
+    public static function createWithID(int $id, int $eventPostID, string $userName, int $classIndexID){
+        $instance = self::create($eventPostID, $userName, $classIndexID);
         $instance->id = $id;
         return $instance;
     }

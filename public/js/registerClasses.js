@@ -8,10 +8,9 @@ function registerClasses(){
       inputVal = 0;
     }
 
-    var className = this.id.split("&-&")[0];
-    var age = this.id.split("&-&")[1];
+    var classIndex = $(this).data("classIndex");
 
-    const registrationData = {className : className, age: age, registrationCount : inputVal,};
+    const registrationData = {classIndex : classIndex, registrationCount : inputVal,};
     classRegistrations.push(registrationData);
   });
 

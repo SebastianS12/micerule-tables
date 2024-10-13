@@ -109,21 +109,17 @@ class ShowEntry{
     }
 }
 
-class EntryModel{
-    public int $ID;
-    public int $classRegistrationID;
-    public int $registrationOrder;
+class EntryModel extends Model{
+    public int $registrationOrderID;
     public int $penNumber;
     public string $varietyName;
     public bool $absent;
     public bool $added;
     public bool $moved;
-    public UserRegistrationModel $userRegistration;
 
-    private function __construct($classRegistrationID, $registrationOrder, $penNumber, $varietyName, $absent, $added, $moved)
+    private function __construct(int $registrationOrderID, int $penNumber, string $varietyName, bool $absent, bool $added, bool $moved)
     {
-        $this->classRegistrationID = $classRegistrationID;
-        $this->registrationOrder = $registrationOrder;
+        $this->registrationOrderID = $registrationOrderID;
         $this->penNumber = $penNumber;
         $this->varietyName = $varietyName;
         $this->absent = $absent;
@@ -131,28 +127,24 @@ class EntryModel{
         $this->moved = $moved;
     }
 
-    public static function create($classRegistrationID, $registrationOrder, $penNumber, $varietyName, $absent, $added, $moved){
-        $instance = new self($classRegistrationID, $registrationOrder, $penNumber, $varietyName, $absent, $added, $moved);
+    public static function create(int $registrationOrderID, int $penNumber, string $varietyName, bool $absent, bool $added, bool $moved){
+        $instance = new self($registrationOrderID, $penNumber, $varietyName, $absent, $added, $moved);
         return $instance;
     }
 
-    public static function createWithID($id, $classRegistrationID, $registrationOrder, $penNumber, $varietyName, $absent, $added, $moved){
-        $instance = self::create($classRegistrationID, $registrationOrder, $penNumber, $varietyName, $absent, $added, $moved);
-        $instance->ID = $id;
+    public static function createWithID(int $id, int $registrationOrderID, int $penNumber, string $varietyName, bool $absent, bool $added, bool $moved){
+        $instance = self::create($registrationOrderID, $penNumber, $varietyName, $absent, $added, $moved);
+        $instance->id = $id;
         return $instance;
     }
 
-    public function getClassName(): string{
-        if(!(isset($this->userRegistration)))
-            return "";
-
-        return $this->userRegistration->getClassName();
+    public function placements(): Collection
+    {
+        return $this->hasMany("placements");
     }
 
-    public function getSectionName(): string{
-        if(!(isset($this->userRegistration)))
-            return "";
-
-        return $this->userRegistration->getSectionName();
+    public function showClass(): EntryClassModel|null
+    {
+        return $this->belongsToOneThrough([RegistrationOrderModel::class, UserRegistrationModel::class, ClassIndexModel::class, EntryClassModel::class]);
     }
 }

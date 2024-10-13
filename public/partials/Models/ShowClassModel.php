@@ -43,8 +43,8 @@ class ShowClassModel{
 }
 
 
-class ClassIndexModel{
-    public $id;
+class ClassIndexModel extends Model{
+    public int $id;
     public $index;
     public $classID;
     public $age;
@@ -69,6 +69,10 @@ class ClassIndexModel{
         $instance = self::create($index, $classID, $age);
         $instance->id = $id;
         return $instance;
+    }
+
+    public function class(){
+        return $this->hasOne("class");
     }
 
     public function save(){
