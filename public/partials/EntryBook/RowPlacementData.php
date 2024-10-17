@@ -11,10 +11,10 @@ class RowPlacementData{
     public function __construct(int $classIndexID, Collection $classPlacements, int $sectionIndexID, Collection $sectionPlacements, int $grandChallengeIndexID, Collection $grandChallengePlacements)
     {
         $this->classIndexID = $classIndexID;
-        $this->classPlacements = $classPlacements->groupBy("placement");
+        $this->classPlacements = $classPlacements;
         $this->sectionIndexID = $sectionIndexID;
-        $this->sectionPlacements = $sectionPlacements->groupBy("placements");
+        $this->sectionPlacements = $sectionPlacements;
         $this->grandChallengeIndexID = $grandChallengeIndexID;
-        $this->grandChallengePlacements = $grandChallengePlacements->groupBy("placements");
+        $this->grandChallengePlacements = $grandChallengePlacements;
     }
 }

@@ -72,4 +72,9 @@ class ChallengeIndexModel extends Model{
         global $wpdb;
         $wpdb->delete($this->indexTable, array('id' => $this->id));
     }
+
+    public function placements(): Collection
+    {
+        return $this->hasMany("placements");
+    }
 }

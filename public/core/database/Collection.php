@@ -71,7 +71,7 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable{
 
     public function groupBy(string $attribute): Collection{
         $groupedCollection = new Collection();
-        foreach($this as $collectionItem){
+        foreach($this as &$collectionItem){
             if(!isset($groupedCollection[$collectionItem->$attribute])){
                 $groupedCollection[$collectionItem->$attribute] = new Collection();
             }
@@ -89,6 +89,16 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable{
         }
 
         return $groupedCollection;
+    }
+
+    public function get(string $attribute, mixed $condition): mixed{
+        foreach($this as &$collectionItem){
+            if($collectionItem->$attribute == $condition){
+                return $collectionItem;
+            }
+        }
+
+        return null;
     }
 
     /**

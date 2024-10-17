@@ -10,8 +10,8 @@ class EntryBookRowView{
 
         //TODO: Enums for Prize
         $html .= EntryBookPlacementView::render($data['classPlacementData']);
-        // $html .= EntryBookPlacementView::render($data['sectionPlacementData']);
-        // $html .= EntryBookPlacementView::render($data['grandChallengePlacementData']);
+        $html .= EntryBookPlacementView::render($data['sectionPlacementData']);
+        $html .= EntryBookPlacementView::render($data['grandChallengePlacementData']);
         $html .= "</tr>";
 
         return $html;
@@ -19,7 +19,7 @@ class EntryBookRowView{
 
     private static function getAbsentCell($data)
     {
-        $html = "<td class = 'absent-td'>";
+        $html = "<td class = 'absent-td' data-entry-id = ".$data['entryID'].">";
         $html .= "<input type = 'checkbox' class = 'absentCheck' id = '" . $data['penNumber'] . "&-&absent&-&check' " . $data['absentChecked'] . " visibility = '".$data['absentVisibility']."'></input><label for='" . $data['penNumber'] . "&-&absent&-&check'><img src='/wp-content/plugins/micerule-tables/admin/svg/absent-not.svg'></label>";
         $html .= "</td>";
 
@@ -28,7 +28,7 @@ class EntryBookRowView{
 
     private static function getEditCell($data)
     {
-        $html  = "<td class = 'editEntry-td'>";
+        $html  = "<td class = 'editEntry-td' data-entry-id = ".$data['entryID'].">";
         $html .= "<div class='button-wrapper' visibility = '".$data['editVisibility']."'><button class = 'moveEntry' id = '" . $data['penNumber'] . "&-&move'><img src='/wp-content/plugins/micerule-tables/admin/svg/move.svg'></button>
                   <button class = 'deleteEntry' id = '" . $data['penNumber'] . "&-&delete'><img src='/wp-content/plugins/micerule-tables/admin/svg/trash.svg'></button></div>";
         $html .=  "<select class = 'classSelect-entryBook' id = '".$data['entryID']."&-&varietySelect' autocomplete='off' style='display:".$data['showVarietySelect']."'><option value = ''>Select a Variety</option>".$data['varietyOptions']."</select>";

@@ -1,5 +1,5 @@
 <?php
 
 interface IRowService{
-    public function prepareRowData(ShowEntry $entry, RowPlacementData $rowPlacementData);
+    public function prepareRowData(EntryModel $entry, string $userName, RowPlacementData $rowPlacementData, string $age, bool $pastDeadline);
 }

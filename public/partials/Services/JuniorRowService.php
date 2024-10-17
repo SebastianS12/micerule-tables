@@ -7,9 +7,9 @@ class JuniorRowService implements IRowService{
         $this->optionalClassRowService = $optionalClassRowService;
     }
 
-    public function prepareRowData(ShowEntry $entry, RowPlacementData $rowPlacementData)
+    public function prepareRowData(EntryModel $entry, string $userName, RowPlacementData $rowPlacementData, string $age, bool $pastDeadline)
     {
-        $rowData = $this->optionalClassRowService->prepareRowData($entry, $rowPlacementData);
+        $rowData = $this->optionalClassRowService->prepareRowData($entry, $userName, $rowPlacementData, $age, $pastDeadline);
         $rowData = $this->adjustForJuniorClass($rowData);
         return $rowData;
     }

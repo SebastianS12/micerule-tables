@@ -3,7 +3,9 @@ global $post;
 
 $url     = wp_get_referer();
 $event_id = url_to_postid( $url );
-$penNumber = $_POST['penNumber'];
+$entryID = intval($_POST['entryID']);
 
-EntryBookController::deleteEntry($event_id, $penNumber);
+$entriesService = new EntriesService(new EntryRepository($event_id));
+$entryBookController = new EntryBookController();
+$entryBookController->deleteEntry($entriesService, $entryID);
 wp_die();

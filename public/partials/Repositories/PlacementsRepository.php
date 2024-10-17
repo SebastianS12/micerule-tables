@@ -24,16 +24,17 @@ class PlacementsRepository implements IRepository{
     }
 
 
-    public function getAllPlacements(int $eventPostID, int $indexID)
+    public function getIndexPlacements(int $indexID): Collection
     {
-        $placementData = $this->placementsDAO->getAll($eventPostID, $indexID);
+        $placementData = $this->placementsDAO->getByIndexID($indexID);
 
-        $placements = array();
+        $collection = new Collection();
         foreach($placementData as $row){
-            $placements[$row['placement']] = PlacementModel::createWithID($row['id'], $row['entry_id'], $row['index_id'], $row['placement'], $row['prize'], $row['printed']);
+            $placementModel = PlacementModel::createWithID($row['id'], $row['entry_id'], $row['index_id'], $row['placement'], $row['prize'], $row['printed']);
+            $collection->add($placementModel);
         }
 
-        return $placements;
+        return $collection;
     }
 
     public function getByID(int $placementID)

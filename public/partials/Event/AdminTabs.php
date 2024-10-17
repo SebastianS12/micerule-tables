@@ -33,8 +33,8 @@ class AdminTabs{
               </ul>";
       $empty = "";
       if((in_array(wp_get_current_user()->display_name, $locationSecretaries['name'])) || current_user_can('administrator')){
-        $html .= "<div class = 'fancierEntries content'>".$empty/*FancierEntriesView::getFancierEntriesHtml($eventID)*/."</div>
-                  <div class = 'label content' style = 'display : none'>"./*LabelView::getHtml($eventID)*/$empty."</div>
+        $html .= "<div class = 'fancierEntries content'>".FancierEntriesView::getFancierEntriesHtml($eventID)."</div>
+                  <div class = 'label content' style = 'display : none'>".LabelView::getHtml($eventID)."</div>
                   <div class = 'entrySummary content' style = 'display : none'>"./*EntrySummaryView::getEntrySummaryHtml($eventID)*/$empty."</div>
                   <div class = 'judgingSheets content' style = 'display : none'>"./*JudgingSheetsView::getHtml($eventID)*/$empty."</div>
                   <div class = 'entryBook content' style = 'display : none'>".EntryBookView::getEntryBookHtml($eventID)."</div>

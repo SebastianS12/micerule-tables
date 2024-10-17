@@ -34,9 +34,9 @@ class RegistrationOrderRepository implements IRepository{
         return $wpdb->insert_id;
     }
 
-    public function addJuniorRegistration(int $registrationOrderID): void{
+    public function addJuniorRegistration(int $registrationOrderID, int $registrationID): void{
         global $wpdb;
-        $wpdb->insert($wpdb->prefix.Table::REGISTRATIONS_JUNIOR->value, array("id" => $registrationOrderID));
+        $wpdb->insert($wpdb->prefix.Table::REGISTRATIONS_JUNIOR->value, array("registration_order_id" => $registrationOrderID, "registration_id" => $registrationID));
     }
 
     public function removeRegistration(int $registrationOrderID): void{

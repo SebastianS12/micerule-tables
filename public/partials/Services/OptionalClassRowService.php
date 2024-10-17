@@ -1,31 +1,27 @@
 <?php
 
 class OptionalClassRowService implements IRowService{
-    private $eventDeadline;
-    private $placementController;
-    private $entries;
+    private PlacementsRowService $placementsRowService;
 
-    public function __construct(string $eventDeadline, EntryBookPlacementController $placementController, array $entries)
+    public function __construct(PlacementsRowService $placementsRowService)
     {
-        $this->eventDeadline = $eventDeadline;
-        $this->placementController = $placementController;
-        $this->entries = $entries;
+        $this->placementsRowService = $placementsRowService;
     }
 
-    public function prepareRowData(ShowEntry $entry, RowPlacementData $rowPlacementData): array{
+    public function prepareRowData(EntryModel $entry, string $userName, RowPlacementData $rowPlacementData, string $age, bool $pastDeadline): array{
         $rowData = array();
         $rowData['classMoved'] = ($entry->moved) ? "moved" : "";
         $rowData['classAbsent'] = ($entry->absent) ? "absent" : "";
         $rowData['classAdded'] = ($entry->added) ? "added" : "";
         $rowData['penNumber'] = $entry->penNumber;
-        $rowData['entryID'] = $entry->ID;
-        $rowData['userName'] = $entry->userName;
+        $rowData['entryID'] = $entry->id;
+        $rowData['userName'] = $userName;
         $rowData['absentChecked'] = ($entry->absent) ? "checked" : "";
-        $rowData['absentVisibility'] = (PlacementsService::entryInPlacements($entry, $rowPlacementData->classPlacements)) ? "hidden" : "visible";
-        $rowData['editVisibility'] = (PlacementsService::entryInPlacements($entry, $rowPlacementData->classPlacements) && time() > strtotime($this->eventDeadline)) ? "hidden" : "visible";
+        $rowData['absentVisibility'] = (PlacementsService::entryInPlacements($entry, Prize::STANDARD)) ? "hidden" : "visible";
+        $rowData['editVisibility'] = (PlacementsService::entryInPlacements($entry, Prize::STANDARD) && $pastDeadline) ? "hidden" : "visible";
         $rowData['showVarietySelect'] = "none";
         $rowData['varietyOptions'] = "";
-        $rowData['classPlacementData'] = $this->placementController->prepareEntryPlacementData($entry, null, $rowPlacementData->classPlacements, null, $rowPlacementData->classIndexID, "Class", $this->entries);
+        $rowData['classPlacementData'] = $this->placementsRowService->prepareEntryPlacementData($entry, Prize::STANDARD, new Collection(), $rowPlacementData->classPlacements, Prize::SECTION, $rowPlacementData->classIndexID, $age);
         $rowData['sectionPlacementData'] = $this->getEmptyPlacementData();
         $rowData['grandChallengePlacementData'] = $this->getEmptyPlacementData();
 

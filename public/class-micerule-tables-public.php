@@ -61,6 +61,7 @@ require_once plugin_dir_path(__FILE__) . 'partials/Repositories/ClassIndexReposi
 require_once plugin_dir_path(__FILE__) . 'partials/Repositories/RegistrationCountRepository.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Repositories/RegistrationOrderRepository.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Repositories/PlacementsRepository.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Repositories/JuniorRegistrationRepository.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/RegistrationTables/RegistrationTablesController.php';
 require_once plugin_dir_path(__FILE__) . 'partials/RegistrationTables/RegistrationTablesModel.php';
@@ -123,6 +124,8 @@ require_once plugin_dir_path(__FILE__) . 'partials/Models/UserRegistrationModel.
 require_once plugin_dir_path(__FILE__) . 'partials/Models/ShowClassModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/ShowChallengeModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/RegistrationOrderModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/AwardModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/JuniorRegistrationModel.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/Services/PlacementsService.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Services/EntriesService.php';
@@ -139,9 +142,16 @@ require_once plugin_dir_path(__FILE__) . 'partials/Services/RegistrationTablesSe
 require_once plugin_dir_path(__FILE__) . 'partials/Services/RegistrationService.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Services/EntryBookService.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Services/PlacementsRowService.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Services/FancierEntriesService.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Services/LabelService.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/Factories/PrizeCardFactory.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Factories/PrintDAOFactory.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Factories/PlacementDAOFactory.php';
+
+require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/FancierEntriesViewModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/LabelViewModel.php';
+
 
 class Micerule_Tables_Public {
 

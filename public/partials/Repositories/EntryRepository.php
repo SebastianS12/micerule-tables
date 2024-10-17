@@ -33,10 +33,15 @@ class EntryRepository implements IRepository{
         return $collection;
     }
 
-    public function getByID($id): EntryModel{
+    public function getByID(int $entryId): EntryModel|null{
         global $wpdb;
-        $entryData = $wpdb->get_row("SELECT * FROM ". $wpdb->prefix."micerule_show_entries
-                                         WHERE id = ".$id, ARRAY_A);
+        $query = QueryBuilder::create()
+                                ->select(["*"])
+                                ->from(Table::ENTRIES)
+                                ->where(Table::ENTRIES->getAlias(), "id", "=", $entryId)
+                                ->build();
+
+        $entryData = $wpdb->get_row($query, ARRAY_A);
 
         return EntryModel::createWithID($entryData['id'], $entryData['registration_order_id'], $entryData['pen_number'], $entryData['variety_name'], $entryData['absent'], $entryData['added'], $entryData['moved']);
     }
@@ -48,5 +53,11 @@ class EntryRepository implements IRepository{
         }else{
             $wpdb->insert($wpdb->prefix.Table::ENTRIES->value, array("registration_order_id" => $entry->registrationOrderID, "pen_number" => $entry->penNumber, "variety_name" => $entry->varietyName, "absent" => $entry->absent, "added" => $entry->added, "moved" => $entry->moved));
         }
+    }
+
+    public function deleteEntry(int $entryId): void
+    {
+        global $wpdb;
+        $wpdb->delete($wpdb->prefix.Table::ENTRIES->value, array("id" => $entryId));
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 class EntriesService{
-    private $entryRepository;
+    private EntryRepository $entryRepository;
 
     public function __construct(EntryRepository $entryRepository)
     {
@@ -38,5 +38,19 @@ class EntriesService{
                 }
             }
         }
+    }
+
+    public function editEntryAbsent(int $entryID): void
+    {
+        $entryModel = $this->entryRepository->getByID($entryID);
+        if(isset($entryModel)){
+            $entryModel->absent = !$entryModel->absent;
+        $this->entryRepository->saveEntry($entryModel);
+        }
+    }
+
+    public function deleteEntry(int $entryID): void
+    {
+        $this->entryRepository->deleteEntry($entryID);
     }
 }

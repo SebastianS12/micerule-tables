@@ -5,7 +5,6 @@ class UserRegistrationModel extends Model{
     public int $eventPostID;
     public string $userName;
     public int $classIndexID;
-    public EntryClassModel $showClass;
 
     private function __construct(int $eventPostID, string $userName, int $classIndexID)
     {
@@ -24,17 +23,13 @@ class UserRegistrationModel extends Model{
         return $instance;
     }
 
-    public function getClassName(): string{
-        if(!(isset($this->showClass)))
-            return "";
-
-        return $this->showClass->className;
+    public function classIndex(): ClassIndexModel|null
+    {
+        return $this->belongsToOne(ClassIndexModel::class);
     }
 
-    public function getSectionName(): string{
-        if(!(isset($this->showClass)))
-            return "";
-
-        return $this->showClass->sectionName;
+    public function registrationOrder(): Collection
+    {
+        return $this->hasMany("order");
     }
 }

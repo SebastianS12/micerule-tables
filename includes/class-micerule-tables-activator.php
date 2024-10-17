@@ -205,10 +205,12 @@ class Micerule_Tables_Activator {
 		//by reference to user_registration. Junior registrations can then be joined to results
 		$show_user_junior_registrations_table_name = $wpdb->prefix."micerule_show_user_junior_registrations";
 		$sql_create_show_user_junior_registrations_table = "CREATE TABLE IF NOT EXISTS ".$show_user_junior_registrations_table_name. " (
-			id bigint(20) unsigned NOT NULL,
-			PRIMARY KEY  (id),
-			CONSTRAINT fk_registration_id_registrations_order_junior
-				FOREIGN KEY (id)
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			registration_order_id bigint(20) unsigned NOT NULL,
+			registration_id bigint(20) unsigned NOT NULL,
+			PRIMARY KEY (id),
+			CONSTRAINT fk_registration_order_id
+				FOREIGN KEY (registration_order_id)
 				REFERENCES ".$show_user_registrations_order_table_name."(id)
 				ON DELETE CASCADE
 			) $charset_collate; ";

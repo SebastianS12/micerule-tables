@@ -3,8 +3,9 @@ global $post;
 
 $url     = wp_get_referer();
 $event_id = url_to_postid( $url );
-$penNumber = $_POST['penNumber'];
-$checkValue = ($_POST['checkValue'] == "true");
+$entryID = $_POST['entryID'];
 
-EntryBookController::editEntryAbsent($event_id, $penNumber, $checkValue);
+$entriesService = new EntriesService(new EntryRepository($event_id));
+$entryBookController = new EntryBookController();
+$entryBookController->editEntryAbsent($entriesService, intval($entryID));
 wp_die();

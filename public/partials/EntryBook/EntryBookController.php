@@ -1,11 +1,12 @@
 <?php
 
 class EntryBookController{
-    public static function editPlacement($entryID, $placement, $checkValue, $placementModel, $locationID){
-        if($checkValue)
-            $placementModel->addPlacement($entryID, $placement, $locationID);
-        else
-            $placementModel->removePlacement($entryID);
+    public function editPlacement(int $eventPostID, PlacementsRowService $placementsRowService, int $placementNumber, int $indexID, int $entryID, int $prizeID){
+        $placementsRowService->editPlacement($eventPostID, Prize::from($prizeID), $indexID, $placementNumber, $entryID);
+    }
+
+    public function editAwards(ChallengeRowService $challengeRowService, PlacementsRepository $placementsRepository, AwardsRepository $awardsRepository, int $prizeID, int $bisChallengeIndexID, int $boaChallengeIndexID){
+        $challengeRowService->editAwards($placementsRepository, $awardsRepository, $prizeID, $bisChallengeIndexID, $boaChallengeIndexID);
     }
 
     public static function addEntry($eventPostID, $userName, $className, $age){
@@ -17,14 +18,12 @@ class EntryBookController{
         NextPenNumber::saveNextPenNumber(EventProperties::getEventLocationID($eventPostID), $className, $age, $nextPenNumber + 1);
     }
 
-    public static function editEntryAbsent($eventPostID, $penNumber, $isAbsent){
-        $showEntry = ShowEntry::createWithPenNumber($eventPostID, $penNumber);
-        $showEntry->editAbsent($isAbsent);
+    public function editEntryAbsent(EntriesService $entriesService, int $entryID){
+        $entriesService->editEntryAbsent($entryID);
     }
 
-    public static function deleteEntry($eventPostID, $penNumber){
-        $showEntry = ShowEntry::createWithPenNumber($eventPostID, $penNumber);
-        $showEntry->delete();
+    public function deleteEntry(EntriesService $entriesService, int $entryID){
+        $entriesService->deleteEntry($entryID);
     }
 
     public static function moveEntry($eventPostID, $penNumber, $newClassName, $newAge){

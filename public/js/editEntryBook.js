@@ -15,9 +15,9 @@ function assignEntryBookListeners(){
   });
 
   $(".deleteEntry").on('click', function(){
-    var penNumber = this.id.split("&-&")[0];
+    let entryID = $(this).parents(".editEntry-td").data("entryId");
 
-    openDeleteModal(penNumber);
+    openDeleteModal(entryID);
   });
 
   $(".placementCheck").on('change', function(){
@@ -38,10 +38,9 @@ function assignEntryBookListeners(){
   });
 
   $(".absentCheck").on('change', function(){
-    var penNumber = this.id.split("&-&")[0];
-    var checkValue = $(this).prop('checked');
+    let entryID = $(this).parents(".absent-td").data("entryId");
 
-    editAbsent(penNumber, checkValue);
+    editAbsent(entryID);
   });
 
   $(".classSelect-entryBook").on('change', function(){
@@ -186,7 +185,7 @@ function openEditModal(title, additionalHtml){
 }
 
 
-function openDeleteModal(penNumber){
+function openDeleteModal(entryID){
   var modalHtml = "<h2>Delete Entry</h2>";
   modalHtml += "<p>Are you sure you want to delete this entry?</p>";
   modalHtml += "<div class = 'button-row'><a class= 'button' id = 'confirmDeleteEntry'>Delete</a>";
@@ -196,7 +195,7 @@ function openDeleteModal(penNumber){
   $("#editEntryModal").modal();
 
   $("#confirmDeleteEntry").on('click', function(){
-    deleteEntry(penNumber);
+    deleteEntry(entryID);
   });
 
   $("#cancelDeleteEntry").on('click', function(){
@@ -204,7 +203,7 @@ function openDeleteModal(penNumber){
   });
 }
 
-function deleteEntry(penNumber){
+function deleteEntry(entryID){
   $("#spinner-div").show();
   jQuery.ajax({
     type: 'POST',
@@ -212,7 +211,7 @@ function deleteEntry(penNumber){
     data: {
       _ajax_nonce: my_ajax_obj.nonce,
       action: 'deleteEntry',
-      penNumber: penNumber,
+      entryID: entryID,
     },
     success: function (data) {
       $("#spinner-div").hide();
@@ -273,7 +272,8 @@ function editBIS(prizeID, challengeIndexID, oaChallengeIndexID){
   });
 }
 
-function editAbsent(penNumber, checkValue){
+function editAbsent(entryID){
+  console.log(entryID);
   $("#spinner-div").show();
   jQuery.ajax({
     type: 'POST',
@@ -281,8 +281,7 @@ function editAbsent(penNumber, checkValue){
     data: {
       _ajax_nonce: my_ajax_obj.nonce,
       action: 'editAbsent',
-      penNumber: penNumber,
-      checkValue: checkValue,
+      entryID: entryID,
     },
     success: function (data) {
       $("#spinner-div").hide();

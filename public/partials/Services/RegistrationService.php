@@ -48,27 +48,27 @@ class RegistrationService{
 
             $userRegistrationID = (isset($userRegistrationsByIndex[$classIndex])) ? $userRegistrationsByIndex[$classIndex]->id : null;
             if(!isset($userRegistrationID) && $registrationCount > 0){
-                // $userRegistrationID = $this->userRegistrationsRepository->addRegistration($this->eventPostID, $userName, $classIndexCollection[$classIndex]->id);
+                $userRegistrationID = $this->userRegistrationsRepository->addRegistration($this->eventPostID, $userName, $classIndexCollection[$classIndex]->id);
             }
 
             if(isset($userRegistrationID) && $registrationCount == 0){
-                // $this->userRegistrationsRepository->removeRegistration($userRegistrationID);
+                $this->userRegistrationsRepository->removeRegistration($userRegistrationID);
             }
 
             if(isset($userRegistrationID) && $registrationCount > 0){
                 $registrations = $this->addRegistrationRecord($registrations, $classIndexCollection[$classIndex], $registrationCount);
 
-                $userRegistrationCount = (isset($userRegistrationsByIndex[$classIndex])) ? $userRegistrationsByIndex[$classIndex]->registrationCount : 0;
-                // for($i = $userRegistrationCount; $i < $registrationCount; $i++){
-                //     $registrationOrderID = $this->registrationOrderRepository->addRegistration($userRegistrationID, current_time("mysql"));
-                //     if($addJunior){
-                //         $this->registrationOrderRepository->addJuniorRegistration($registrationOrderID);
-                        // $juniorRegistrationCount++;
-                //     }
-                // }
-                // for($i = $userRegistrationCount; $i > $registrationCount; $i--){
-                //     $this->registrationOrderRepository->removeRegistration($userRegistrationsByIndex[$classIndex]->registrationOrder->last()->id);
-                // }
+                $userRegistrationCount = 0;//(isset($userRegistrationsByIndex[$classIndex])) ? $userRegistrationsByIndex[$classIndex]->registrationCount : 0;
+                for($i = $userRegistrationCount; $i < $registrationCount; $i++){
+                    $registrationOrderID = $this->registrationOrderRepository->addRegistration($userRegistrationID, current_time("mysql"));
+                    if($addJunior){
+                        $this->registrationOrderRepository->addJuniorRegistration($registrationOrderID, $userRegistrationID);
+                        $juniorRegistrationCount++;
+                    }
+                }
+                for($i = $userRegistrationCount; $i > $registrationCount; $i--){
+                    $this->registrationOrderRepository->removeRegistration($userRegistrationsByIndex[$classIndex]->registrationOrder->last()->id);
+                }
             }  
         }
 

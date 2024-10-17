@@ -2,13 +2,14 @@
 
 class LabelView
 {
-    public static function getHtml($eventPostID)
+    public static function getHtml(int $eventPostID)
     {
-        $labelModel = new LabelModel();
+        $labelService = new LabelService($eventPostID, EventProperties::getEventLocationID($eventPostID));
+        $viewModel = $labelService->prepareViewModel();
         $html = "<div class = 'label content' style = 'display : none'>";
         $html .= "<div class='print-tray-header'><h3>Labels Print Preview<span class='print-alert'>On Mac, these must be printed from Safari</span></h3><a class='print-button'><img src='/wp-content/plugins/micerule-tables/admin/svg/print.svg'></a></div>";
         $html .= "<div class = 'printLabels'>";
-        foreach ($labelModel->getLabelData($eventPostID) as $userName => $userLabelData) {
+        foreach ($viewModel->userLabels as $userName => $userLabelData) {
             $html .= "<div class = 'label-block'>";
             $html .= "<ul class='card-wrapper'>";
             $html .= "<li class='pen-label fancier-name-label'>
@@ -18,7 +19,7 @@ class LabelView
                 </li>";
             foreach ($userLabelData as $userLabel) {
                     $absentClass = ($userLabel['absent']) ? "absent" : "";
-                    $html .= self::getUserLabelHtml($absentClass, $userLabel['class_index'], $userLabel['pen_number']);
+                    $html .= self::getUserLabelHtml($absentClass, $userLabel['classIndex'], $userLabel['penNumber']);
             }
             $html .= "</ul>";
             $html .= "</div>";
@@ -29,7 +30,7 @@ class LabelView
         return $html;
     }
 
-    private static function getUserLabelHtml($absentClass, $classIndex, $penNumber){
+    private static function getUserLabelHtml(string $absentClass, int $classIndex, int $penNumber){
       $html = "<li class='pen-label " . $absentClass . "'>
                 <div class='label-class'>
                   <span class='label-header'>CLASS</span>

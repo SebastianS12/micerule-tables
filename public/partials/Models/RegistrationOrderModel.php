@@ -23,4 +23,8 @@ class RegistrationOrderModel extends Model{
     public function entry(): EntryModel|null{
         return $this->hasOne("entry");
     }
+
+    public function registration(): UserRegistrationModel|null{
+        return $this->belongsToOne(UserRegistrationModel::class);
+    }
 }

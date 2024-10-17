@@ -24,6 +24,24 @@ class ClassIndexRepository implements IRepository{
         return $collection;
     }
 
+    public function getJuniorIndexModel(): ClassIndexModel|null
+    {
+        $query = QueryBuilder::create()
+                                ->select(["*"])
+                                ->from(Table::CLASS_INDICES)
+                                ->join("INNER", Table::CLASSES, [Table::CLASS_INDICES], ["id"], ["class_id"])
+                                ->where(Table::CLASSES->getAlias(), "location_id", "=", $this->locationID)
+                                ->where(Table::CLASSES->getAlias(), "class_name", "=", "Junior")
+                                ->where(Table::CLASS_INDICES->getAlias(), "age", "=", "AA")
+                                ->build();
+
+        global $wpdb;
+        $juniorRow = $wpdb->get_row($query, ARRAY_A);
+
+        if(!isset($juniorRow)) return null;
+        return ClassIndexModel::createWithID($juniorRow['id'], $juniorRow['class_index'], $juniorRow['class_id'], $juniorRow['age']);
+    }
+
     public function getClassIndexModel($className, $age){
         global $wpdb;
         $classIndexData = $wpdb->get_row("SELECT CI.id, class_id, age, class_index 

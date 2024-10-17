@@ -11,17 +11,22 @@ class EntryBookService{
         $this->challengeIndexRepository = $challengeIndexRepository;
     }
 
-    public function prepareViewModel(int $eventPostID): EntryBookViewModel{
+    public function prepareViewModel(int $eventPostID, string $eventDeadline): EntryBookViewModel{
         $viewModel = new EntryBookViewModel();
+        $viewModel->pastDeadline = time() > strtotime($eventDeadline);
 
         $challengePlacementsRepository = new PlacementsRepository($eventPostID, new ChallengePlacementDAO());
-        $challengeIndexModelCollection = $this->challengeIndexRepository->getAll()->with(["placements"], ["id"], ["indexID"], [$challengePlacementsRepository]);
+        $awardRepository = new AwardsRepository($eventPostID);
+        $awardRepository->getAll();
+        $challengeIndexModelCollection = $this->challengeIndexRepository->getAll()->with(["placements", "award"], ["id", "id"], ["indexID", "challengePlacementID"], [$challengePlacementsRepository, $awardRepository]);
 
+        $sectionchallengeIndexModels = array();
+        $grandChallengeIndexModels = array();
         foreach($challengeIndexModelCollection as $challengeIndexModel){
             if($challengeIndexModel->challengeName == EventProperties::GRANDCHALLENGE){
-                $viewModel->grandChallengeData[$challengeIndexModel->age] = $challengeIndexModel;
+                $grandChallengeIndexModels[$challengeIndexModel->age] = $challengeIndexModel;
             }else{
-                $viewModel->challengeData[$challengeIndexModel->challengeName][$challengeIndexModel->age] = $challengeIndexModel;
+                $sectionchallengeIndexModels[$challengeIndexModel->section][$challengeIndexModel->age] = $challengeIndexModel;
             }
         }
 
@@ -40,14 +45,12 @@ class EntryBookService{
         ModelHydrator::mapExistingCollections($showClassesCollection->indices->registrations->order->entry, "placements", $showClassesCollection->indices->placements, "id", "entryID");
         ModelHydrator::mapExistingCollections($showClassesCollection->indices->registrations->order->entry, "placements", $challengeIndexModelCollection->placements, "id", "entryID");
 
-        //pass placements to row service
-
-        //TODO: Filter optional classes
         $showClassesCollection = $showClassesCollection->groupBy("sectionName");
         $classData = array();
-        foreach($showClassesCollection as $sectionName => $showClassModelCollection){
+        foreach(EventProperties::SECTIONNAMES as $sectionName){
+            $sectionName = strtolower($sectionName);
             $classData[$sectionName] = array();
-            foreach($showClassModelCollection as $showClassModel){
+            foreach($showClassesCollection[$sectionName] as $showClassModel){
                 $className = $showClassModel->className;
                 $classData[$sectionName][$className] = array();
                 foreach($showClassModel->indices as $classIndexModel){
@@ -56,15 +59,14 @@ class EntryBookService{
                     $classData[$sectionName][$className][$age]['classIndex'] = $classIndexModel->index;
                     $classData[$sectionName][$className][$age]['entries'] = array();
 
-                    $sectionIndexModel = $viewModel->challengeData[EventProperties::getChallengeName($sectionName)][$age];
-                    $grandChallengeIndexModel = $viewModel->grandChallengeData[$age];
+                    $sectionIndexModel = $sectionchallengeIndexModels[$sectionName][$age];
+                    $grandChallengeIndexModel = $grandChallengeIndexModels[$age];
                     foreach($classIndexModel->registrations as $userRegistration){
                         foreach($userRegistration->order as $registrationOrder){
                             $entry = $registrationOrder->entry();
                             if(isset($entry)){
                                 $rowPlacementData = new RowPlacementData($classIndexModel->id, $classIndexModel->placements, $sectionIndexModel->id, $sectionIndexModel->placements, $grandChallengeIndexModel->id, $grandChallengeIndexModel->placements);
-                                $classData[$sectionName][$className][$age]['entries'][] = $entryRowService->prepareRowData($entry, $userRegistration->userName, $rowPlacementData, $age);
-                                echo(var_dump($entry->belongsToOneThrough([RegistrationOrderModel::class, UserRegistrationModel::class, ClassIndexModel::class, EntryClassModel::class])));
+                                $classData[$sectionName][$className][$age]['entries'][] = $entryRowService->prepareRowData($entry, $userRegistration->userName, $rowPlacementData, $age, $viewModel->pastDeadline);
                             }
                         }
                     }
@@ -73,6 +75,60 @@ class EntryBookService{
             }
         }
         $viewModel->classData = $classData;
+
+        $juniorRegistrationRepository = new JuniorRegistrationRepository($eventPostID);
+        $juniorRegistrationCollection = $juniorRegistrationRepository->getAll();
+        ModelHydrator::mapExistingCollections($showClassesCollection->indices->registrations->order, "junior", $juniorRegistrationCollection, "id", "registrationOrderID");
+
+        $optionalClassData = array();
+        $optionalClassRowService = new OptionalClassRowService(new PlacementsRowService());
+        $juniorClassRowService = new JuniorRowService($optionalClassRowService);
+        foreach($showClassesCollection['optional'] as $showClassModel){
+            $className = $showClassModel->className;
+            $optionalClassData[$className] = array();
+            foreach($showClassModel->indices as $classIndexModel){
+                $age = $classIndexModel->age;
+                $optionalClassData[$className] = array();
+                $optionalClassData[$className]['classIndex'] = $classIndexModel->index;
+                $optionalClassData[$className]['entries'] = array();
+
+                if($className != "Junior"){
+                    foreach($classIndexModel->registrations as $userRegistration){
+                        foreach($userRegistration->order as $registrationOrder){
+                            $entry = $registrationOrder->entry();
+                            if(isset($entry)){
+                                $rowPlacementData = new RowPlacementData($classIndexModel->id, $classIndexModel->placements, 0, new Collection(), 0, new Collection());
+                                $optionalClassData[$className]['entries'][] = $optionalClassRowService->prepareRowData($entry, $userRegistration->userName, $rowPlacementData, $age, $viewModel->pastDeadline);
+                            }
+                        }
+                    }
+                }else{
+                    foreach($juniorRegistrationCollection as $juniorRegistration){
+                        $registrationOrder = $juniorRegistration->order();
+                        if(isset($registrationOrder)){
+                            $entry = $registrationOrder->entry();
+                            $registration = $registrationOrder->registration();
+                            if(isset($entry) && isset($registration)){
+                                $rowPlacementData = new RowPlacementData($classIndexModel->id, $classIndexModel->placements, 0, new Collection(), 0, new Collection());
+                                $optionalClassData[$className]['entries'][] = $juniorClassRowService->prepareRowData($entry, $registration->userName, $rowPlacementData, $age, $viewModel->pastDeadline);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        $viewModel->optionalClassData = $optionalClassData;
+
+        $challengeRowService = new ChallengeRowService($eventPostID);
+        foreach($sectionchallengeIndexModels as $section => $indexModels){
+            $adIndexModel = $indexModels['Ad'];
+            $u8IndexModel = $indexModels['U8'];
+            $viewModel->challengeData[$section] = $challengeRowService->prepareChallengeRowData($adIndexModel, $u8IndexModel, $adIndexModel->placements(), $u8IndexModel->placements(), Prize::SECTION);
+        }
+
+        $adIndexModel = $grandChallengeIndexModels['Ad'];
+        $u8IndexModel = $grandChallengeIndexModels['U8'];
+        $viewModel->grandChallengeData = $challengeRowService->prepareChallengeRowData($adIndexModel, $u8IndexModel, $adIndexModel->placements(), $u8IndexModel->placements(), Prize::GRANDCHALLENGE);
 
         return $viewModel;
     }

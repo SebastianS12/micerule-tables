@@ -2,7 +2,7 @@
 
 class PlacementsService{
     public static function entryInPlacements(EntryModel $entry, Prize $prize){
-        foreach($entry->placements as $placementModel){
+        foreach($entry->placements() as $placementModel){
             if($placementModel->prize == $prize) return true;
         }
 
@@ -24,12 +24,15 @@ class PlacementsService{
         return isset($placements[$placementNumber]);
     }
 
-    public static function placementsInSameClass(Prize $prize, PlacementModel $lowerPlacement, PlacementModel $higherPlacement){
+    public static function placementsInSameClass(Prize $prize, Collection $lowerPlacements, int $lowerPlacementNumber, Collection $higherPlacements, int $higherPlacementNumber){
+        $lowerPlacement = $lowerPlacements->groupByUniqueKey("placement")[$lowerPlacementNumber];
+        $higherPlacement = $higherPlacements->groupByUniqueKey("placement")[$higherPlacementNumber];
         $placementsInSameClass = false;
-        if($prize == "Section Challenge"){
+        if($prize == Prize::SECTION){
+            echo("Section");
             $placementsInSameClass = self::inSameClass($lowerPlacement->entry()->showClass(), $higherPlacement->entry()->showClass());
         }
-        if($prize == "Grand Challenge"){
+        if($prize == Prize::GRANDCHALLENGE){
             $placementsInSameClass = self::inSameSection($lowerPlacement->entry()->showClass(), $higherPlacement->entry()->showClass());
         }
 
@@ -37,6 +40,9 @@ class PlacementsService{
     }
 
     private static function inSameClass(EntryClassModel $lowerPlacementEntryClassModel, EntryClassModel $higherPlacementEntryClassModel): bool{
+        echo($lowerPlacementEntryClassModel->className);
+        echo($higherPlacementEntryClassModel->className);
+        echo(var_dump($lowerPlacementEntryClassModel->className == $higherPlacementEntryClassModel->className));
         return $lowerPlacementEntryClassModel->className == $higherPlacementEntryClassModel->className;
     }
 
