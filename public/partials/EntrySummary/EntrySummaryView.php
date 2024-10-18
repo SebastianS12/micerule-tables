@@ -2,14 +2,14 @@
 
 class EntrySummaryView
 {
-    public static function getEntrySummaryHtml($eventPostID)
+    public static function getEntrySummaryHtml(int $eventPostID)
     {
-        $entrySummaryModel = new EntrySummaryModel();
-        $entrySummaryData = EntrySummaryController::getEntrySummaryData($eventPostID);
+        $entrySummaryService = new EntrySummaryService($eventPostID, EventProperties::getEventLocationID($eventPostID));
+        $viewModel = $entrySummaryService->prepareViewModel();
 
         $html = "<div class = 'entrySummary content'>";
-        foreach ($entrySummaryData as $userName => $fancierEntrySummary) {
-            $checkBoxState = ($entrySummaryModel->getAllAbsentCheckValue($eventPostID, $userName)) ? "checked" : "";
+        foreach ($viewModel->fancierEntrySummaries as $userName => $fancierEntrySummary) {
+            $checkBoxState = $fancierEntrySummary['allEntriesAbsent'] ? "checked" : "";
             $html .= "<div class='fancier-entry-summary'>
                     <div class='set-absent'>
                         <input type = 'checkbox' id = 'setAllAbsent-".$userName."'  class = 'setAllAbsent' name = 'setAllAbsent' " . $checkBoxState . ">
@@ -28,13 +28,13 @@ class EntrySummaryView
                         </thead>
                         <tbody>";
 
-            foreach ($fancierEntrySummary as $fancierEntry) {
+            foreach ($fancierEntrySummary['entries'] as $fancierEntry) {
                 $html .= "<tr>
-                        <td class='js-pen-no'>" . $fancierEntry['pen_number'] . "</td>
-                        <td class='js-notes'>" . $fancierEntry['class_index'] . " | " . $fancierEntry['class_name'] . " " . $fancierEntry['age'] . "</td>
+                        <td class='js-pen-no'>" . $fancierEntry['penNumber'] . "</td>
+                        <td class='js-notes'>" . $fancierEntry['classIndex'] . " | " . $fancierEntry['className'] . " " . $fancierEntry['age'] . "</td>
                     </tr>";
             }
-            $html .= "<tr><td colspan = 2>Entry Fee: " .EntrySummaryController::getRegistrationFee($eventPostID, $userName). "£</td></tr>";
+            $html .= "<tr><td colspan = 2>Entry Fee: " .$fancierEntrySummary['registrationFee']. "£</td></tr>";
 
             $html .= "    </tbody>
                     </table>

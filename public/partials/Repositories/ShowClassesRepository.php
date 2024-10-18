@@ -8,7 +8,7 @@ class ShowClassesRepository implements IRepository{
         $this->locationID = $locationID;
     }
 
-    public function getAll(): Collection{
+    public function getAll(Closure|null $constraintsClosure = null): Collection{
         global $wpdb;
         $classesData = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."micerule_show_classes
                                            WHERE location_id = ".$this->locationID, ARRAY_A);

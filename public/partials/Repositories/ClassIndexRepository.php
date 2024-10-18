@@ -6,7 +6,7 @@ class ClassIndexRepository implements IRepository{
         $this->locationID = $locationID;
     }
 
-    public function getAll(): Collection
+    public function getAll(Closure|null $constraintsClosure = null): Collection
     {
         global $wpdb;
         $classIndexQueryData = $wpdb->get_results("SELECT CI.id, class_id, age, class_index 

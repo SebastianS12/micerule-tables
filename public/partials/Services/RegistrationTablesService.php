@@ -28,9 +28,9 @@ class RegistrationTablesService{
             $viewModel->challengeData[$challengeIndexModel->challengeName][$challengeIndexModel->age] = $challengeIndexModel;
         }
 
-        $showClassesModels = $this->showClassesRepository->getAll("sectionName")->with(['indices'], ["id"], ['classID'], [$this->classIndexRepository]);
+        $showClassesModels = $this->showClassesRepository->getAll()->with(['indices'], ["id"], ['classID'], [$this->classIndexRepository]);
 
-        $registrationCountCollection = ($viewModel->beforeDeadline) ? $this->registrationCountRepository->getUserRegistrationCounts($userName) : $this->registrationCountRepository->getAll("id");
+        $registrationCountCollection = ($viewModel->beforeDeadline) ? $this->registrationCountRepository->getUserRegistrationCounts($userName) : $this->registrationCountRepository->getAll();
 
         ModelHydrator::mapAttribute($showClassesModels->indices, $registrationCountCollection, "registrationCount", "index", "index_number","entry_count", 0);
         ModelHydrator::mapAttribute($challengeIndexModelCollection, $registrationCountCollection, "registrationCount", "challengeIndex", "index_number", "entry_count", 0);

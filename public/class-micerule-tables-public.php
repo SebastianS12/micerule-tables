@@ -144,6 +144,7 @@ require_once plugin_dir_path(__FILE__) . 'partials/Services/EntryBookService.php
 require_once plugin_dir_path(__FILE__) . 'partials/Services/PlacementsRowService.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Services/FancierEntriesService.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Services/LabelService.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Services/EntrySummaryService.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/Factories/PrizeCardFactory.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Factories/PrintDAOFactory.php';
@@ -151,6 +152,7 @@ require_once plugin_dir_path(__FILE__) . 'partials/Factories/PlacementDAOFactory
 
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/FancierEntriesViewModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/LabelViewModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/EntrySummaryViewModel.php';
 
 
 class Micerule_Tables_Public {

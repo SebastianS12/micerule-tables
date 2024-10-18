@@ -10,7 +10,7 @@ class PlacementsRepository implements IRepository{
         $this->placementsDAO = $placementsDAO;
     }
 
-    public function getAll(): Collection
+    public function getAll(Closure|null $constraintsClosure = null): Collection
     {
         $placementsQueryResult = $this->placementsDAO->getAll($this->eventPostID);
 

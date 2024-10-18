@@ -7,7 +7,7 @@ class EntryRepository implements IRepository{
         $this->eventPostID = $eventPostID;
     }
     
-    public function getAll(): Collection{
+    public function getAll(Closure|null $constraintsClosure = null): Collection{
         global $wpdb;
         $query = QueryBuilder::create()
                                 ->select([Table::ENTRIES->getAlias().".*"])

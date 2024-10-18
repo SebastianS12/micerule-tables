@@ -6,7 +6,7 @@ class ChallengeIndexRepository implements IRepository{
         $this->locationID = $locationID;
     }
 
-    public function getAll(): Collection
+    public function getAll(Closure|null $constraintsClosure = null): Collection
     {
         global $wpdb;
         $challengeIndexQueryData = $wpdb->get_results("SELECT id, section, challenge_name, age, challenge_index 

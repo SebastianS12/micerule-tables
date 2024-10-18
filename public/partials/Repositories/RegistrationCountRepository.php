@@ -10,7 +10,7 @@ class RegistrationCountRepository implements IRepository{
         $this->locationID = $locationID;
     }
 
-    public function getAll(): Collection{
+    public function getAll(Closure|null $constraintsClosure = null): Collection{
         $collection = new Collection();
 
         global $wpdb;

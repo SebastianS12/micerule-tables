@@ -8,7 +8,7 @@ class AwardsRepository implements IRepository{
         $this->eventPostID = $eventPostID;
     }
 
-    public function getAll(): Collection
+    public function getAll(Closure|null $constraintsClosure = null): Collection
     {
         $query = QueryBuilder::create()
                                 ->select([Table::AWARDS->getAlias().".*"])

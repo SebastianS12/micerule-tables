@@ -7,11 +7,18 @@ class UserRegistrationsRepository implements IRepository{
         $this->eventPostID = $eventPostID;
     }
 
-    public function getAll(): Collection
+    public function getAll(Closure|null $constraintsClosure = null): Collection
     {
+        $query = QueryBuilder::create()
+                                ->select(["*"])
+                                ->from(Table::REGISTRATIONS)
+                                ->where(Table::REGISTRATIONS->getAlias(), "event_post_id", "=", $this->eventPostID);
+        if(isset($constraintsClosure)){
+            $constraintsClosure($query);
+        }
+
         global $wpdb;
-        $userRegistrationData = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."micerule_show_user_registrations
-                                                    WHERE event_post_id = ".$this->eventPostID, ARRAY_A);
+        $userRegistrationData = $wpdb->get_results($query->build(), ARRAY_A);
 
         $collection = new Collection();                                            
         foreach($userRegistrationData as $row){

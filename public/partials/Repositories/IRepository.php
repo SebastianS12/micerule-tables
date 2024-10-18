@@ -1,5 +1,5 @@
 <?php
 
 interface IRepository{
-    public function getAll(): Collection;
+    public function getAll(Closure|null $constraintsClosure = null): Collection;
 }
