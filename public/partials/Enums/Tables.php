@@ -11,6 +11,8 @@ enum Table : string{
     case CLASS_PLACEMENTS = "micerule_show_class_placements";
     case CHALLENGE_PLACEMENTS = "micerule_show_challenge_placements";
     case AWARDS = "micerule_show_challenge_awards";
+    case JUDGES = "micerule_event_judges";
+    case JUDGES_SECTIONS = "micerule_event_judges_sections";
 
     public function getAlias(): string
     {
@@ -24,7 +26,9 @@ enum Table : string{
             self::ENTRIES => 'Entries',
             self::CLASS_PLACEMENTS => 'ClassPlacements',
             self::CHALLENGE_PLACEMENTS => 'ChallengePlacements',
-            self::AWARDS => 'Awards'
+            self::AWARDS => 'Awards',
+            self::JUDGES => 'Judges',
+            self::JUDGES_SECTIONS => 'JudgesSections'
         };
     }
 }

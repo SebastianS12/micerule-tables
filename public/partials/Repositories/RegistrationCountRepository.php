@@ -98,11 +98,13 @@ class RegistrationCountRepository implements IRepository{
                             ->select(["challenge_index AS index_number", "COALESCE(COUNT(".Table::REGISTRATIONS_ORDER->getAlias().".registration_id),0) AS entry_count"])
                             ->from(Table::CHALLENGE_INDICES)
                             ->join("INNER", Table::CLASSES, [Table::CHALLENGE_INDICES, Table::CHALLENGE_INDICES], ["section", "location_id"], ["section", "location_id"])
-                            ->join("INNER", Table::CLASS_INDICES, [Table::CLASSES], ["class_id"], ["id"])
+                            ->join("INNER", Table::CLASS_INDICES, [Table::CLASSES, Table::CHALLENGE_INDICES], ["class_id", "age"], ["id", "age"])
                             ->join("LEFT", Table::REGISTRATIONS, [Table::CLASS_INDICES], ["class_index_id"], ["id"])
                             ->join("LEFT", Table::REGISTRATIONS_ORDER, [Table::REGISTRATIONS], ["registration_id"], ["id"])
-                            ->where(Table::REGISTRATIONS->getAlias(), "event_post_id", "=", $this->eventPostID)
-                            ->whereNull(Table::REGISTRATIONS->getAlias(), "event_post_id", "OR")
+                            ->whereNested(function(QueryWhereNested $whereNested){
+                                $whereNested->where(Table::REGISTRATIONS->getAlias(), "event_post_id", "=", $this->eventPostID);
+                                $whereNested->whereNull(Table::REGISTRATIONS->getAlias(), "event_post_id", "OR");
+                            })
                             ->where(Table::CHALLENGE_INDICES->getAlias(), "location_id", "=", $this->locationID)
                             ->groupBy(Table::CHALLENGE_INDICES->getAlias(), "id")
                             ->build();

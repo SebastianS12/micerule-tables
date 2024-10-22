@@ -1,8 +1,5 @@
 <?php
 
-require_once dirname(__DIR__).'/public/core/database/Model.php';
-require_once dirname(__DIR__).'/public/partials/Models/ShowEntry.php';
-
 require_once dirname(__DIR__).'/public/partials/Enums/Prizes.php';
 require_once dirname(__DIR__).'/public/partials/Enums/Awards.php';
 require_once dirname(__DIR__).'/public/partials/Enums/Tables.php';
@@ -18,6 +15,31 @@ require_once dirname(__DIR__).'/public/core/database/QueryWhereNull.php';
 require_once dirname(__DIR__).'/public/core/database/QueryWhereNested.php';
 require_once dirname(__DIR__).'/public/core/database/QueryBuilder.php';
 require_once dirname(__DIR__).'/public/core/database/ModelHydrator.php';
+
+require_once dirname(__DIR__).'/public/partials/Helpers/JudgeFormatter.php';
+
+require_once dirname(__DIR__).'/public/partials/Location/EventClasses.php';
+require_once dirname(__DIR__).'/public/partials/Event/EventRegistrationData.php';
+require_once dirname(__DIR__).'/public/partials/Event/EventProperties.php';
+require_once dirname(__DIR__).'/public/partials/Event/EventUser.php';
+require_once dirname(__DIR__).'/public/partials/ClassSelectOptions.php';
+require_once dirname(__DIR__).'/public/partials/StandardClasses.php';
+require_once dirname(__DIR__).'/public/partials/RegistrationTables.php';
+require_once dirname(__DIR__).'/public/partials/Event/EventOptionalSettings.php';
+require_once dirname(__DIR__).'/public/partials/Event/EntryBookData.php';
+require_once dirname(__DIR__).'/public/partials/Event/AdminTabData.php';
+require_once dirname(__DIR__).'/public/partials/Event/AdminTabDataFactory.php';
+require_once dirname(__DIR__).'/public/partials/Event/IAdminTab.php';
+require_once dirname(__DIR__).'/public/partials/Event/FancierEntries.php';
+require_once dirname(__DIR__).'/public/partials/Event/EntryBook.php';
+require_once dirname(__DIR__).'/public/partials/Event/Label.php';
+require_once dirname(__DIR__).'/public/partials/Event/EntrySummary.php';
+require_once dirname(__DIR__).'/public/partials/Event/JudgingSheets.php';
+require_once dirname(__DIR__).'/public/partials/Event/Absentees.php';
+require_once dirname(__DIR__).'/public/partials/Event/PriceCards.php';
+require_once dirname(__DIR__).'/public/partials/Event/JudgesReport.php';
+require_once dirname(__DIR__).'/public/partials/Event/ShowReportPost.php';
+require_once dirname(__DIR__).'/public/partials/Event/AdminTabs.php';
 
 require_once dirname(__DIR__).'/public/partials/Leaderboard/LeaderboardController.php';
 require_once dirname(__DIR__).'/public/partials/Leaderboard/LeaderboardModel.php';
@@ -38,6 +60,8 @@ require_once dirname(__DIR__).'/public/partials/Repositories/ClassIndexRepositor
 require_once dirname(__DIR__).'/public/partials/Repositories/RegistrationCountRepository.php';
 require_once dirname(__DIR__).'/public/partials/Repositories/RegistrationOrderRepository.php';
 require_once dirname(__DIR__).'/public/partials/Repositories/PlacementsRepository.php';
+require_once dirname(__DIR__).'/public/partials/Repositories/JuniorRegistrationRepository.php';
+require_once dirname(__DIR__).'/public/partials/Repositories/JudgesSectionsRepository.php';
 
 require_once dirname(__DIR__).'/public/partials/RegistrationTables/RegistrationTablesController.php';
 require_once dirname(__DIR__).'/public/partials/RegistrationTables/RegistrationTablesModel.php';
@@ -100,6 +124,10 @@ require_once dirname(__DIR__).'/public/partials/Models/UserRegistrationModel.php
 require_once dirname(__DIR__).'/public/partials/Models/ShowClassModel.php';
 require_once dirname(__DIR__).'/public/partials/Models/ShowChallengeModel.php';
 require_once dirname(__DIR__).'/public/partials/Models/RegistrationOrderModel.php';
+require_once dirname(__DIR__).'/public/partials/Models/AwardModel.php';
+require_once dirname(__DIR__).'/public/partials/Models/JuniorRegistrationModel.php';
+require_once dirname(__DIR__).'/public/partials/Models/JudgeModel.php';
+require_once dirname(__DIR__).'/public/partials/Models/JudgeSectionModel.php';
 
 require_once dirname(__DIR__).'/public/partials/Services/PlacementsService.php';
 require_once dirname(__DIR__).'/public/partials/Services/EntriesService.php';
@@ -116,6 +144,16 @@ require_once dirname(__DIR__).'/public/partials/Services/RegistrationTablesServi
 require_once dirname(__DIR__).'/public/partials/Services/RegistrationService.php';
 require_once dirname(__DIR__).'/public/partials/Services/EntryBookService.php';
 require_once dirname(__DIR__).'/public/partials/Services/PlacementsRowService.php';
+require_once dirname(__DIR__).'/public/partials/Services/FancierEntriesService.php';
+require_once dirname(__DIR__).'/public/partials/Services/LabelService.php';
+require_once dirname(__DIR__).'/public/partials/Services/EntrySummaryService.php';
+require_once dirname(__DIR__).'/public/partials/Services/JudgingSheetsService.php';
 
 require_once dirname(__DIR__).'/public/partials/Factories/PrizeCardFactory.php';
 require_once dirname(__DIR__).'/public/partials/Factories/PrintDAOFactory.php';
+require_once dirname(__DIR__).'/public/partials/Factories/PlacementDAOFactory.php';
+
+require_once dirname(__DIR__).'/public/partials/ViewModels/FancierEntriesViewModel.php';
+require_once dirname(__DIR__).'/public/partials/ViewModels/LabelViewModel.php';
+require_once dirname(__DIR__).'/public/partials/ViewModels/EntrySummaryViewModel.php';
+require_once dirname(__DIR__).'/public/partials/ViewModels/JudgingSheetsViewModel.php';

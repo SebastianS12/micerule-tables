@@ -77,4 +77,9 @@ class ChallengeIndexModel extends Model{
     {
         return $this->hasMany("placements");
     }
+
+    public function judgeSection(): ?JudgeSectionModel
+    {
+        return $this->hasOne("judgeSection");
+    }
 }

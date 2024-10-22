@@ -19,6 +19,8 @@ require_once plugin_dir_path(__FILE__) . 'core/database/QueryWhereNested.php';
 require_once plugin_dir_path(__FILE__) . 'core/database/QueryBuilder.php';
 require_once plugin_dir_path(__FILE__) . 'core/database/ModelHydrator.php';
 
+require_once plugin_dir_path(__FILE__) . 'partials/Helpers/JudgeFormatter.php';
+
 include_once plugin_dir_path(__FILE__)."partials/Location/EventClasses.php";
 include_once plugin_dir_path(__FILE__)."partials/Event/EventRegistrationData.php";
 include_once plugin_dir_path(__FILE__)."partials/Event/EventProperties.php";
@@ -62,6 +64,7 @@ require_once plugin_dir_path(__FILE__) . 'partials/Repositories/RegistrationCoun
 require_once plugin_dir_path(__FILE__) . 'partials/Repositories/RegistrationOrderRepository.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Repositories/PlacementsRepository.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Repositories/JuniorRegistrationRepository.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Repositories/JudgesSectionsRepository.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/RegistrationTables/RegistrationTablesController.php';
 require_once plugin_dir_path(__FILE__) . 'partials/RegistrationTables/RegistrationTablesModel.php';
@@ -126,6 +129,8 @@ require_once plugin_dir_path(__FILE__) . 'partials/Models/ShowChallengeModel.php
 require_once plugin_dir_path(__FILE__) . 'partials/Models/RegistrationOrderModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/AwardModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/JuniorRegistrationModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/JudgeModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/JudgeSectionModel.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/Services/PlacementsService.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Services/EntriesService.php';
@@ -145,6 +150,8 @@ require_once plugin_dir_path(__FILE__) . 'partials/Services/PlacementsRowService
 require_once plugin_dir_path(__FILE__) . 'partials/Services/FancierEntriesService.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Services/LabelService.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Services/EntrySummaryService.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Services/JudgingSheetsService.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Services/AbsenteesService.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/Factories/PrizeCardFactory.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Factories/PrintDAOFactory.php';
@@ -153,6 +160,9 @@ require_once plugin_dir_path(__FILE__) . 'partials/Factories/PlacementDAOFactory
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/FancierEntriesViewModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/LabelViewModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/EntrySummaryViewModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/JudgingSheetsViewModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/AbsenteesViewModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/PrizeCardsViewModel.php';
 
 
 class Micerule_Tables_Public {

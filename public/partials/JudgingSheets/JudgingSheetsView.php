@@ -4,33 +4,39 @@ class JudgingSheetsView
 {
     public static function getHtml($eventPostID)
     {
-        $eventJudgesModel = new EventJudgesHelper();
+        $judgingSheetsService = new JudgingSheetsService($eventPostID, EventProperties::getEventLocationID($eventPostID));
+        $viewModel = $judgingSheetsService->prepareViewModel();
         $html = "<div class = 'judgingSheets content' style = 'display : none'>";
         $html .= "<div class = 'sheet-set'>";
 
-        $html .= self::getGrandChallengeSheetsHtml($eventPostID);
-        foreach ($eventJudgesModel->getEventJudgeNames($eventPostID) as $judgeName) {
-            foreach ($eventJudgesModel->getJudgeSections($eventPostID, $judgeName) as $sectionName) {
-                $html .= self::getSectionClassSheetsHtml($eventPostID, $sectionName, $judgeName);
-                $html .= self::getSectionChallengeSheetsHtml($eventPostID, $sectionName, $judgeName);
+        $html .= self::getGrandChallengeSheetsHtml($viewModel->grandChallengeSheets);
+        foreach($viewModel->classSheets as $judgeName => $judgeClassSheets){
+            foreach($judgeClassSheets as $sectionName => $sectionClassSheets){
+                foreach($sectionClassSheets as $classSheet){
+                    $html .= self::getClassSheetHtml($classSheet);
+                }
+
+                foreach($viewModel->sectionChallengeSheets[$judgeName][$sectionName] as $sectionChallengeSheet){
+                    $html .= self::getChallengeSheetHtml($sectionChallengeSheet, true);
+                }
             }
         }
-        $html .= self::getOptionalClassSheetsHtml($eventPostID);
+
+        $html .= self::getOptionalClassSheetsHtml($viewModel);
         $html .= "</div>";
         $html .= "</div>";
 
         return $html;
     }
 
-    private static function getGrandChallengeSheetsHtml($eventPostID)
+    private static function getGrandChallengeSheetsHtml(array $grandChallengeSheets)
     {
         $html = "";
-        $judgesService = new JudgesService(new JudgesRepository());
-        $grandChallengeJudgeName = $judgesService->getJudgesNamesString($eventPostID);
-        
-        $html .= self::getChallengeSheetHtml($eventPostID, EventProperties::GRANDCHALLENGE, "Grand Challenge", "Ad", $grandChallengeJudgeName, false);
-        $html .= self::getChallengeSheetHtml($eventPostID, EventProperties::GRANDCHALLENGE, "Grand Challenge", "U8", $grandChallengeJudgeName, true);
 
+        foreach($grandChallengeSheets as $sheet){
+            $html .= self::getChallengeSheetHtml($sheet, true);
+        }
+        
         return $html;
     }
 
@@ -46,19 +52,17 @@ class JudgingSheetsView
         return $html;
     }
 
-    private static function getClassSheetHtml($eventPostID, $className, $age, $judgeName)
+    private static function getClassSheetHtml(array $classSheet)
     {
-        $classModel = new ShowClassModel($eventPostID, $className, $age);
         $html = "<div class='breed-class-report'>
               <table>
                 <thead>";
-        $html .= self::getSheetHeaderHtml($classModel, $judgeName);
+        $html .= self::getSheetHeaderHtml($classSheet['classIndex'], $classSheet['className'], $classSheet['age'], $classSheet['judgeName']);
         $html .= "  </thead> <tbody>";
-        if (count($classModel->penNumbers) > 0) {
-            foreach ($classModel->penNumbers as $penNumber) {
-                $entry = ShowEntry::createWithPenNumber($eventPostID, $penNumber);
-                $showVarietyPrompt = (Breed::classIsStandardBreed($entry->className)) ? "style = 'display : none'" : "";
-                $html .= self::getSheetEntryRowHtml($entry->penNumber, $showVarietyPrompt);
+        if (count($classSheet['penNumbers']) > 0) {
+            foreach ($classSheet['penNumbers'] as $penNumber) {
+                $showVarietyPrompt = "style = 'display : none'";//(Breed::classIsStandardBreed($entry->className)) ? "style = 'display : none'" : "";
+                $html .= self::getSheetEntryRowHtml($penNumber, $showVarietyPrompt);
             }
         } else {
             $html .= "<tr><span>No Entries</span></tr>";
@@ -70,12 +74,12 @@ class JudgingSheetsView
         return $html;
     }
 
-    private static function getSheetHeaderHtml($classModel, $judgeName)
+    private static function getSheetHeaderHtml(int $index, string $className, string $age, string $judgeName)
     {
         $html = "<tr>
-                  <th colspan=3><span>Class " . $classModel->index . " | " . $classModel->name . " | " . $classModel->age . " - Judge: <strong>" . $judgeName . "</strong></span></th>
+                  <th colspan=3><span>Class " . $index . " | " . $className . " | " . $age . " - Judge: <strong>" . $judgeName . "</strong></span></th>
                   <th></th>
-                  <th colspan ='2' class='side-slip'><p> Class " . $classModel->index . "</p></th>
+                  <th colspan ='2' class='side-slip'><p> Class " . $index . "</p></th>
                   </tr>
                   <tr>
                   <th class='js-pen-no'>№</th>
@@ -89,7 +93,7 @@ class JudgingSheetsView
         return $html;
     }
 
-    private static function getSheetEntryRowHtml($penNumber, $showVarietyPrompt, $placement = "")
+    private static function getSheetEntryRowHtml(string|int $penNumber, bool $showVarietyPrompt, string|int $placement = "")
     {
         $html = "<tr>
                   <td class='js-pen-no'>" . $penNumber . "</td>
@@ -125,11 +129,10 @@ class JudgingSheetsView
         return $html;
     }
 
-    private static function getChallengeSheetHtml($eventPostID, $challengeName, $sectionName, $age, $judgeName, $addSheetBestHtml)
+    private static function getChallengeSheetHtml(array $challengeSheet, bool $addSheetBestHtml): string
     {
-        $challengeModel = new ShowChallengeModel($eventPostID, $challengeName, $sectionName, $age);
         $html = "<div class='breed-class-report challenge'><table><thead>";
-        $html .= self::getSheetHeaderHtml($challengeModel, $judgeName);
+        $html .= self::getSheetHeaderHtml($challengeSheet['challengeIndex'], $challengeSheet['challengeName'], $challengeSheet['age'], $challengeSheet['judgeName']);
         $html .= " </thead><tbody>";
 
         for ($placement = 1; $placement < 4; $placement++) {
@@ -137,7 +140,8 @@ class JudgingSheetsView
         }
 
         if ($addSheetBestHtml) {
-            $section = ($challengeModel->name == EventProperties::GRANDCHALLENGE) ? "" : explode(" ", $challengeModel->name)[0];
+            //TODO: Enum for this?
+            $section = ($challengeSheet['challengeName'] == EventProperties::GRANDCHALLENGE) ? "" : explode(" ", $challengeSheet['challengeName'])[0];
             $html .= self::getChallengeSheetBestHtml($section, "Best");
             $html .= self::getChallengeSheetBestHtml($section, "BOA");
         }
@@ -194,12 +198,11 @@ class JudgingSheetsView
         return $html;
     }
 
-    private static function getOptionalClassSheetsHtml($eventPostID)
+    private static function getOptionalClassSheetsHtml(JudgingSheetsViewModel $viewModel)
     {
-        $showClassesModel = new ShowClassesModel();
         $html = "";
-        foreach ($showClassesModel->getShowSectionClassNames(EventProperties::getEventLocationID($eventPostID), "optional") as $className) {
-            $html .= self::getClassSheetHtml($eventPostID, $className, "AA", "");
+        foreach ($viewModel->optionalClassSheets as $classSheet) {
+            $html .= self::getClassSheetHtml($classSheet);
         }
 
         return $html;

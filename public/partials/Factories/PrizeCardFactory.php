@@ -1,7 +1,7 @@
 <?php
 
 class PrizeCardFactory {
-    public static function getPrizeCardModel(array $prizeCardData, string $judgesNamesString): PrizeCardModel {
+    public static function getPrizeCardModel(array $prizeCardData): PrizeCardModel {
         $params = [
             $prizeCardData['placement_id'], 
             $prizeCardData['placement'], 
@@ -19,17 +19,11 @@ class PrizeCardFactory {
             $prizeCardData['award']
         ];
 
-        $prize = Prize::from($prizeCardData['prize']);
-        return match ($prize) {
+        return match ($prizeCardData['prize']) {
             Prize::SECTION, Prize::SECTION_AWARD => new SectionPrizeCard(...$params),
             Prize::JUNIOR => new JuniorPrizeCard(...$params),
-            Prize::GRANDCHALLENGE, Prize::GC_AWARD  => new GrandChallengePrizeCard(...(self::setJudgesNameForGC($params, $judgesNamesString))),
+            Prize::GRANDCHALLENGE, Prize::GC_AWARD  => new GrandChallengePrizeCard(...$params),
             default         => new ClassPrizeCard(...$params)
         };
-    }
-
-    private static function setJudgesNameForGC(array $params, string $judgesNamesString): array {
-        $params[11] = $judgesNamesString;
-        return $params;
     }
 }

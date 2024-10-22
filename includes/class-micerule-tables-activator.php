@@ -69,10 +69,11 @@ class Micerule_Tables_Activator {
 		//event judges table
 		$event_judges_table_name = $wpdb->prefix."micerule_event_judges";
 		$sql_create_event_judges_table = "CREATE TABLE IF NOT EXISTS ".$event_judges_table_name. " (
+			id bigint(20) unsigned NOT NULL auto_increment,
 			event_post_id bigint(20) unsigned NOT NULL,
 			judge_no int unsigned NOT NULL,
 			judge_name text,
-			PRIMARY KEY  (event_post_id, judge_no)
+			PRIMARY KEY  (id)
 			) $charset_collate; ";
 		dbDelta($sql_create_event_judges_table);
 		
@@ -80,13 +81,12 @@ class Micerule_Tables_Activator {
 		$event_judges_sections_table_name = $wpdb->prefix."micerule_event_judges_sections";
 		$sql_create_event_judges_sections_table = "CREATE TABLE IF NOT EXISTS ".$event_judges_sections_table_name. " (
 			id bigint(20) unsigned NOT NULL auto_increment,
-			event_post_id bigint(20) unsigned NOT NULL,
-			judge_no int unsigned NOT NULL,
 			section text,
+			judge_id bigint(20) unsigned NOT NULL,
 			PRIMARY KEY  (id),
-			CONSTRAINT fk_event_id_judge_no_sections
-				FOREIGN KEY (event_post_id, judge_no) 
-				REFERENCES ".$event_judges_table_name."(event_post_id, judge_no)
+			CONSTRAINT fk_event_judge_sections
+				FOREIGN KEY (judge_id) 
+				REFERENCES ".$event_judges_table_name."(id)
 				ON DELETE CASCADE
 			) $charset_collate; ";
 		dbDelta($sql_create_event_judges_sections_table);
@@ -94,13 +94,13 @@ class Micerule_Tables_Activator {
 		//event judges partnerships table
 		$event_judges_partnerships_table_name = $wpdb->prefix."micerule_event_judges_partnerships";
 		$sql_create_event_judges_partnerships_table = "CREATE TABLE IF NOT EXISTS ".$event_judges_partnerships_table_name. " (
-			event_post_id bigint(20) unsigned NOT NULL,
-			judge_no int unsigned NOT NULL,
+			id bigint(20) unsigned NOT NULL auto_increment,
 			partner_name text,
-			PRIMARY KEY  (event_post_id, judge_no),
-			CONSTRAINT fk_event_id_judge_no_partnerships
-				FOREIGN KEY (event_post_id, judge_no) 
-				REFERENCES ".$event_judges_table_name."(event_post_id, judge_no)
+			judge_id bigint(20) unsigned NOT NULL,
+			PRIMARY KEY  (id),
+			CONSTRAINT fk_event_judge_partnerships
+				FOREIGN KEY (judge_id) 
+				REFERENCES ".$event_judges_table_name."(id)
 				ON DELETE CASCADE
 			) $charset_collate; ";
 		dbDelta($sql_create_event_judges_partnerships_table);
@@ -307,10 +307,11 @@ class Micerule_Tables_Activator {
 			event_post_id bigint(20) unsigned NOT NULL,
 			judge_no int unsigned NOT NULL,
 			comment text,
+			judge_id bigint(20) unsigned NOT NULL,
 			PRIMARY KEY  (id),
 			CONSTRAINT fk_event_post_id_judge_no_general_comment
-				FOREIGN KEY (event_post_id, judge_no)
-				REFERENCES ".$event_judges_table_name."(event_post_id, judge_no)
+				FOREIGN KEY (judge_id)
+				REFERENCES ".$event_judges_table_name."(id)
 				ON DELETE CASCADE
 			) $charset_collate; ";
 		dbDelta($sql_create_show_judges_general_comments_table);

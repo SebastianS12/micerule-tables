@@ -1,9 +1,7 @@
 <?php
 
-// tests/ExampleTest.php
 use PHPUnit\Framework\TestCase;
 require_once dirname(__DIR__).'/bootstrap.php';
-// require_once '../partials/Services/PlacementsService.php';
 
 class PlacementsRowServiceTest extends TestCase
 {

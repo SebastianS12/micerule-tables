@@ -53,39 +53,39 @@ class Model{
     }
 
     // Customize var_dump output
-    // public function __debugInfo(): array {
-    //     // Get all properties of the current instance, including inherited properties
-    //     $properties = [
-    //         'ID' => $this->id,
-    //         'Relations' => array_keys($this->relations),
-    //         'Inverse Relations' => array_keys($this->inverseRelations),
-    //         'Attributes' => array_keys($this->attributes),
-    //     ];
+    public function __debugInfo(): array {
+        // Get all properties of the current instance, including inherited properties
+        $properties = [
+            'ID' => $this->id,
+            'Relations' => array_keys($this->relations),
+            'Inverse Relations' => array_keys($this->inverseRelations),
+            'Attributes' => array_keys($this->attributes),
+        ];
 
-    //     // Merge properties from subclass
-    //     $subclassProperties = $this->getSubclassSpecificProperties();
+        // Merge properties from subclass
+        $subclassProperties = $this->getSubclassSpecificProperties();
 
-    //     return array_merge($properties, $subclassProperties);
-    // }
+        return array_merge($properties, $subclassProperties);
+    }
 
-    // protected function getSubclassSpecificProperties(): array {
-    //     $properties = [];
-    //     // Use reflection to get properties of the subclass
-    //     $reflect = new ReflectionClass($this);
-    //     $parentReflect = new ReflectionClass(get_parent_class($this));
+    protected function getSubclassSpecificProperties(): array {
+        $properties = [];
+        // Use reflection to get properties of the subclass
+        $reflect = new ReflectionClass($this);
+        $parentReflect = new ReflectionClass(get_parent_class($this));
 
-    //     // Get the properties defined in the parent class
-    //     $parentProperties = array_map(fn($prop) => $prop->getName(), $parentReflect->getProperties(ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED));
+        // Get the properties defined in the parent class
+        $parentProperties = array_map(fn($prop) => $prop->getName(), $parentReflect->getProperties(ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED));
 
-    //     // Get properties of the current subclass and filter out parent properties
-    //     foreach ($reflect->getProperties(ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED) as $property) {
-    //         if (!$property->isStatic() && !in_array($property->getName(), $parentProperties)) {
-    //             $property->setAccessible(true);
-    //             $properties[$property->getName()] = $property->getValue($this);
-    //         }
-    //     }
-    //     return $properties;
-    // }
+        // Get properties of the current subclass and filter out parent properties
+        foreach ($reflect->getProperties(ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED) as $property) {
+            if (!$property->isStatic() && !in_array($property->getName(), $parentProperties)) {
+                $property->setAccessible(true);
+                $properties[$property->getName()] = $property->getValue($this);
+            }
+        }
+        return $properties;
+    }
 
     public function setRelation($name, $value){
         $this->relations[$name] = $value;

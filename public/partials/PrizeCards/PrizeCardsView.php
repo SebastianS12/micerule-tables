@@ -7,11 +7,9 @@ class PrizeCardsView
         $html = "<div class = 'prizeCards content' style = 'display : none'>";
         $prizeCardsRepository = new PrizeCardsRepository();
         $prizeCardsService = new PrizeCardsService($prizeCardsRepository);
-        $prizeCardsController = new PrizeCardsController($prizeCardsService);
-        $prizeCards = $prizeCardsController->preparePrizeCardsData($eventPostID, new JudgesService(new JudgesRepository()));
-        // $html .= "<div>".var_export($prizeCards, true)."</div>";
-        $html .= self::getPrintedPrizeCardsHtml($prizeCards['printed']);
-        $html .= self::getUnprintedPrizeCardsHtml($prizeCards['unprinted']);
+        $viewModel = $prizeCardsService->prepareViewModel($eventPostID, EventProperties::getEventLocationID($eventPostID));
+        $html .= self::getPrintedPrizeCardsHtml($viewModel->getPrintedCards());
+        $html .= self::getUnprintedPrizeCardsHtml($viewModel->getUnprintedCards());
         $html .= "</div>";
 
         return $html;
@@ -43,7 +41,6 @@ class PrizeCardsView
 
     private static function getUnprintedPrizeCardsHtml(array $prizeCards)
     {
-        $prizeCardsModel = new PrizeCardsModel();
         $html = "<div class='prize-cards-print'>
                   <div class='print-tray-header'><h3>Labels to Print <span class='print-alert'>On Mac, these must be printed from Safari</span></h3><a class='print-button'><img src='/wp-content/plugins/micerule-tables/admin/svg/print.svg'></a></div>
                     <div class='card-container'>";
@@ -60,9 +57,9 @@ class PrizeCardsView
 
     private static function getPrizeCardHtml(PrizeCardModel $prizeCard)
     {
-        $html = " <div class= 'prize-card class-card " . $prizeCard->placementClass . " " . $prizeCard->prizeClass . "' data-placementid= ".$prizeCard->placementID." data-prize-id = ".$prizeCard->prize.">
+        $html = " <div class= 'prize-card class-card " . $prizeCard->placementClass . " " . $prizeCard->prizeClass . "' data-placement-id= ".$prizeCard->placementID." data-prize = ".$prizeCard->prize->value.">
                <ul class='card-content-wrapper'>
-                <li style = 'visibility:hidden; position: absolute; top: 0;'><span class = 'prize'>" . $prizeCard->prize . "</span><span class = 'prize-card-section-name'>" . $prizeCard->section . "</span></li>
+                <li style = 'visibility:hidden; position: absolute; top: 0;'><span class = 'prize'>" . $prizeCard->prize->value . "</span><span class = 'prize-card-section-name'>" . $prizeCard->section . "</span></li>
                 <li style = 'visibility:hidden; position: absolute; top: 0;'><span class = 'prize-card-class-name'>" . $prizeCard->className . "</span><span class = 'prize-card-age'>" . $prizeCard->age . "</span><span class = 'prize-card-placement'>" . $prizeCard->placement . "</span></li>
                 <li><span class='line exhibitor'>" . $prizeCard->userName . "</span><span class='placed card-info'>" . $prizeCard->indexNumber . ", " . $prizeCard->className . " " . $prizeCard->age . "</span><span class='placed'>" . $prizeCard->displayedPlacement . "</span>";
 
@@ -70,7 +67,7 @@ class PrizeCardsView
                             <a class = 'move-to-unprinted'><img src='/wp-content/plugins/micerule-tables/admin/svg/to-print-tray.svg'></a>
                            </div>" : "";
 
-        $hideVarietyName = ($prizeCard->prize == "Class" && $prizeCard->className == $prizeCard->varietyName) ? "style = 'display : none'" : "";
+        $hideVarietyName = ($prizeCard->prize == Prize::STANDARD && $prizeCard->className == $prizeCard->varietyName) ? "style = 'display : none'" : "";
         $html .= "   </li>
                  <li><span class='line class'>" . $prizeCard->indexNumber . ", " . $prizeCard->className . " " . $prizeCard->age . "</span><span class='line variety' " . $hideVarietyName . ">" . $prizeCard->varietyName . "</span><span class = 'line entry-count'>" . $prizeCard->entryCount . "</span><span class='line pen-no'>" . $prizeCard->penNumber . "</span></li>
                  <li><span class='line judge'>" . $prizeCard->judge . "</span><span class='line date'>" . $prizeCard->date . "</span></li>

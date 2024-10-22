@@ -24,4 +24,14 @@ class EntryClassModel extends Model{
         $instance->id = $id;
         return $instance;
     }
+
+    public function classIndices(): Collection
+    {
+        return $this->hasMany("classIndices");
+    }
+
+    public function judgeSection(): ?JudgeSectionModel
+    {
+        return $this->hasOne("judgeSection");
+    }
 }

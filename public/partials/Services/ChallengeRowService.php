@@ -63,10 +63,10 @@ class ChallengeRowService{
         $boaChallengePlacements = $challengePlacements[$boaChallengeIndexID]->groupByUniqueKey("placement");
 
         if(isset($bisChallengePlacements[1])){
-            $this->addOrRemoveAward($awardsRepository, $prizeID, $bisChallengePlacements[1], Award::BIS);
+            $this->addOrRemoveAward($awardsRepository, Prize::from($prizeID)->getAward(), $bisChallengePlacements[1], Award::BIS);
         }
         if(isset($boaChallengePlacements[1])){
-            $this->addOrRemoveAward($awardsRepository, $prizeID, $boaChallengePlacements[1], Award::BOA);
+            $this->addOrRemoveAward($awardsRepository, Prize::from($prizeID)->getAward(), $boaChallengePlacements[1], Award::BOA);
         }
     }
 

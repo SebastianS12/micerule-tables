@@ -4,11 +4,12 @@ class AbsenteesView
 {
     public static function getHtml($eventPostID)
     {
-        $judgesModel = new EventJudgesHelper();
+        $absenteesService = new AbsenteesService($eventPostID, EventProperties::getEventLocationID($eventPostID));
+        $viewModel = $absenteesService->prepareViewModel();
 
         $html = "<div class = 'absentees content' style = 'display : none'>";
 
-        foreach ($judgesModel->getEventJudgeNames($eventPostID) as $judgeName) {
+        foreach ($viewModel->absentees as $judgeName => $judgeAbsentees) {
             $html .= "<div class='absentees-summary'>
                         <table>
                             <thead>
@@ -21,11 +22,13 @@ class AbsenteesView
                             </tr>
                             </thead>
                             <tbody>";
-            foreach (AbsenteesModel::getAbsentees($eventPostID, $judgeName) as $absenteeData) {
-                $html .= "<tr>
-                                <td class='abs-class'>" . $absenteeData['class_index']. "</td>
-                                <td>" . $absenteeData['pen_number'] . "</td>
+            foreach ($judgeAbsentees as $classIndex => $absenteePenNumbers) {
+                foreach($absenteePenNumbers as $absenteePenNumber){
+                    $html .= "<tr>
+                                <td class='abs-class'>" . $classIndex. "</td>
+                                <td>" . $absenteePenNumber . "</td>
                              </tr>";
+                } 
             }
             $html .=      "</tbody>
                     </table>

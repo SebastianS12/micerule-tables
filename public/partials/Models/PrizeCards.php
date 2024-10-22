@@ -231,7 +231,7 @@ abstract class PrizeCardModel{
 
     const placementClasses = array(1 => "first", 2 => "second", 3 => "third");
 
-    public function __construct(int $placementID, int $placement, int $prize, string $age, string $userName, string $className, string $varietyName, int $penNumber, int $indexNumber, string $section, bool $printed, ?string $judge, int $entryCount, ?string $award)
+    public function __construct(int $placementID, int $placement, Prize $prize, string $age, string $userName, string $className, string $varietyName, int $penNumber, int $indexNumber, string $section, bool $printed, ?string $judge, int $entryCount, ?string $award)
     {
         $this->placementID = $placementID;
         $this->placement = $placement;
@@ -256,7 +256,7 @@ abstract class PrizeCardModel{
 }
 
 class ClassPrizeCard extends PrizeCardModel{
-    public function __construct(int $placementID, int $placement, int $prize, string $age, string $userName, string $className, string $varietyName, int $penNumber, int $indexNumber, string $section, bool $printed, ?string $judge, int $entryCount, ?string $award)
+    public function __construct(int $placementID, int $placement, Prize $prize, string $age, string $userName, string $className, string $varietyName, int $penNumber, int $indexNumber, string $section, bool $printed, ?string $judge, int $entryCount, ?string $award)
     {
         parent::__construct($placementID, $placement, $prize, $age, $userName, $className, $varietyName, $penNumber, $indexNumber, $section, $printed, $judge, $entryCount, $award);
         $this->prizeClass = "breed-class";
@@ -268,7 +268,7 @@ class ClassPrizeCard extends PrizeCardModel{
 }
 
 class JuniorPrizeCard extends PrizeCardModel{
-    public function __construct(int $placementID, int $placement, int $prize, string $age, string $userName, string $className, string $varietyName, int $penNumber, int $indexNumber, string $section, bool $printed, ?string $judge, int $entryCount, ?string $award)
+    public function __construct(int $placementID, int $placement, Prize $prize, string $age, string $userName, string $className, string $varietyName, int $penNumber, int $indexNumber, string $section, bool $printed, ?string $judge, int $entryCount, ?string $award)
     {
         parent::__construct($placementID, $placement, $prize, $age, $userName, $className, $varietyName, $penNumber, $indexNumber, $section, $printed, $judge, $entryCount, $award);
         $this->prizeClass = "junior-challenge";
@@ -280,7 +280,7 @@ class JuniorPrizeCard extends PrizeCardModel{
 }
 
 class SectionPrizeCard extends PrizeCardModel{
-    public function __construct(int $placementID, int $placement, int $prize, string $age, string $userName, string $className, string $varietyName, int $penNumber, int $indexNumber, string $section, bool $printed, ?string $judge, int $entryCount, ?string $award)
+    public function __construct(int $placementID, int $placement, Prize $prize, string $age, string $userName, string $className, string $varietyName, int $penNumber, int $indexNumber, string $section, bool $printed, ?string $judge, int $entryCount, ?string $award)
     {
         parent::__construct($placementID, $placement, $prize, $age, $userName, $className, $varietyName, $penNumber, $indexNumber, $section, $printed, $judge, $entryCount, $award);
         $this->prizeClass = "section-challenge";
@@ -298,7 +298,7 @@ class SectionPrizeCard extends PrizeCardModel{
 }
 
 class GrandChallengePrizeCard extends PrizeCardModel{
-    public function __construct(int $placementID, int $placement, int $prize, string $age, string $userName, string $className, string $varietyName, int $penNumber, int $indexNumber, string $section, bool $printed, ?string $judge, int $entryCount, ?string $award)
+    public function __construct(int $placementID, int $placement, Prize $prize, string $age, string $userName, string $className, string $varietyName, int $penNumber, int $indexNumber, string $section, bool $printed, ?string $judge, int $entryCount, ?string $award)
     {
         parent::__construct($placementID, $placement, $prize, $age, $userName, $className, $varietyName, $penNumber, $indexNumber, $section, $printed, $judge, $entryCount, $award);
         $this->prizeClass = "grand-challenge";

@@ -262,7 +262,9 @@ class Micerule_Tables_Admin{
       if(isset($post->ID)){
           ResultTable::saveTableData($post->ID, $_POST['micerule_table_data']);
           ResultTable::saveOptionalTableData($post->ID, $_POST['micerule_table_data_optional']);
-          EventJudgesHelper::saveEventJudges($post->ID, $_POST['judge_data']);
+          
+          $judgesService = new JudgesService(new JudgesRepository($post->ID), new JudgesSectionsRepository($post->ID));
+          $judgesService->saveEventJudges($post->ID, $_POST['judge_data']);
 
           // ResultTable::convertPostmeta();
           // EventJudgesHelper::convertPostMeta();

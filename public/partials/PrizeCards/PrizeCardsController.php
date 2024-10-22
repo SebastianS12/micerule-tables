@@ -8,12 +8,9 @@ class PrizeCardsController
     {
         $this->prizeCardsService = $prizeCardsService;
     }
-    public function preparePrizeCardsData(int $eventPostID, JudgesService $judgesService): array{
-        return $this->prizeCardsService->preparePrizeCardsData($eventPostID, $judgesService);
-    }
 
-    public function printAll(int $eventPostID){
-        $this->prizeCardsService->printAll($eventPostID);
+    public function printAll(array $prizeCardsToPrint){
+        $this->prizeCardsService->printAll($prizeCardsToPrint);
     }
 
     public function moveToUnprinted(int $placementID, int $prizeID){
