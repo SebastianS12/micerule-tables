@@ -29,7 +29,6 @@ class PlacementsService{
         $higherPlacement = $higherPlacements->groupByUniqueKey("placement")[$higherPlacementNumber];
         $placementsInSameClass = false;
         if($prize == Prize::SECTION){
-            echo("Section");
             $placementsInSameClass = self::inSameClass($lowerPlacement->entry()->showClass(), $higherPlacement->entry()->showClass());
         }
         if($prize == Prize::GRANDCHALLENGE){
@@ -40,9 +39,6 @@ class PlacementsService{
     }
 
     private static function inSameClass(EntryClassModel $lowerPlacementEntryClassModel, EntryClassModel $higherPlacementEntryClassModel): bool{
-        echo($lowerPlacementEntryClassModel->className);
-        echo($higherPlacementEntryClassModel->className);
-        echo(var_dump($lowerPlacementEntryClassModel->className == $higherPlacementEntryClassModel->className));
         return $lowerPlacementEntryClassModel->className == $higherPlacementEntryClassModel->className;
     }
 

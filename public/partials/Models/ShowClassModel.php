@@ -71,8 +71,13 @@ class ClassIndexModel extends Model{
         return $this->hasOne("class");
     }
 
-    public function showClass(): EntryClassModel|null
+    public function showClass(): ?EntryClassModel
     {
         return $this->belongsToOne(EntryClassModel::class);
+    }
+
+    public function comment(): ?ClassComment
+    {
+        return $this->hasOne("comment");
     }
 }

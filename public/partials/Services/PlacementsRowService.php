@@ -73,7 +73,6 @@ class PlacementsRowService{
     {
         $placementsRepository = new PlacementsRepository($eventPostID, PlacementDAOFactory::getPlacementDAO($prize->value));
         $placements = $placementsRepository->getIndexPlacements($indexID);
-        echo(var_dump($placements));
         if(PlacementsService::placementExists($placements, $placementNumber)){
             $placements = $placements->groupByUniqueKey("placement");
             $placementsRepository->removePlacement($placements[$placementNumber]->id);

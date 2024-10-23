@@ -19,6 +19,7 @@ class ClassPlacementDAO implements IPlacementDAO, IPrintDAO{
                                 ->join("INNER", Table::ENTRIES, [Table::REGISTRATIONS_ORDER], ["registration_order_id"], ["id"])
                                 ->join("INNER", Table::CLASS_PLACEMENTS, [Table::ENTRIES], ["entry_id"], ["id"])
                                 ->where(Table::REGISTRATIONS->getAlias(), "event_post_id", "=", $eventPostID)
+                                ->orderBy(Table::CLASS_PLACEMENTS->getAlias(), "placement")
                                 ->build();
 
         // return $this->wpdb->get_results("SELECT PLACEMENTS.id, entry_id, index_id, placement, printed FROM ".$this->wpdb->prefix."micerule_show_user_registrations REGISTRATIONS 
@@ -117,6 +118,7 @@ class ChallengePlacementDAO implements IPlacementDAO, IPrintDAO{
                                 ->join("INNER", Table::ENTRIES, [Table::REGISTRATIONS_ORDER], ["registration_order_id"], ["id"])
                                 ->join("INNER", Table::CHALLENGE_PLACEMENTS, [Table::ENTRIES], ["entry_id"], ["id"])
                                 ->where(Table::REGISTRATIONS->getAlias(), "event_post_id", "=", $eventPostID)
+                                ->orderBy(Table::CHALLENGE_PLACEMENTS->getAlias(), "placement")
                                 ->build();
 
         // return $this->wpdb->get_results("SELECT PLACEMENTS.id, entry_id, index_id, placement, printed FROM ".$this->wpdb->prefix."micerule_show_user_registrations REGISTRATIONS 

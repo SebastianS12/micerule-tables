@@ -114,6 +114,19 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable{
         return $collection;
     }
 
+    public function whereNot(string $attribute, mixed $condition): Collection
+    {
+        $collection = new Collection();
+
+        foreach($this as &$collectionItem){
+            if($collectionItem->$attribute != $condition){
+                $collection->add($collectionItem);
+            }
+        }
+
+        return $collection;
+    }
+
     /**
      * @param string[] $propertyNames
      * @param string[] $relationKeys      

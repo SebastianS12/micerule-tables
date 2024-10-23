@@ -66,7 +66,7 @@ function submitReport(buttonElement){
 
 function submitGeneralComment(buttonElement){
   var commentID = buttonElement.parent().data('comment-id');
-  var judgeNo = buttonElement.parent().data('judge-no');
+  var judgeID = buttonElement.parent().data('judge-id');
   var comment = buttonElement.prev().find("textarea").eq(0).val();
   jQuery.ajax({
     type: 'POST',
@@ -75,7 +75,7 @@ function submitGeneralComment(buttonElement){
       _ajax_nonce: my_ajax_obj.nonce,
       action: 'submitReport',
       commentID: commentID,
-      judgeNo: judgeNo,
+      judgeID: judgeID,
       comment: comment,
       submitType: "generalComment"
     },

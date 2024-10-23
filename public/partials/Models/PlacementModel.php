@@ -26,18 +26,23 @@ class PlacementModel extends Model{
         return $instance;
     }
 
-    public function entry(): EntryModel|null
+    public function entry(): ?EntryModel
     {
         return $this->belongsToOne(EntryModel::class);
     }
 
-    public function award(): AwardModel|null
+    public function award(): ?AwardModel
     {
         return $this->hasOne("award");
     }
 
-    public function registration(): UserRegistrationModel|null
+    public function registration(): ?UserRegistrationModel
     {
         return $this->belongsToOneThrough([EntryModel::class, RegistrationOrderModel::class, UserRegistrationModel::class]);
+    }
+
+    public function report(): ?PlacementReport
+    {
+        return $this->hasOne("report");
     }
 }

@@ -28,4 +28,9 @@ class JudgeModel extends Model{
     {
         return $this->hasMany("sections");
     }
+
+    public function comment(): ?GeneralComment
+    {
+        return $this->hasOne("comment");
+    }
 }

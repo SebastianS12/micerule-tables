@@ -304,8 +304,6 @@ class Micerule_Tables_Activator {
 		$show_judges_general_comments_table_name = $wpdb->prefix."micerule_show_judges_general_comments";
 		$sql_create_show_judges_general_comments_table = "CREATE TABLE IF NOT EXISTS ".$show_judges_general_comments_table_name. " (
 			id bigint(20) unsigned NOT NULL auto_increment,
-			event_post_id bigint(20) unsigned NOT NULL,
-			judge_no int unsigned NOT NULL,
 			comment text,
 			judge_id bigint(20) unsigned NOT NULL,
 			PRIMARY KEY  (id),

@@ -6,6 +6,6 @@ $event_id = url_to_postid($url);
 $submitType = $_POST['submitType'];
 
 $judgesReportController = new JudgesReportController(new JudgesReportService(new JudgesReportRepository($event_id)));
-$judgesReportController->submit($submitType);
+$judgesReportController->submit($submitType, $event_id);
 
 wp_die();

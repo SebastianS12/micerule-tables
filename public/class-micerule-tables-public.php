@@ -65,6 +65,9 @@ require_once plugin_dir_path(__FILE__) . 'partials/Repositories/RegistrationOrde
 require_once plugin_dir_path(__FILE__) . 'partials/Repositories/PlacementsRepository.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Repositories/JuniorRegistrationRepository.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Repositories/JudgesSectionsRepository.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Repositories/GeneralCommentRepository.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Repositories/ClassCommentsRepository.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Repositories/PlacementReportsRepository.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/RegistrationTables/RegistrationTablesController.php';
 require_once plugin_dir_path(__FILE__) . 'partials/RegistrationTables/RegistrationTablesModel.php';
@@ -163,6 +166,8 @@ require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/EntrySummaryViewMo
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/JudgingSheetsViewModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/AbsenteesViewModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/PrizeCardsViewModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/JudgesReportViewModel.php';
+
 
 
 class Micerule_Tables_Public {

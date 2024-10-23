@@ -9,59 +9,33 @@ class JudgesReportController
         $this->judgesReportService = $judgesReportService;
     }
 
-    public function prepareReportData(int $eventPostID): array{
-        return $this->judgesReportService->prepareReportData($eventPostID);
-    }
-
-    public static function submitPlacementReport($eventPostID, $className, $age, $judgeNo, $placement, $gender, $comment)
-    {
-        $placementReport = PlacementReport::create($eventPostID, $className, $age, $judgeNo, $placement, $gender, $comment);
-        $placementReport->saveToDB();
-    }
-
-    public function submit($submitType)
+    public function submit(string $submitType, int $eventPostID)
     {
         if ($submitType == "classReport") {
-            $this->submitClassReport();
+            $this->submitClassReport($eventPostID);
         }
         if ($submitType == "generalComment") {
-            self::submitGeneralComment();
+            self::submitGeneralComment($eventPostID);
         }
     }
 
-    private function submitClassReport()
+    private function submitClassReport(int $eventPostID)
     {
         $commentID = isset($_POST['commentID']) && $_POST['commentID'] !== '' ? intval($_POST['commentID']) : null;
         $indexID = intval($_POST['indexID']);
         $comment = $_POST['classComment'];
         $placementReports = json_decode(html_entity_decode(stripslashes($_POST['placementReportData'])));
 
-        $this->judgesReportService->submitClassReport($commentID, $comment, $indexID);
-        $this->judgesReportService->submitPlacementReports($placementReports, $indexID);
+        $this->judgesReportService->submitClassComment($commentID, $eventPostID, $comment, $indexID, new ClassCommentsRepository($eventPostID));
+        $this->judgesReportService->submitPlacementReports($placementReports, $eventPostID, $indexID, new PlacementReportsRepository($eventPostID));
     }
 
-    private static function submitClassComment($classReportData)
-    {
-        // $classComment = $_POST['classComment'];
-        // $classComment = ClassComment::create($eventPostID, $classReportData->className, $classReportData->age, $classReportData->judgeNo, $classComment);
-        // $classComment->saveToDB();
-    }
-
-    // private function submitPlacementReports(array $placementReports, int $indexID)
-    // {
-    //     foreach ($placementReports as $placementReport) {
-    //         $gender = ($placementReport->buckChecked == "true") ? "Buck" : "Doe";
-    //         $placementReport = PlacementReport::create($classReportData->className, $classReportData->age, $classReportData->judgeNo, $placementReport->placement, $gender, $placementReport->comment);
-    //         $placementReport->saveToDB();
-    //     }
-    // }
-
-    private function submitGeneralComment()
+    private function submitGeneralComment(int $eventPostID)
     {
         $commentID = isset($_POST['commentID']) && $_POST['commentID'] !== '' ? intval($_POST['commentID']) : null;
-        $judgeNo = intval($_POST['judgeNo']);
+        $judgeID = intval($_POST['judgeID']);
         $comment = $_POST['comment'];
 
-        $this->judgesReportService->submitGeneralComment($commentID, $judgeNo, $comment);
+        $this->judgesReportService->submitGeneralComment($commentID, $judgeID, $comment, new GeneralCommentRepository($eventPostID));
     }
 }

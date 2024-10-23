@@ -127,7 +127,7 @@ class PrizeCardsService{
         $judgeGroupString = $this->getJudgeGroupString($eventPostID);
         $judgeCollection = $this->loadJudges($eventPostID);
 
-        $this->mapJudgesToEntries($showClassesCollection, $challengeIndexCollection, $judgeCollection);
+        $this->mapJudgesToClasses($showClassesCollection, $challengeIndexCollection, $judgeCollection);
 
         // Process Show Classes
         $this->processClassPlacements($viewModel, $showClassesCollection);
@@ -225,7 +225,7 @@ class PrizeCardsService{
         return JudgeFormatter::getJudgesString($judgesCollection);
     }
 
-    private function mapJudgesToEntries(Collection $showClassesCollection, Collection $challengeIndexCollection, Collection $judgeCollection): void
+    private function mapJudgesToClasses(Collection $showClassesCollection, Collection $challengeIndexCollection, Collection $judgeCollection): void
     {
         // Map judges to show classes
         ModelHydrator::mapExistingCollections(

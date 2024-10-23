@@ -41,7 +41,7 @@ class AdminTabs{
                   <div class = 'absentees content' style = 'display : none'>".AbsenteesView::getHtml($eventID)."</div>
                   <div class = 'prizeCards content' style = 'display : none'>".PrizeCardsView::getHtml($eventID)."</div>";
       }
-      // $html .= "<div class = 'judgesReport content' style = 'display: none'>".JudgesReportView::getHtml($eventID)."</div>";
+      $html .= "<div class = 'judgesReport content' style = 'display: none'>".JudgesReportView::getHtml($eventID)."</div>";
     }
     $html .= "</div>";
 
