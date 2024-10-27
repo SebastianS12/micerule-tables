@@ -3,15 +3,6 @@
 class AdminTabs{
 
   public static function getAdminTabsHtml($eventID){
-    $fancierEntries = new FancierEntries($eventID);
-    $label = new Label($eventID);
-    $entrySummary = new EntrySummary($eventID);
-    $judgingSheets = new JudgingSheets($eventID);
-    $entryBook = new EntryBook($eventID);
-    $absentees = new Absentees($eventID);
-    $prizeCards = new PriceCards($eventID);
-    $judgesReports = new JudgesReport($eventID);
-
     $showOptionsModel = new ShowOptionsModel();
     $showOptions = $showOptionsModel->getShowOptions(EventProperties::getEventLocationID($eventID));
 

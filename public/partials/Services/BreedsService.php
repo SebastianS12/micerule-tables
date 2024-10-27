@@ -1,16 +1,24 @@
 <?php
 
 class BreedsService{
-    private BreedsRepository $breedsRepository;
-    private int $locationID;
+    private Collection $breeds;
+    private Collection $breedsByName;
+    private Collection $showClasses;
 
-    public function __construct(BreedsRepository $breedsRepository, int $locationID)
+    public function __construct(BreedsRepository $breedsRepository, ShowClassesRepository $showClassesRepository)
     {
-        $this->breedsRepository = $breedsRepository;   
-        $this->locationID = $locationID;
+      $this->breeds = $breedsRepository->getAll();
+      $this->breedsByName = $this->breeds->groupBy("name");
+      $this->showClasses = $showClassesRepository->getAll();
     }
-    public function getSectionBreedNames(string $section): array|null{
-        return $this->breedsRepository->getSectionBreedNames($section);
+
+    public function isStandardBreed(string $name): bool
+    {
+      return $this->breedsByName->offsetExists($name);
+    }
+
+    public function getSectionBreedNames(string $section): Collection{
+      return $this->breeds->where("section", $section)->name;
     }
 
     public function getClassSelectOptionsHtml($sectionName, $selectedVariety = ""){
@@ -25,16 +33,13 @@ class BreedsService{
         return $optionsHtml;
       }
     
-      private function getClassSelectOptions($sectionName){
+      private function getClassSelectOptions(string $sectionName){
         $selectOptions = array();
         $sectionBreedNames = $this->getSectionBreedNames($sectionName);
-        $showSectionRepository = new ShowSectionRepository($this->locationID);
-        $showSectionClassNames = $showSectionRepository->getShowSectionClassNames($sectionName);
-        if($sectionBreedNames != null){
-          foreach($sectionBreedNames as $breedName){
-            if(!in_array($breedName, $showSectionClassNames)){
-              array_push($selectOptions, $breedName);
-            }
+        $showSectionClassNames = $this->showClasses->where("section", $sectionName)->groupByUniqueKey("class_name");
+        foreach($sectionBreedNames as $breedName){
+          if(!isset($showSectionClassNames[$breedName])){
+            array_push($selectOptions, $breedName);
           }
         }
     

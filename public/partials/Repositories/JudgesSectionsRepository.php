@@ -36,9 +36,9 @@ class JudgesSectionsRepository implements IRepository{
     {
         global $wpdb;
         if(isset($judgeSectionModel->id)){
-            $wpdb->update($wpdb->prefix.Table::JUDGES_SECTIONS->value, array('section' => $judgeSectionModel->section, 'judge_id' => $judgeSectionModel->judgeID), array('id' => $judgeSectionModel->id));
+            $wpdb->update($wpdb->prefix.Table::JUDGES_SECTIONS->value, array('section' => $judgeSectionModel->section, 'judge_id' => $judgeSectionModel->judge_id), array('id' => $judgeSectionModel->id));
         }else{
-            $wpdb->insert($wpdb->prefix.Table::JUDGES_SECTIONS->value, array('section' => $judgeSectionModel->section, 'judge_id' => $judgeSectionModel->judgeID));
+            $wpdb->insert($wpdb->prefix.Table::JUDGES_SECTIONS->value, array('section' => $judgeSectionModel->section, 'judge_id' => $judgeSectionModel->judge_id));
             $judgeSectionModel->id = $wpdb->insert_id;
         }
 

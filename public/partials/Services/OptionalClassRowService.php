@@ -8,12 +8,12 @@ class OptionalClassRowService implements IRowService{
         $this->placementsRowService = $placementsRowService;
     }
 
-    public function prepareRowData(EntryModel $entry, string $userName, RowPlacementData $rowPlacementData, string $age, bool $pastDeadline): array{
+    public function prepareRowData(EntryModel $entry, string $userName, RowPlacementData $rowPlacementData, string $age, string $section, bool $pastDeadline): array{
         $rowData = array();
         $rowData['classMoved'] = ($entry->moved) ? "moved" : "";
         $rowData['classAbsent'] = ($entry->absent) ? "absent" : "";
         $rowData['classAdded'] = ($entry->added) ? "added" : "";
-        $rowData['penNumber'] = $entry->penNumber;
+        $rowData['penNumber'] = $entry->pen_number;
         $rowData['entryID'] = $entry->id;
         $rowData['userName'] = $userName;
         $rowData['absentChecked'] = ($entry->absent) ? "checked" : "";

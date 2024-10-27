@@ -34,7 +34,7 @@ class PlacementReportsRepository implements IRepository{
         if(isset($placementReportModel->id)){
             $wpdb->update($wpdb->prefix.Table::CLASS_REPORTS->value, array('comment' => $placementReportModel->comment, 'gender' => $placementReportModel->gender), array('id' => $placementReportModel->id));
         }else{
-            $wpdb->insert($wpdb->prefix.Table::CLASS_REPORTS->value, array('class_index_id' => $placementReportModel->classIndexID, 'event_post_id' => $placementReportModel->eventPostID, 'comment' => $placementReportModel->comment, 'gender' => $placementReportModel->gender, 'placement_id' => $placementReportModel->placementID));
+            $wpdb->insert($wpdb->prefix.Table::CLASS_REPORTS->value, array('class_index_id' => $placementReportModel->class_index_id, 'event_post_id' => $placementReportModel->event_post_id, 'comment' => $placementReportModel->comment, 'gender' => $placementReportModel->gender, 'placement_id' => $placementReportModel->placement_id));
         }
     }
 }

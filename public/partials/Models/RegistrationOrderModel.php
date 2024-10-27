@@ -1,30 +1,31 @@
 <?php
 
 class RegistrationOrderModel extends Model{
-    public int $registrationID;
-    public string $createdAt;
+    public int $registration_id;
+    public string $created_at;
 
-    private function __construct(int $registrationID, string $createdAt)
+    private function __construct(int $registration_id, string $created_at)
     {
-        $this->registrationID = $registrationID;
-        $this->createdAt = $createdAt;
+        $this->registration_id = $registration_id;
+        $this->created_at = $created_at;
     }
 
-    public static function create(int $registrationID, string $createdAt): RegistrationOrderModel{
-        return new self($registrationID, $createdAt);
+    public static function create(int $registration_id, string $created_at): RegistrationOrderModel{
+        return new self($registration_id, $created_at);
     }
 
-    public static function createWithID(int $id, int $registrationID, string $createdAt): RegistrationOrderModel{
-        $instance = self::create($registrationID, $createdAt);
+    public static function createWithID(int $id, int $registration_id, string $created_at): RegistrationOrderModel{
+        $instance = self::create($registration_id, $created_at);
         $instance->id = $id;
         return $instance;
     }
 
-    public function entry(): EntryModel|null{
-        return $this->hasOne("entry");
+    public function entry(): ?EntryModel
+    {
+        return $this->hasOne(EntryModel::class, Table::ENTRIES, "registration_order_id");
     }
 
-    public function registration(): UserRegistrationModel|null{
-        return $this->belongsToOne(UserRegistrationModel::class);
+    public function registration(): ?UserRegistrationModel{
+        return $this->belongsToOne(UserRegistrationModel::class, Table::REGISTRATIONS, "registration_id");
     }
 }

@@ -7,9 +7,9 @@ class JuniorRowService implements IRowService{
         $this->optionalClassRowService = $optionalClassRowService;
     }
 
-    public function prepareRowData(EntryModel $entry, string $userName, RowPlacementData $rowPlacementData, string $age, bool $pastDeadline)
+    public function prepareRowData(EntryModel $entry, string $userName, RowPlacementData $rowPlacementData, string $age, string $section, bool $pastDeadline)
     {
-        $rowData = $this->optionalClassRowService->prepareRowData($entry, $userName, $rowPlacementData, $age, $pastDeadline);
+        $rowData = $this->optionalClassRowService->prepareRowData($entry, $userName, $rowPlacementData, $age, $section, $pastDeadline);
         $rowData = $this->adjustForJuniorClass($rowData);
         return $rowData;
     }
@@ -17,6 +17,7 @@ class JuniorRowService implements IRowService{
     private function adjustForJuniorClass(array $rowData): array{
         $rowData['editVisibility'] = "hidden";
         $rowData['classPlacementData']['prize'] = "Junior";
+        $rowData['showVarietySelect'] = "none";
         return $rowData;
     }
 }

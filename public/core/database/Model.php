@@ -3,7 +3,6 @@
 class Model{
     protected int $id;
     protected array $relations = [];
-    protected array $inverseRelations = [];
     protected array $attributes = [];
 
     public function __get($name)
@@ -12,12 +11,11 @@ class Model{
             return $this->$name;
         }else if (array_key_exists($name, $this->relations)) {
             return $this->relations[$name];
-        }else if(array_key_exists($name, $this->inverseRelations)){
-            return $this->inverseRelations[$name];
         }else if(array_key_exists($name, $this->attributes)){
             return $this->attributes[$name];
-        }
-        else{
+        }else if(method_exists($this, $name)){
+            return $this->$name();
+        }else{
             throw new Exception("Property or relationship '$name' does not exist.");
         }
     }
@@ -28,8 +26,6 @@ class Model{
             $this->$name = $value;
         }else if (isset($this->relations[$name])) {
             $this->relations[$name] = $value;
-        }else if (isset($this->inverseRelations[$name])) {
-            $this->inverseRelations[$name] = $value;
         }else if(isset($this->attributes[$name])){
             $this->attributes[$name] = $value;
         }else{
@@ -43,8 +39,6 @@ class Model{
             return isset($this->$name);
         } elseif (array_key_exists($name, $this->relations)) {
             return isset($this->relations[$name]);
-        } elseif (array_key_exists($name, $this->inverseRelations)) {
-            return isset($this->inverseRelations[$name]);
         } elseif (array_key_exists($name, $this->attributes)) {
             return isset($this->attributes[$name]);
         }
@@ -58,7 +52,6 @@ class Model{
         $properties = [
             'ID' => $this->id,
             'Relations' => array_keys($this->relations),
-            'Inverse Relations' => array_keys($this->inverseRelations),
             'Attributes' => array_keys($this->attributes),
         ];
 
@@ -91,41 +84,44 @@ class Model{
         $this->relations[$name] = $value;
     }
 
-    public function setInverseRelation($name, $value){
-        $this->inverseRelations[$name] = $value;
-    }
-
     public function setAttribute($name, $value){
         $this->attributes[$name] = $value;
     }
 
-    public function hasOne($relation): mixed{
-        if(!isset($this->relations[$relation])){
-            return null;
+    public function hasOne(string $relationModel, Table $relationTable, string $foreignKey): mixed{
+        if(!isset($this->relations[$relationModel])){
+            if(!LazyLoader::loadHasOne($this, $relationModel, $relationTable, $foreignKey));
         }
 
-        return $this->relations[$relation]->first();
+        return $this->relations[$relationModel]->first();
     }
 
-    public function belongsToOne($relation): mixed{
-        if(!isset($this->inverseRelations[$relation])){
-            return null;
+    public function belongsToOne(string $relationModel, Table $relationTable, string $foreignKey): ?Model{
+        if(!isset($this->relations[$relationModel])){
+            if(!LazyLoader::loadBelongsToOne($this, $relationModel, $relationTable, $foreignKey)){
+                return null;
+            }
         }
 
-        return $this->inverseRelations[$relation]->first();
+        return $this->relations[$relationModel]->first();
     }
 
-    public function hasMany($relation): mixed{
-        if(!isset($this->relations[$relation])) return new Collection();
-        return $this->relations[$relation];
+    public function hasMany(string $relationModel, Table $relationTable, string $foreignKey): Collection{
+        if(!isset($this->relations[$relationModel])){
+            if(!LazyLoader::loadHasMany($this, $relationModel, $relationTable, $foreignKey)){
+                return new Collection();
+            }
+        }
+
+        return $this->relations[$relationModel];
     }
 
-    public function belongsToOneThrough(array $relationshipPath, int $currentDepth = 0): mixed{
+    public function belongsToOneThrough(array $relationshipPath, array $relationTables, array $foreignKeys, int $currentDepth = 0): mixed{
         if($currentDepth == count($relationshipPath)) return $this;
     
-        $relatedModel = $this->belongsToOne($relationshipPath[$currentDepth]);
+        $relatedModel = $this->belongsToOne($relationshipPath[$currentDepth], $relationTables[$currentDepth], $foreignKeys[$currentDepth]);
         if(!isset($relatedModel)) return null;
     
-        return $relatedModel->belongsToOneThrough($relationshipPath, $currentDepth + 1);
+        return $relatedModel->belongsToOneThrough($relationshipPath, $relationTables, $foreignKeys, $currentDepth + 1);
     }
 }

@@ -20,15 +20,26 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable{
     {
         $relationCollection = new Collection();
         foreach($this->items as &$item){
-            foreach($item->$name as &$relationItem){
-                $relationCollection->add($relationItem);
+            if(property_exists($item, $name)){
+                $relationCollection->add($item->$name);
+            }else if(isset($item->$name)){
+                foreach($item->$name as &$relationItem){
+                    $relationCollection->add($relationItem);
+                }
             }
         }
+        
         return $relationCollection;
     }
 
     public function add(mixed &$item): void{
         $this->items[] = $item;
+    }
+
+    public function concat(Collection $otherCollection): Collection
+    {
+        $this->items = array_merge($this->items, $otherCollection->items);
+        return $this;
     }
 
     public function offsetExists($key): bool {
@@ -128,11 +139,12 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable{
     }
 
     /**
-     * @param string[] $propertyNames
+     * @param string[] $childClasses
+     * @param string[] $fromKeys
      * @param string[] $relationKeys      
      * @param IRepository[] $repositories  // Array of objects implementing RepositoryInterface
      */
-    public function with(array $propertyNames, array $fromKeys, array $relationKeys, array $repositories): Collection{
+    public function with(array $relationClasses, array $fromKeys, array $relationKeys, array $repositories): Collection{
         if (count($relationKeys) < 1) {
             throw new InvalidArgumentException("Expected 2 or more relation keys.");
         }
@@ -149,28 +161,30 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable{
             }
         }
 
-        return $this->hydrateModels($this, $fromKeys, $propertyNames, $repositoryData, 0);
+        return $this->hydrateModels($this, $relationClasses, $fromKeys, $repositoryData, 0);
     }
 
-    private function hydrateModels(Collection $collection, array $fromKeys, array $propertyNames, array $repositoryData, int $index){
-        if($index == count($propertyNames)) return $collection;
+    private function hydrateModels(Collection $collection, array $relationClasses, array $fromKeys, array $repositoryData, int $index){
+        if($index == count($fromKeys)) return $collection;
         
         $relationAttribute = $fromKeys[$index];
-        $relation = $propertyNames[$index];
+        $relationClass = $relationClasses[$index];
         foreach($collection as &$collectionItem){
-            if(!isset($collectionItem->$relation)) $collectionItem->setRelation($relation, new Collection());
+            if(!isset($collectionItem->$relationClass)) $collectionItem->setRelation($relationClass, new Collection());
             $itemClass = get_class($collectionItem);
             if (isset($repositoryData[$index][$collectionItem->$relationAttribute])) {
+                $currentCollection = new Collection();
                 foreach($repositoryData[$index][$collectionItem->$relationAttribute] as &$relationItem){
                     //set inverse relation
                     if(!isset($relationItem->$itemClass)){
-                        $relationItem->setInverseRelation($itemClass, new Collection());
+                        $relationItem->setRelation($itemClass, new Collection());
                     }
+                    $currentCollection->add($relationItem);
+                    $collectionItem->$relationClass->add($relationItem);
                     $relationItem->$itemClass->add($collectionItem);
-                    $collectionItem->$relation->add($relationItem);
                 }
+                $this->hydrateModels($currentCollection, $relationClasses, $fromKeys, $repositoryData, $index + 1);
             }
-            $this->hydrateModels($collectionItem->$relation, $fromKeys, $propertyNames, $repositoryData, $index + 1);
         }
 
         return $collection;

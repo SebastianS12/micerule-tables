@@ -5,11 +5,10 @@ class EntryBookView
     //TODO: Split up into more functions
     public static function getEntryBookHtml($eventPostID)
     {
-        //TODO: Get Data from EntryBookModel?
         $eventDeadline = EventProperties::getEventDeadline($eventPostID);
         $locationID = EventProperties::getEventLocationID($eventPostID);
         $entryBookService = new EntryBookService(new ChallengeIndexRepository($locationID));
-        $viewModel = $entryBookService->prepareViewModel($eventPostID, $eventDeadline);
+        $viewModel = $entryBookService->prepareViewModel($eventPostID, $locationID, $eventDeadline);
   
         $html = "<div class = 'entryBook content' style = 'display : none'>";
         $html .= "<div>";

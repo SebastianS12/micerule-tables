@@ -1,36 +1,36 @@
 <?php
 
 class JudgeModel extends Model{
-    public int $eventPostID;
-    public int $judgeNo;
-    public string $judgeName;
+    public int $event_post_id;
+    public int $judge_no;
+    public string $judge_name;
 
-    private function __construct(int $eventPostID, int $judgeNo, string $judgeName)
+    private function __construct(int $event_post_id, int $judge_no, string $judg_name)
     {
-        $this->eventPostID = $eventPostID;
-        $this->judgeNo = $judgeNo;
-        $this->judgeName = $judgeName;
+        $this->event_post_id = $event_post_id;
+        $this->judge_no = $judge_no;
+        $this->judge_name = $judg_name;
     }
 
-    public static function create(int $eventPostID, int $judgeNo, string $judgeName): JudgeModel
+    public static function create(int $event_post_id, int $judge_no, string $judg_name): JudgeModel
     {
-        return new self($eventPostID, $judgeNo, $judgeName);
+        return new self($event_post_id, $judge_no, $judg_name);
     }
 
-    public static function createWithID(int $id, int $eventPostID, int $judgeNo, string $judgeName): JudgeModel
+    public static function createWithID(int $id, int $event_post_id, int $judge_no, string $judg_name): JudgeModel
     {
-        $instance = self::create($eventPostID, $judgeNo, $judgeName);
+        $instance = self::create($event_post_id, $judge_no, $judg_name);
         $instance->id = $id;
         return $instance;
     }
 
     public function sections(): Collection
     {
-        return $this->hasMany("sections");
+        return $this->hasMany(JudgeSectionModel::class, Table::JUDGES_SECTIONS, "judge_id");
     }
 
     public function comment(): ?GeneralComment
     {
-        return $this->hasOne("comment");
+        return $this->hasOne(GeneralComment::class, Table::GENERAL_COMMENTS, "judge_id");
     }
 }

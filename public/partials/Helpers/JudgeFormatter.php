@@ -7,9 +7,17 @@ class JudgeFormatter
         $judgesString = "";
 
         foreach($judgeCollection as $judgeModel){
-            $judgesString .= $judgeModel->judgeName . ", ";
+            $judgesString .= $judgeModel->judge_name . ", ";
         }
 
         return rtrim($judgesString, ", ");
+    }
+
+    public static function getJudgeName(EntryClassModel|ChallengeIndexModel $entryClassModel): string
+    {
+        $judgeSection = $entryClassModel->judgeSection();
+        $judgeModel = (isset($judgeSection)) ? $judgeSection->judge() : null;
+        $judgeName = isset($judgeModel) ? $judgeModel->judge_name : "";
+        return $judgeName;
     }
 }

@@ -23,26 +23,33 @@ class ChallengeRowService{
         $data['age'] = $age;
         $data['challengeIndexID'] = $challengeIndexModel->id;
         $data['oaChallengeIndexID'] = $oaChallengeIndexModel->id;
-        $data['challengeIndex'] = $challengeIndexModel->challengeIndex;
-        $data['challengeName'] = $challengeIndexModel->challengeName;
+        $data['challengeIndex'] = $challengeIndexModel->challenge_index;
+        $data['challengeName'] = $challengeIndexModel->challenge_name;
         $data['section'] = $challengeIndexModel->section;
         $award = $this->getAward($placements);
         $data['bisChecked'] = ($award == "BIS" || $award == "BOA") ? "checked" : "";
         $data['bisDisabled'] = ($award == "BOA") ? "disabled" : "";
-        $data['placements'] = array();
+
+
+        $data['placements'] = array(1 => $this->getEmptyPlacementData(1), 2 => $this->getEmptyPlacementData(2), 3 => $this->getEmptyPlacementData(3));
         foreach($placements as $placementModel){
             $placementData = array();
             $entryModel = $placementModel->entry();
             $userRegistrationModel = $placementModel->registration();
-            $placementData['penNumber'] = $entryModel->penNumber;
-            $placementData['userName'] = $userRegistrationModel->userName;
-            $placementData['varietyName'] = $entryModel->varietyName;
+            $placementData['penNumber'] = $entryModel->pen_number;
+            $placementData['userName'] = $userRegistrationModel->user_name;
+            $placementData['varietyName'] = $entryModel->variety_name;
             $placementData['placement'] = $placementModel->placement;
 
-            array_push($data['placements'], $placementData);
+            $data['placements'][$placementModel->placement] = $placementData;
         }
 
         return $data;
+    }
+
+    private function getEmptyPlacementData(int $placement): array
+    {
+       return array('penNumber' => '', 'userName' => '', 'varietyName' => '', 'placement' => $placement);
     }
 
     private function getAward(Collection $placements): string{
@@ -58,7 +65,7 @@ class ChallengeRowService{
     }
 
     public function editAwards(PlacementsRepository $challengePlacementsRepository, AwardsRepository $awardsRepository, int $prizeID, int $bisChallengeIndexID, int $boaChallengeIndexID){
-        $challengePlacements = $challengePlacementsRepository->getAll()->with(["award"], ["id"], ["challenge_placement_id"], [$awardsRepository])->groupBy("indexID");
+        $challengePlacements = $challengePlacementsRepository->getAll()->with(["award"], ["id"], ["challenge_placement_id"], [$awardsRepository])->groupBy("index_id");
         $bisChallengePlacements = $challengePlacements[$bisChallengeIndexID]->groupByUniqueKey("placement");
         $boaChallengePlacements = $challengePlacements[$boaChallengeIndexID]->groupByUniqueKey("placement");
 
@@ -70,7 +77,7 @@ class ChallengeRowService{
         }
     }
 
-    private function addOrRemoveAward(AwardsRepository $awardsRepository, int $prizeID, PlacementModel $placementModel, Award $award){
+    private function addOrRemoveAward(AwardsRepository $awardsRepository, int $prizeID, ChallengePlacementModel $placementModel, Award $award){
         $awardModel = $placementModel->award();
         if(isset($awardModel)){
             $awardsRepository->removeAward($awardModel->id);

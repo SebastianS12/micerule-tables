@@ -25,54 +25,58 @@ class JudgingSheetsService{
 
         $challengeIndexRepository = new ChallengeIndexRepository($this->locationID);
 
-        $judgeCollection = $judgesRepository->getAll()->with(['sections'], ['id'], ['judgeID'], [$judgesSectionsRepository]);
-        $showClassesCollection = $showClassRepository->getAll()->with(["classIndices", "registrations", "order", "entry"], ["id", "id", "id", "id"], ["classID", "classIndexID", "registrationID", "registrationOrderID"], [$classIndexRepository, $userRegistrationsRepository, $registrationOrderRepository, $entryRepository]);
-        ModelHydrator::mapExistingCollections($judgeCollection->sections, "classes", $showClassesCollection, "section", "sectionName");
+        $judgeCollection = $judgesRepository->getAll()->with([JudgeSectionModel::class], ['id'], ['judge_id'], [$judgesSectionsRepository]);
+        $showClassesCollection = $showClassRepository->getAll()->with(
+            [ClassIndexModel::class, UserRegistrationModel::class, RegistrationOrderModel::class, EntryModel::class],
+            ["id", "id", "id", "id"], 
+            ["class_id", "class_index_id", "registration_id", "registration_order_id"], 
+            [$classIndexRepository, $userRegistrationsRepository, $registrationOrderRepository, $entryRepository]);
+        ModelHydrator::mapExistingCollections($judgeCollection->{JudgeSectionModel::class}, $showClassesCollection, EntryClassModel::class, "section", "section");
         $challengeIndexCollection = $challengeIndexRepository->getAll();
-        ModelHydrator::mapExistingCollections($judgeCollection->sections, "challengeIndices", $challengeIndexCollection, "section", "section");
+        ModelHydrator::mapExistingCollections($judgeCollection->{JudgeSectionModel::class}, $challengeIndexCollection, ChallengeIndexModel::class, "section", "section");
 
         foreach($judgeCollection as $judgeModel){
             foreach($judgeModel->sections() as $judgeSectionModel){
-                foreach($judgeSectionModel->classes as $entryClassModel){
+                foreach($judgeSectionModel->{EntryClassModel::class} as $entryClassModel){
                     foreach($entryClassModel->classIndices() as $classIndexModel){
-                        $viewModel->addClassSheet($judgeModel->judgeName, $judgeSectionModel->section, $entryClassModel->className, $classIndexModel->age, $classIndexModel->index);
+                        $viewModel->addClassSheet($judgeModel->judge_name, $judgeSectionModel->section, $entryClassModel->class_name, $classIndexModel->age, $classIndexModel->class_index);
                         foreach($classIndexModel->registrations->order->entry as $entryModel){
-                            $viewModel->addPenNumber($judgeModel->judgeName, $judgeSectionModel->section, $classIndexModel->index, $entryModel->penNumber);
+                            $viewModel->addPenNumber($judgeModel->judge_name, $judgeSectionModel->section, $classIndexModel->class_index, $entryModel->pen_number);
                         }
                     }
                 }
 
-                foreach($judgeSectionModel->challengeIndices as $challengeIndexModel){
-                    $viewModel->addSectionSheet($judgeModel->judgeName, $challengeIndexModel->challengeName, $challengeIndexModel->challengeIndex, $challengeIndexModel->age, $challengeIndexModel->section);
+                foreach($judgeSectionModel->{ChallengeIndexModel::class} as $challengeIndexModel){
+                    $viewModel->addSectionSheet($judgeModel->judge_name, $challengeIndexModel->challenge_name, $challengeIndexModel->challenge_index, $challengeIndexModel->age, $challengeIndexModel->section);
                 }
             }
         }
 
         //grand challenge sheets
         $judges = JudgeFormatter::getJudgesString($judgeCollection);
-        foreach($challengeIndexCollection->where("challengeName", EventProperties::GRANDCHALLENGE) as $challengeIndexModel){
-            $viewModel->addGrandChallengeSheet($judges, $challengeIndexModel->challengeName, $challengeIndexModel->challengeIndex, $challengeIndexModel->age, $challengeIndexModel->section);
+        foreach($challengeIndexCollection->where("challenge_name", EventProperties::GRANDCHALLENGE) as $challengeIndexModel){
+            $viewModel->addGrandChallengeSheet($judges, $challengeIndexModel->challenge_name, $challengeIndexModel->challenge_index, $challengeIndexModel->age, $challengeIndexModel->section);
         }
 
-        //optional
+        // //optional
         $juniorRegistrationsRepository = new JuniorRegistrationRepository($this->eventPostID);
         $juniorCollection = $juniorRegistrationsRepository->getAll();
-        $registrationOrderCollection = $showClassesCollection->classIndices->registrations->order;
-        ModelHydrator::mapExistingCollections($registrationOrderCollection, "junior", $juniorCollection, "id", "registrationOrderID");
-        foreach($showClassesCollection->groupBy("sectionName")['optional'] as $optionalClassModel){
-            foreach($optionalClassModel->classIndices() as $classIndexModel){
-                $viewModel->addOptionalClassSheet($optionalClassModel->className, $classIndexModel->age, $classIndexModel->index);
+        $registrationOrderCollection = $showClassesCollection->{ClassIndexModel::class}->{UserRegistrationModel::class}->{RegistrationOrderModel::class};
+        ModelHydrator::mapExistingCollections($registrationOrderCollection, $juniorCollection, JuniorRegistrationModel::class,"id", "registration_order_id");
+        foreach($showClassesCollection->groupBy("section")['optional'] as $optionalClassModel){
+            foreach($optionalClassModel->classIndices as $classIndexModel){
+                $viewModel->addOptionalClassSheet($optionalClassModel->class_name, $classIndexModel->age, $classIndexModel->class_index);
 
-                if($optionalClassModel->className == "Junior"){
+                if($optionalClassModel->class_name == "Junior"){
                     foreach($juniorCollection as $juniorRegistrationModel){
                         $entry = $juniorRegistrationModel->order()->entry();
                         if(isset($entry)){
-                            $viewModel->addOptionalClassPenNumber($classIndexModel->index, $entry->penNumber);
+                            $viewModel->addOptionalClassPenNumber($classIndexModel->class_index, $entry->pen_number);
                         }
                     }
                 }else{
                     foreach($classIndexModel->registrations->order->entry as $entryModel){
-                        $viewModel->addOptionalClassPenNumber($classIndexModel->index, $entryModel->penNumber);
+                        $viewModel->addOptionalClassPenNumber($classIndexModel->class_index, $entryModel->pen_number);
                     }
                 }
             }

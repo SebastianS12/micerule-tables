@@ -1,27 +1,27 @@
 <?php
 
 class AwardModel extends Model{
-    public int $challengePlacementID;
+    public int $challenge_placement_id;
     public Award $award;
     public bool $printed;
     public Prize $prize;
 
-    private function __construct(int $challengePlacementID, string $award, bool $printed, int $prize)
+    private function __construct(int $challenge_placement_id, string $award, bool $printed, int $prize)
     {
-        $this->challengePlacementID = $challengePlacementID;
+        $this->challenge_placement_id = $challenge_placement_id;
         $this->award = Award::from($award);
         $this->printed = $printed;
         $this->prize = Prize::from($prize);
     }
 
-    public static function create(int $challengePlacementID, string $award, bool $printed, int $prize): AwardModel
+    public static function create(int $challenge_placement_id, string $award, bool $printed, int $prize): AwardModel
     {
-        return new self($challengePlacementID, $award, $printed, $prize);
+        return new self($challenge_placement_id, $award, $printed, $prize);
     }
 
-    public static function createWithID(int $id, int $challengePlacementID, string $award, bool $printed, int $prize): AwardModel
+    public static function createWithID(int $id, int $challenge_placement_id, string $award, bool $printed, int $prize): AwardModel
     {
-        $instance = self::create($challengePlacementID, $award, $printed, $prize);
+        $instance = self::create($challenge_placement_id, $award, $printed, $prize);
         $instance->id = $id;
         return $instance;
     }

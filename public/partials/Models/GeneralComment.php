@@ -1,23 +1,23 @@
 <?php
 
 class GeneralComment extends Model{
-    public int $judgeID;
+    public int $judge_id;
     public string $comment;
 
-    private function __construct(int $judgeID, string $comment)
+    private function __construct(int $judge_id, string $comment)
     {
-        $this->judgeID = $judgeID;
+        $this->judge_id = $judge_id;
         $this->comment = $comment;
     }
 
-    public static function create(int $judgeID, string $comment): GeneralComment
+    public static function create(int $judge_id, string $comment): GeneralComment
     {
-        return new self($judgeID, $comment);
+        return new self($judge_id, $comment);
     }    
 
-    public static function createWithID(int $id, int $judgeID, string $comment): GeneralComment
+    public static function createWithID(int $id, int $judge_id, string $comment): GeneralComment
     {
-        $instance = self::create($judgeID, $comment);
+        $instance = self::create($judge_id, $comment);
         $instance->id = $id;
         return $instance;
     }

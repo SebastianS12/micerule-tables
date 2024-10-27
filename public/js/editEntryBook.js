@@ -135,53 +135,54 @@ function openAddModal(){
 }
 
 
-function openEditModal(title, additionalHtml){
-  //TODO:: file for constants
-  const sectionNames = ["SELFS", "TANS", "MARKED", "SATINS", "AOVS", "OPTIONAL"];
+async function openEditModal(title, additionalHtml){
+  const selectOptions = await getEditSelectOptions();
   var html = "<div class = 'modal-content'><h2>"+title+"</h2>";
 
   html += "<select id = 'sectionSelect'>";
-  sectionNames.forEach(function(sectionName){
-    html += "<option value = '"+sectionName+"'>"+sectionName+"</option>"
-  })
-  html += "<option value = 'optional'>Optional</option>";
+  $.each(selectOptions, function(sectionName){
+    html += "<option value = '"+sectionName+"'>"+sectionName+"</option>";
+  });
   html += "</select>";
 
   html += "<select id = 'classSelect'>";
-  $("#" + sectionNames[0].toLowerCase() + "-registrationTable").find(".classNameCell:visible").not(".challenge").each(function(){
-    html += "<option value = '"+$(this).text() + "'>"+$(this).text()+"</option>";
-  })
+  const classes = Object.values(selectOptions)[0];
+  $.each(classes, function(_, selectOption){
+    html += "<option value = '"+ selectOption.index_id + "'>"+ selectOption.classIndex +" - "+selectOption.className+" - "+selectOption.age+"</option>";
+  });
   html += "</select>";
 
-  html += "<select id = 'ageSelect'><option value = 'Ad'>Ad</option><option value = 'U8'>U8</option><option value = 'AA' disabled = 'disabled'>AA</option></select></div>";
-
   html += additionalHtml;
-  //html += "<input type = 'button' id = 'confirmEditModal'>Move</input>";
+
   $("#editEntryModal").html(html);
   $("#editEntryModal").modal();
 
   $("#sectionSelect").on('change', function(){
     $("#classSelect").empty();
-    $("#"+$.escapeSelector($(this).val().toLowerCase() + "-registrationTable")).find(".classNameCell:visible").not(".challenge").each(function(){
-      var className = $(this).parent().attr("id").split("-tr")[0];
-      if(className.toLowerCase() != "junior"){
-        $("#classSelect").append($("<option></option>").attr("value", className).text($(this).text()));
-      }
-    })
-
-    //lock age select for optional classes
-    if($(this).val() === 'optional'){
-      $("#ageSelect option[value='AA']").prop('disabled', false);
-      $("#ageSelect option[value='AA']").prop('selected', true);
-      $('#ageSelect :not(:selected)').prop('disabled',true);
-    }else{
-      $("#ageSelect option[value='Ad']").prop('selected', true);
-      $("#ageSelect option[value='AA']").prop('disabled', true);
-      $("#ageSelect :not(option[value='AA']").prop('disabled', false);
-    }
+    const section = ($(this).val());
+    $.each(selectOptions[section], function(_, selectOption){
+      $("#classSelect").append($("<option></option>").attr("value", selectOption.index_id).text(selectOption.classIndex +" - "+selectOption.className+" - "+selectOption.age));
+    });
   });
+}
 
-
+function getEditSelectOptions(){
+  return new Promise((resolve, reject) => {
+    jQuery.ajax({
+        type: 'GET',
+        url: my_ajax_obj.ajax_url,
+        data: {
+            _ajax_nonce: my_ajax_obj.nonce,
+            action: 'getSelectOptions',
+        },
+        success: function (data) {
+            resolve(data); // Pass data when the call succeeds
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            reject(errorThrown); // Handle errors by rejecting the Promise
+        }
+    });
+});
 }
 
 

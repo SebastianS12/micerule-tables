@@ -23,20 +23,15 @@ class ModelHydrator{
         return $map;
     }
 
-    public static function mapExistingCollections(Collection $parentCollection, string $relation, Collection $childCollection, string $parentMappingKey, string $childMappingKey){
+    public static function mapExistingCollections(Collection $parentCollection, Collection $childCollection, string $childClass, string $parentMappingKey, string $childMappingKey){
         $childCollection = $childCollection->groupBy($childMappingKey);
-        // echo(var_dump($childCollection));
-        // echo(var_dump($parentCollection));
         foreach($parentCollection as &$parentItem){
             $itemClass = get_class($parentItem);
-            if(!isset($parentItem->$relation)) $parentItem->setRelation($relation, new Collection());
+            if(!isset($parentItem->$childClass)) $parentItem->setRelation($childClass, new Collection());
             if(isset($childCollection[$parentItem->$parentMappingKey])){
-                //inverse relation
                 foreach($childCollection[$parentItem->$parentMappingKey] as &$childItem){
-                    $parentItem->$relation->add($childItem);
-                    if(!isset($childItem->$itemClass)){
-                        $childItem->setInverseRelation($itemClass, new Collection());
-                    }
+                    if(!isset($childItem->$itemClass)) $childItem->setRelation($itemClass, new Collection());
+                    $parentItem->$childClass->add($childItem);
                     $childItem->$itemClass->add($parentItem);
                 }
             }

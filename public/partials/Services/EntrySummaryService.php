@@ -20,8 +20,12 @@ class EntrySummaryService{
         $registrationOrderRepository = new RegistrationOrderRepository($this->eventPostID);
         $entryRepository = new EntryRepository($this->eventPostID);
 
-        $registrationCollection = $showClassRepository->getAll()->with(["classIndices", "registrations", "order", "entry"], ["id", "id", "id", "id"], ["classID", "classIndexID", "registrationID", "registrationOrderID"], [$classIndexRepository, $userRegistrationsRepository, $registrationOrderRepository, $entryRepository])->classIndices->registrations;
-        $registrationCollection = $registrationCollection->groupBy("userName");
+        $registrationCollection = $showClassRepository->getAll()->with(
+            [ClassIndexModel::class, UserRegistrationModel::class, RegistrationOrderModel::class, EntryModel::class],
+            ["id", "id", "id", "id"], 
+            ["class_id", "class_index_id", "registration_id", "registration_order_id"], 
+            [$classIndexRepository, $userRegistrationsRepository, $registrationOrderRepository, $entryRepository])->{ClassIndexModel::class}->{UserRegistrationModel::class};
+        $registrationCollection = $registrationCollection->groupBy("user_name");
 
         //TODO: Service
         $showOptionsModel = new ShowOptionsModel();
@@ -37,7 +41,7 @@ class EntrySummaryService{
                 foreach($registrationOrder as $registrationOrderModel){
                     $entry = $registrationOrderModel->entry();
                     if(isset($entry)){
-                        $viewModel->addUserEntry($userName, $showClassModel->className, $classIndexModel->index, $classIndexModel->age, $entry->penNumber);
+                        $viewModel->addUserEntry($userName, $showClassModel->class_name, $classIndexModel->class_index, $classIndexModel->age, $entry->pen_number);
                         $allEntriesAbsent = $allEntriesAbsent || $entry->absent;
                         $userRegistrationCount++;
                     }
@@ -59,9 +63,13 @@ class EntrySummaryService{
 
         $registrationCollection = $userRegistrationsRepository->getAll(function(QueryBuilder $query) use ($userName){
             $query->where(Table::REGISTRATIONS->getAlias(), "user_name", "=", $userName);
-        })->with(["order", "entry"], ["id", "id", "id", "id"], ["registrationID", "registrationOrderID"], [$registrationOrderRepository, $entryRepository]);
+        })->with(
+            [RegistrationOrderModel::class, EntryModel::class],
+            ["id", "id"], 
+            ["registration_id", "registration_order_id"], 
+            [$registrationOrderRepository, $entryRepository]);
 
-        foreach($registrationCollection->order->entry as $fancierEntry){
+        foreach($registrationCollection->{RegistrationOrderModel::class}->{EntryModel::class} as $fancierEntry){
             $fancierEntry->absent = $absent;
             $entryRepository->saveEntry($fancierEntry);
         }

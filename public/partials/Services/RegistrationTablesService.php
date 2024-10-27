@@ -25,28 +25,28 @@ class RegistrationTablesService{
         $challengeIndexModelCollection = $this->challengeIndexRepository->getAll();
 
         foreach($challengeIndexModelCollection as $challengeIndexModel){
-            $viewModel->challengeData[$challengeIndexModel->challengeName][$challengeIndexModel->age] = $challengeIndexModel;
+            $viewModel->challengeData[$challengeIndexModel->challenge_name][$challengeIndexModel->age] = $challengeIndexModel;
         }
 
-        $showClassesModels = $this->showClassesRepository->getAll()->with(['indices'], ["id"], ['classID'], [$this->classIndexRepository]);
+        $showClassesModels = $this->showClassesRepository->getAll()->with([ClassIndexModel::class], ["id"], ['class_id'], [$this->classIndexRepository]);
 
         $registrationCountCollection = ($viewModel->beforeDeadline) ? $this->registrationCountRepository->getUserRegistrationCounts($userName) : $this->registrationCountRepository->getAll();
 
-        ModelHydrator::mapAttribute($showClassesModels->indices, $registrationCountCollection, "registrationCount", "index", "index_number","entry_count", 0);
-        ModelHydrator::mapAttribute($challengeIndexModelCollection, $registrationCountCollection, "registrationCount", "challengeIndex", "index_number", "entry_count", 0);
+        ModelHydrator::mapAttribute($showClassesModels->{ClassIndexModel::class}, $registrationCountCollection, "registrationCount", "class_index", "index_number","entry_count", 0);
+        ModelHydrator::mapAttribute($challengeIndexModelCollection, $registrationCountCollection, "registrationCount", "challenge_index", "index_number", "entry_count", 0);
         
         $classData = array();
         foreach($showClassesModels as $classModel){
-            $section = $classModel->sectionName;
+            $section = $classModel->section;
             if(!isset($classData[$section])){
                 $classData[$section] = array();
             }
 
-            $classData[$section][$classModel->className] = array();
-            foreach($classModel->indices as $classIndexModel){
-                $classData[$section][$classModel->className][$classIndexModel->age] = array();
-                $classData[$section][$classModel->className][$classIndexModel->age]["index_number"] = $classIndexModel->index;
-                $classData[$section][$classModel->className][$classIndexModel->age]["entry_count"] = $classIndexModel->registrationCount;
+            $classData[$section][$classModel->class_name] = array();
+            foreach($classModel->classIndices as $classIndexModel){
+                $classData[$section][$classModel->class_name][$classIndexModel->age] = array();
+                $classData[$section][$classModel->class_name][$classIndexModel->age]["index_number"] = $classIndexModel->class_index;
+                $classData[$section][$classModel->class_name][$classIndexModel->age]["entry_count"] = $classIndexModel->registrationCount;
             }
         }
         $viewModel->classData = $classData;

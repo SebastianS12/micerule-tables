@@ -18,6 +18,7 @@ require_once plugin_dir_path(__FILE__) . 'core/database/QueryWhereNull.php';
 require_once plugin_dir_path(__FILE__) . 'core/database/QueryWhereNested.php';
 require_once plugin_dir_path(__FILE__) . 'core/database/QueryBuilder.php';
 require_once plugin_dir_path(__FILE__) . 'core/database/ModelHydrator.php';
+require_once plugin_dir_path(__FILE__) . 'core/database/LazyLoader.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/Helpers/JudgeFormatter.php';
 
@@ -134,6 +135,7 @@ require_once plugin_dir_path(__FILE__) . 'partials/Models/AwardModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/JuniorRegistrationModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/JudgeModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/JudgeSectionModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/BreedModel.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/Services/PlacementsService.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Services/EntriesService.php';
@@ -155,10 +157,12 @@ require_once plugin_dir_path(__FILE__) . 'partials/Services/LabelService.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Services/EntrySummaryService.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Services/JudgingSheetsService.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Services/AbsenteesService.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Services/EditEntryBookService.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/Factories/PrizeCardFactory.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Factories/PrintDAOFactory.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Factories/PlacementDAOFactory.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Factories/PlacementModelFactory.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/FancierEntriesViewModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/LabelViewModel.php';
@@ -375,6 +379,12 @@ class Micerule_Tables_Public {
 			'ajax_url' => admin_url('admin-ajax.php'),
 			'nonce'    => $title_nonce,
 		));
+
+		$title_nonce = wp_create_nonce('getSelectOptions');
+		wp_localize_script('getSelectOptions','my_ajax_obj',array(
+			'ajax_url' => admin_url('admin-ajax.php'),
+			'nonce'    => $title_nonce,
+		));
     //---------------------------------------------
 
 
@@ -520,6 +530,11 @@ class Micerule_Tables_Public {
 		$event_id = url_to_postid( $url );
 
 		wp_send_json(AdminTabs::getAdminTabsHtml($event_id));
+	}
+
+	public function getSelectOptions(){
+		$locationID = EventProperties::getEventLocationID(url_to_postid( wp_get_referer()));
+		EntryBookController::getSelectOptions(new ShowClassesRepository($locationID), new ClassIndexRepository($locationID));
 	}
 
 }

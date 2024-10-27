@@ -20,10 +20,14 @@ class FancierEntriesService{
         $registrationOrderRepository = new RegistrationOrderRepository($this->eventPostID);
         $juniorRegistrationRepository = new JuniorRegistrationRepository($this->eventPostID);
 
-        $registrationCollection = $showClassRepository->getAll()->with(["classIndices", "registrations", "order"], ["id", "id", "id"], ["classID", "classIndexID", "registrationID"], [$classIndexRepository, $userRegistrationsRepository, $registrationOrderRepository])->classIndices->registrations;
+        $registrationCollection = $showClassRepository->getAll()->with(
+            [ClassIndexModel::class, UserRegistrationModel::class, RegistrationOrderModel::class],
+            ["id", "id", "id"], 
+            ["class_id", "class_index_id", "registration_id"], 
+            [$classIndexRepository, $userRegistrationsRepository, $registrationOrderRepository])->{ClassIndexModel::class}->{UserRegistrationModel::class};
         $juniorRegistrationCollection = $juniorRegistrationRepository->getAll();
-        ModelHydrator::mapExistingCollections($registrationCollection, "junior", $juniorRegistrationCollection, "id", "registrationID");
-        $registrationCollection = $registrationCollection->groupBy("userName");
+        ModelHydrator::mapExistingCollections($registrationCollection, $juniorRegistrationCollection, JuniorRegistrationModel::class, "id", "registration_id");
+        $registrationCollection = $registrationCollection->groupBy("user_name");
 
         $juniorIndexModel = $classIndexRepository->getJuniorIndexModel();
         foreach($registrationCollection as $userName  => $userRegistrationCollection){
@@ -33,13 +37,15 @@ class FancierEntriesService{
                 $classIndexModel = $userRegistrationModel->classIndex();
                 $showClassModel = $classIndexModel->showClass();
                 $registrationOrder = $userRegistrationModel->registrationOrder();
-                $viewModel->addClassRegistration($userRegistrationModel->userName, $classIndexModel->index, $showClassModel->className, $classIndexModel->age, count($registrationOrder));
+                $viewModel->addClassRegistration($userRegistrationModel->user_name, $classIndexModel->class_index, $showClassModel->class_name, $classIndexModel->age, count($registrationOrder));
                 $totalRegistrationCount += count($registrationOrder);
-                $juniorRegistrationCount += count($userRegistrationModel->junior);
+                if(isset($userRegistrationModel->juniorRegistrations)){
+                    $juniorRegistrationCount += count($userRegistrationModel->juniorRegistrations);
+                }
             }
 
             if($juniorRegistrationCount > 0 && isset($juniorIndexModel)){
-                $viewModel->addClassRegistration($userName, $juniorIndexModel->index, "Junior", "AA", $juniorRegistrationCount);
+                $viewModel->addClassRegistration($userName, $juniorIndexModel->class_index, "Junior", "AA", $juniorRegistrationCount);
             }
 
             $viewModel->addTotalRegistrationCount($userName, $totalRegistrationCount + $juniorRegistrationCount);

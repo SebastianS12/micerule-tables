@@ -36,7 +36,7 @@ class GeneralCommentRepository implements IRepository{
         if(isset($generalCommentModel->id)){
             $wpdb->update($wpdb->prefix.Table::GENERAL_COMMENTS->value, array('comment' => $generalCommentModel->comment), array('id' => $generalCommentModel->id));
         }else{
-            $wpdb->insert($wpdb->prefix.Table::GENERAL_COMMENTS->value, array('comment' => $generalCommentModel->comment, 'judge_id' => $generalCommentModel->judgeID));
+            $wpdb->insert($wpdb->prefix.Table::GENERAL_COMMENTS->value, array('comment' => $generalCommentModel->comment, 'judge_id' => $generalCommentModel->judge_id));
         }
     }
 }

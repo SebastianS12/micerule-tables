@@ -10,15 +10,19 @@ class JudgesService{
         $this->judgesSectionsRepository = $judgesSectionsRepository;
     }
 
-    public function saveEventJudges(int $eventPostID, array $eventJudgesData)
+    public function saveEventJudges(int $eventPostID, ?array $eventJudgesData): void
     {
-        $judgeCollection = $this->judgesRepository->getAll()->with(['sections'], ['id'], ['judge_id'], [$this->judgesSectionsRepository])->groupByUniqueKey("judgeNo");
+        if(!isset($eventJudgesData)) return;
+
+        $judgeCollection = $this->judgesRepository->getAll()->with(['sections'], ['id'], ['judge_id'], [$this->judgesSectionsRepository])->groupByUniqueKey("judge_no");
 
         foreach ($eventJudgesData as $judgeNo => $judgeData) {
             $judgeModel = $judgeCollection[$judgeNo];
             if (isset($judgeData['name']) && $judgeData['name'] != ""){
                 if(!isset($judgeModel)){
                     $judgeModel = JudgeModel::create($eventPostID, $judgeNo, $judgeData['name']);
+                }else{
+                    $judgeModel->judge_name = $judgeData['name'];
                 }
                 $this->saveJudgeData($judgeModel, $judgeData);
             }else{
@@ -59,7 +63,7 @@ class JudgesService{
         $judgesString = "";
 
         foreach($judgeCollection as $judgeModel){
-            $judgesString .= $judgeModel->judgeName.", ";
+            $judgesString .= $judgeModel->judge_name.", ";
         }
         rtrim($judgesString, ", ");
 

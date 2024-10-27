@@ -19,8 +19,12 @@ class LabelService{
         $registrationOrderRepository = new RegistrationOrderRepository($this->eventPostID);
         $entryRepository = new EntryRepository($this->eventPostID);
 
-        $registrationCollection = $classIndexRepository->getAll()->with(["registrations", "order", "entry"], ["id", "id", "id"], ["classIndexID", "registrationID", "registrationOrderID"], [$userRegistrationsRepository, $registrationOrderRepository, $entryRepository])->registrations;
-        $registrationCollection = $registrationCollection->groupBy("userName");
+        $registrationCollection = $classIndexRepository->getAll()->with(
+            [UserRegistrationModel::class, RegistrationOrderModel::class, EntryModel::class],
+            ["id", "id", "id"], 
+            ["class_index_id", "registration_id", "registration_order_id"], 
+            [$userRegistrationsRepository, $registrationOrderRepository, $entryRepository])->{UserRegistrationModel::class};
+        $registrationCollection = $registrationCollection->groupBy("user_name");
 
         foreach($registrationCollection as $userName  => $userRegistrationCollection){
             foreach($userRegistrationCollection as $userRegistrationModel){
@@ -29,7 +33,7 @@ class LabelService{
                 foreach($registrationOrder as $registrationOrderModel){
                     $entry = $registrationOrderModel->entry();
                     if(isset($entry)){
-                        $viewModel->addLabel($userName, $classIndexModel->index, $entry->penNumber, $entry->absent);
+                        $viewModel->addLabel($userName, $classIndexModel->class_index, $entry->pen_number, $entry->absent);
                     }
                 }
             }

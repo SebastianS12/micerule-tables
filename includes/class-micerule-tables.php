@@ -88,6 +88,7 @@ class Micerule_Tables{
     $this->loader->add_action('wp_ajax_deleteEntry', $plugin_public, 'deleteEntry');
     $this->loader->add_action('wp_ajax_editPlacement', $plugin_public, 'editPlacement');
     $this->loader->add_action('wp_ajax_editBIS', $plugin_public, 'editBIS');
+    $this->loader->add_action('wp_ajax_getSelectOptions', $plugin_public, 'getSelectOptions');
     $this->loader->add_action('wp_ajax_editAbsent', $plugin_public, 'editAbsent');
     $this->loader->add_action('wp_ajax_setAllAbsent', $plugin_public, 'setAllAbsent');
     $this->loader->add_action('wp_ajax_setCustomClassVariety', $plugin_public, 'setCustomClassVariety');

@@ -7,79 +7,57 @@ class ShowChallengeModel{
     public $index;
     public $age;
 
-    public function __construct($eventPostID, $challengeName, $sectionName, $age)
+    public function __construct($eventPostID, $challenge_name, $sectionName, $age)
     {
-        $this->loadClassData($eventPostID, $challengeName, $sectionName, $age);
+        $this->loadClassData($eventPostID, $challenge_name, $sectionName, $age);
     }
 
-    private function loadClassData($eventPostID, $challengeName, $sectionName, $age){
+    private function loadClassData($eventPostID, $challenge_name, $sectionName, $age){
         global $wpdb;
-        $locationID = EventProperties::getEventLocationID($eventPostID);
-        $this->name = $challengeName;
+        $location_id = EventProperties::getEventLocationID($eventPostID);
+        $this->name = $challenge_name;
         $this->challengeSection = $sectionName;
         $this->index = $wpdb->get_var("SELECT challenge_index FROM ".$wpdb->prefix."micerule_show_challenges_indices 
-                                            WHERE location_id = '".$locationID."' AND challenge_name = '".$challengeName."' AND age = '".$age."'");
+                                            WHERE location_id = '".$location_id."' AND challenge_name = '".$challenge_name."' AND age = '".$age."'");
         $this->age = $age;
     }
 }
 
 class ChallengeIndexModel extends Model{
     public int $id;
-    public $locationID;
+    public $location_id;
     public $section;
-    public $challengeName;
+    public $challenge_name;
     public $age;
-    public $challengeIndex;
-    private $indexTable;
+    public $challenge_index;
 
-    private function __construct($locationID, $section, $challengeName, $age, $challengeIndex)
+    private function __construct($location_id, $section, $challenge_name, $age, $challenge_index)
     {
-        $this->locationID = $locationID;
+        $this->location_id = $location_id;
         $this->section = $section;
-        $this->challengeName = $challengeName;
+        $this->challenge_name = $challenge_name;
         $this->age = $age;
-        $this->challengeIndex = $challengeIndex;
-
-        global $wpdb;
-        $this->indexTable = $wpdb->prefix."micerule_show_challenges_indices";
+        $this->challenge_index = $challenge_index;
     }
 
-    public static function create($locationID, $section, $challengeName, $age, $challengeIndex){
-        $instance = new self($locationID, $section, $challengeName, $age, $challengeIndex);
+    public static function create($location_id, $section, $challenge_name, $age, $challenge_index){
+        $instance = new self($location_id, $section, $challenge_name, $age, $challenge_index);
         return $instance;
     }
 
-    public static function createWithID($id, $locationID, $section, $challengeName, $age, $challengeIndex){
-        $instance = self::create($locationID, $section, $challengeName, $age, $challengeIndex);
+    public static function createWithID($id, $location_id, $section, $challenge_name, $age, $challenge_index){
+        $instance = self::create($location_id, $section, $challenge_name, $age, $challenge_index);
         $instance->id = $id;
         return $instance;
     }
 
-    public function save(){
-        global $wpdb;
-        if($this->id){
-            $wpdb->update($this->indexTable, $this->getValues(), array('id' => $this->id));
-        }else{
-            $wpdb->insert($this->indexTable, $this->getValues());
-        }
-    }
-
-    private function getValues(){
-        return array('location_id' => $this->locationID, 'section' => $this->section, 'challenge_name' => $this->challengeName, 'age' => $this->age, 'challenge_index' => $this->challengeIndex);
-    }
-
-    public function delete(){
-        global $wpdb;
-        $wpdb->delete($this->indexTable, array('id' => $this->id));
-    }
-
     public function placements(): Collection
     {
-        return $this->hasMany("placements");
+        return $this->hasMany(ChallengePlacementModel::class, Table::CHALLENGE_PLACEMENTS, "index_id");
     }
 
     public function judgeSection(): ?JudgeSectionModel
     {
-        return $this->hasOne("judgeSection");
+        return $this->hasOne(JudgeSectionModel::class, Table::JUDGES_SECTIONS, "section");
     }
 }

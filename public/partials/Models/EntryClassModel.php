@@ -2,36 +2,36 @@
 
 class EntryClassModel extends Model{
     public int $id;
-    public $locationID;
-    public $className;
-    public $sectionName;
-    public $sectionPosition;
+    public $location_id;
+    public $class_name;
+    public $section;
+    public $section_position;
 
-    private function __construct($locationID, $className, $sectionName, $sectionPosition)
+    private function __construct($location_id, $class_name, $section, $section_position)
     {
-        $this->locationID = $locationID;
-        $this->className = $className;
-        $this->sectionName = $sectionName;
-        $this->sectionPosition = $sectionPosition;
+        $this->location_id = $location_id;
+        $this->class_name = $class_name;
+        $this->section = $section;
+        $this->section_position = $section_position;
     }
 
-    public static function create($locationID, $className, $sectionName, $sectionPosition): EntryClassModel{
-        return new self($locationID, $className, $sectionName, $sectionPosition);
+    public static function create($location_id, $class_name, $section, $section_position): EntryClassModel{
+        return new self($location_id, $class_name, $section, $section_position);
     }
 
-    public static function createWithID($id, $locationID, $className, $sectionName, $sectionPosition): EntryClassModel{
-        $instance = self::create($locationID, $className, $sectionName, $sectionPosition);
+    public static function createWithID($id, $location_id, $class_name, $section, $section_position): EntryClassModel{
+        $instance = self::create($location_id, $class_name, $section, $section_position);
         $instance->id = $id;
         return $instance;
     }
 
     public function classIndices(): Collection
     {
-        return $this->hasMany("classIndices");
+        return $this->hasMany(ClassIndexModel::class, Table::CLASS_INDICES, "class_id");
     }
 
     public function judgeSection(): ?JudgeSectionModel
     {
-        return $this->hasOne("judgeSection");
+        return $this->hasOne(JudgeSectionModel::class, Table::JUDGES_SECTIONS, "section");
     }
 }

@@ -34,7 +34,7 @@ class ClassCommentsRepository implements IRepository{
         if(isset($classCommentModel->id)){
             $wpdb->update($wpdb->prefix.Table::CLASS_COMMENTS->value, array('comment' => $classCommentModel->comment), array('id' => $classCommentModel->id));
         }else{
-            $wpdb->insert($wpdb->prefix.Table::CLASS_COMMENTS->value, array('class_index_id' => $classCommentModel->classIndexID, 'event_post_id' => $classCommentModel->eventPostID, 'comment' => $classCommentModel->comment));
+            $wpdb->insert($wpdb->prefix.Table::CLASS_COMMENTS->value, array('class_index_id' => $classCommentModel->class_index_id, 'event_post_id' => $classCommentModel->event_post_id, 'comment' => $classCommentModel->comment));
         }
     }
 }

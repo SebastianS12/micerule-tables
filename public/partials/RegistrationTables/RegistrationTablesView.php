@@ -29,12 +29,15 @@ class RegistrationTablesView
       $html .= "<tbody>";
       $html .= self::getSectionHeaderRowHtml($viewModel);
 
-      foreach ($viewModel->classData[strtolower($sectionName)] as $className => $classData) {
-        $html .= self::getClassRowHtml($classData, $className, $viewModel);
+      //TODO: remove isset condition, don't rely on EventProperties::SectionNames -> turn viewModel array into Collection and use where()
+      if(isset($viewModel->classData[$sectionName])){
+        foreach ($viewModel->classData[strtolower($sectionName)] as $className => $classData) {
+          $html .= self::getClassRowHtml($classData, $className, $viewModel);
+        }
+  
+        $challengeName = EventProperties::getChallengeName($sectionName);
+        $html .= self::getSectionChallengeRowHtml($challengeName, $viewModel->challengeData[$challengeName], $viewModel);
       }
-
-      $challengeName = EventProperties::getChallengeName($sectionName);
-      $html .= self::getSectionChallengeRowHtml($challengeName, $viewModel->challengeData[$challengeName], $viewModel);
 
       $html .= "</tbody>";
       $html .= "</table>";
@@ -105,11 +108,11 @@ class RegistrationTablesView
   {
     $html  = "<tr class='classRowMobile'><td  colspan='5' class = 'classNameCell challenge'>" . $challengeName . "</td></tr>";
     $html .= "<tr class = 'classRow challenge' id = '" . $challengeName . "-tr'>";
-    $html .= "<td class = 'positionCell ad'>" . $challengeData["Ad"]->challengeIndex . "</td>";
+    $html .= "<td class = 'positionCell ad'>" . $challengeData["Ad"]->challenge_index . "</td>";
     $html .= (!$viewModel->beforeDeadline && $viewModel->allowOnlineRegistrations) ? "<td class='entries-count-Ad' id = '" . $challengeName . "&-&Ad'>(" . $challengeData['Ad']->registrationCount . ")</td>" : "<td class = 'registrationsDisabled'></td>";
     $html .= "<td class = 'classNameCell challenge'><span>" . $challengeName . "</span></td>";
     $html .= (!$viewModel->beforeDeadline && $viewModel->allowOnlineRegistrations) ? "<td class='entries-count-U8' id = '" . $challengeName . "&-&U8'>(" . $challengeData['U8']->registrationCount . ")</td>" : "<td class = 'registrationsDisabled'></td>";
-    $html .= "<td class = 'positionCell u8'>" . $challengeData["U8"]->challengeIndex . "</td>";
+    $html .= "<td class = 'positionCell u8'>" . $challengeData["U8"]->challenge_index . "</td>";
     $html .= "</tr>";
 
     return $html;
@@ -131,7 +134,9 @@ class RegistrationTablesView
     $html = "<table id = 'grand challenge-registrationTable'>";
     $html .= "<tbody>";
     $html .= self::getSectionHeaderRowHtml($viewModel);
-    $html .= self::getSectionChallengeRowHtml(EventProperties::GRANDCHALLENGE, $viewModel->challengeData[EventProperties::GRANDCHALLENGE], $viewModel);
+    if(isset($viewModel->challengeData[EventProperties::GRANDCHALLENGE])){
+      $html .= self::getSectionChallengeRowHtml(EventProperties::GRANDCHALLENGE, $viewModel->challengeData[EventProperties::GRANDCHALLENGE], $viewModel);
+    }
     $html .= "</tbody>";
     $html .= "</table>";
 
@@ -142,11 +147,13 @@ class RegistrationTablesView
   {
     $html = "<table id = 'optional-registrationTable'>";
     $html .= "<tbody>";
-    foreach ($viewModel->classData['optional'] as $className => $classData) {
-      if ($className == 'Junior') {
-        $html .= self::getJuniorRowHtml($classData, $viewModel);
-      } else {
-        $html .= self::getOptionalClassRowHtml($classData, $className, $viewModel);
+    if(isset($viewModel->classData['optional'])){
+      foreach ($viewModel->classData['optional'] as $className => $classData) {
+        if ($className == 'Junior') {
+          $html .= self::getJuniorRowHtml($classData, $viewModel);
+        } else {
+          $html .= self::getOptionalClassRowHtml($classData, $className, $viewModel);
+        }
       }
     }
     $html .= "</tbody>";

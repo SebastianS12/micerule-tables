@@ -20,7 +20,7 @@ class EntrySummaryViewModel{
         $this->fancierEntrySummaries[$userName]['entries'][] = $userEntry;
     }
 
-    public function addUserRegistrationFee(string $userName, int $registrationFee): void
+    public function addUserRegistrationFee(string $userName, float $registrationFee): void
     {
         $this->initializeUserEntrySummary($userName);
         $this->fancierEntrySummaries[$userName]['registrationFee'] = $registrationFee;

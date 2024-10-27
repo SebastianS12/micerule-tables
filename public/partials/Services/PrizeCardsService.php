@@ -146,9 +146,9 @@ class PrizeCardsService{
         $awardRepository->getAll();
 
         return $challengeIndexRepository->getAll()->with(
-            ["placements", "award"],
+            [ChallengePlacementModel::class, AwardModel::class],
             ["id", "id"],
-            ["indexID", "challengePlacementID"],
+            ["index_id", "challenge_placement_id"],
             [$challengePlacementsRepository, $awardRepository]
         );
     }
@@ -163,9 +163,9 @@ class PrizeCardsService{
         $entryRepository = new EntryRepository($eventPostID);
 
         return $showClassesRepository->getAll()->with(
-            ["indices", "registrations", "order", "entry"],
+            [ClassIndexModel::class, UserRegistrationModel::class, RegistrationOrderModel::class, EntryModel::class],
             ["id", "id", "id", "id"],
-            ["classID", "classIndexID", "registrationID", "registrationOrderID"],
+            ["class_id", "class_index_id", "registration_id", "registration_order_id"],
             [$classIndexRepository, $registrationsRepository, $registrationsOrderRepository, $entryRepository]
         );
     }
@@ -180,43 +180,43 @@ class PrizeCardsService{
     {
         // Class Placements
         $classPlacementsRepository = new PlacementsRepository($eventPostID, new ClassPlacementDAO());
-        $showClassesCollection->indices->with(
-            ["placements"], 
+        $showClassesCollection->{ClassIndexModel::class}->with(
+            [ClassPlacementModel::class], 
             ["id"], 
-            ["indexID"], 
+            ["index_id"], 
             [$classPlacementsRepository]
         );
 
         // Map class placements to entries
         ModelHydrator::mapExistingCollections(
-            $showClassesCollection->indices->registrations->order->entry,
-            "placements", 
-            $showClassesCollection->indices->placements, 
+            $showClassesCollection->{ClassIndexModel::class}->{UserRegistrationModel::class}->{RegistrationOrderModel::class}->{EntryModel::class},
+            $showClassesCollection->{ClassIndexModel::class}->{ClassPlacementModel::class}, 
+            ClassPlacementModel::class,
             "id", 
-            "entryID"
+            "entry_id"
         );
 
         // Challenge Placements
         ModelHydrator::mapExistingCollections(
-            $showClassesCollection->indices->registrations->order->entry, 
-            "placements", 
-            $challengeIndexCollection->placements, 
+            $showClassesCollection->{ClassIndexModel::class}->{UserRegistrationModel::class}->{RegistrationOrderModel::class}->{EntryModel::class}, 
+            $challengeIndexCollection->{ChallengePlacementModel::class}, 
+            ChallengePlacementModel::class,
             "id", 
-            "entryID"
+            "entry_id"
         );
     }
 
     private function mapRegistrationCounts(Collection $showClassesCollection, Collection $challengeIndexCollection, Collection $registrationCountCollection): void
     {
-        ModelHydrator::mapAttribute($showClassesCollection->indices, $registrationCountCollection, "registrationCount", "index", "index_number", "entry_count", 0);
-        ModelHydrator::mapAttribute($challengeIndexCollection, $registrationCountCollection, "registrationCount", "challengeIndex", "index_number", "entry_count", 0);
+        ModelHydrator::mapAttribute($showClassesCollection->{ClassIndexModel::class}, $registrationCountCollection, "registrationCount", "class_index", "index_number", "entry_count", 0);
+        ModelHydrator::mapAttribute($challengeIndexCollection, $registrationCountCollection, "registrationCount", "challenge_index", "index_number", "entry_count", 0);
     }
 
     private function loadJudges(int $eventPostID): Collection
     {
         $judgesRepository = new JudgesRepository($eventPostID);
         $judgesSectionsRepository = new JudgesSectionsRepository($eventPostID);
-        return $judgesRepository->getAll()->with(['sections'], ['id'], ['judgeID'], [$judgesSectionsRepository]);
+        return $judgesRepository->getAll()->with([JudgeSectionModel::class], ['id'], ['judge_id'], [$judgesSectionsRepository]);
     }
 
     private function getJudgeGroupString(int $eventPostID): string
@@ -230,17 +230,17 @@ class PrizeCardsService{
         // Map judges to show classes
         ModelHydrator::mapExistingCollections(
             $showClassesCollection, 
-            "judgeSection", 
-            $judgeCollection->sections, 
-            "sectionName", 
+            $judgeCollection->{JudgeSectionModel::class}, 
+            JudgeSectionModel::class,
+            "section", 
             "section"
         );
 
         // Map judges to challenge indices
         ModelHydrator::mapExistingCollections(
             $challengeIndexCollection, 
-            "judgeSection", 
-            $judgeCollection->sections, 
+            $judgeCollection->{JudgeSectionModel::class}, 
+            JudgeSectionModel::class,
             "section", 
             "section"
         );
@@ -249,16 +249,17 @@ class PrizeCardsService{
     private function processClassPlacements(PrizeCardsViewModel $viewModel, Collection $showClassesCollection): void
     {
         foreach ($showClassesCollection as $entryClassModel) {
-            foreach ($entryClassModel->indices as $classIndexModel) {
+            foreach ($entryClassModel->classIndices as $classIndexModel) {
                 foreach ($classIndexModel->placements as $placementModel) {
+                    $judgeName = JudgeFormatter::getJudgeName($entryClassModel); 
                     $this->addPrizeCardFromPlacement(
                         $viewModel,
                         $placementModel,
                         $classIndexModel->age,
-                        $classIndexModel->index,
-                        $entryClassModel->className,
-                        $entryClassModel->sectionName,
-                        $entryClassModel->judgeSection()->judge()->judgeName,
+                        $classIndexModel->class_index,
+                        $entryClassModel->class_name,
+                        $entryClassModel->section,
+                        $judgeName,
                         $classIndexModel->registrationCount,
                     );
                 }
@@ -270,13 +271,13 @@ class PrizeCardsService{
     {
         foreach ($challengeIndexCollection as $challengeIndexModel) {
             foreach ($challengeIndexModel->placements as $placementModel) {
-                $judge = ($challengeIndexModel->challengeName == EventProperties::GRANDCHALLENGE) ? $judgeGroupString : $challengeIndexModel->judgeSection()->judge()->judgeName;
+                $judge = ($challengeIndexModel->challenge_name == EventProperties::GRANDCHALLENGE) ? $judgeGroupString : JudgeFormatter::getJudgeName($challengeIndexModel);
                 $this->addPrizeCardFromPlacement(
                     $viewModel,
                     $placementModel,
                     $challengeIndexModel->age,
-                    $challengeIndexModel->challengeIndex,
-                    $challengeIndexModel->challengeName,
+                    $challengeIndexModel->challenge_index,
+                    $challengeIndexModel->challenge_name,
                     $challengeIndexModel->section,
                     $judge,
                     $challengeIndexModel->registrationCount,
@@ -295,18 +296,18 @@ class PrizeCardsService{
         string $judge,
         int $registrationCount,
     ): void {
-        $registrationModel = $placementModel->registration();
-        $entryModel = $placementModel->entry();
+        $registrationModel = $placementModel->registration;
+        $entryModel = $placementModel->entry;
 
         $prizeCardData = [
             'placement_id' => $placementModel->id,
             'placement' => $placementModel->placement,
             'prize' => $placementModel->prize,
             'age' => $age,
-            'user_name' => $registrationModel->userName,
+            'user_name' => $registrationModel->user_name,
             'class_name' => $className,
-            'variety_name' => $entryModel->varietyName,
-            'pen_number' => $entryModel->penNumber,
+            'variety_name' => $entryModel->variety_name,
+            'pen_number' => $entryModel->pen_number,
             'index_number' => $index,
             'section' => $section,
             'printed' => $placementModel->printed,
@@ -317,12 +318,10 @@ class PrizeCardsService{
 
         $prizeCard = PrizeCardFactory::getPrizeCardModel($prizeCardData);
         $viewModel->addPrizeCard($prizeCard);
-
-        // Handle awards
-        $awardModel = $placementModel->award();
-        if (isset($awardModel)) {
-            $prizeCardData['award'] = $awardModel->award->value;
-            $prizeCardData['prize'] = $awardModel->prize;
+        
+        if (isset($placementModel->{AwardModel::class}) && $placementModel->award !== null) {
+            $prizeCardData['award'] = $placementModel->award->award->value;
+            $prizeCardData['prize'] = $placementModel->award->prize;
             $prizeCard = PrizeCardFactory::getPrizeCardModel($prizeCardData);
             $viewModel->addPrizeCard($prizeCard);
         }

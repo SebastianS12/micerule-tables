@@ -37,7 +37,7 @@ class PlacementsRowService{
     }
 
     private function shouldShowPlacementInput(Prize $prize, int $placementNumber, EntryModel $entry, Collection $lowerPlacements, Collection $currentPlacements, bool $showPreviousPlacementInput, bool $isInSameClass) {
-        $showPlacementInput = $prize == Prize::STANDARD || $showPreviousPlacementInput || $isInSameClass;
+        $showPlacementInput = $prize == Prize::STANDARD || $showPreviousPlacementInput || $isInSameClass || PlacementsService::entryHasPlacement($entry, $prize, $placementNumber);
 
         // if(count($lowerPlacements) == 0){
         //     $showPlacementInput = true;
@@ -63,7 +63,7 @@ class PlacementsRowService{
         $noOtherPlacements = true;
         foreach($placements as $placementModel){
             if($placementModel->placement != $placementNumber)
-                $noOtherPlacements = $noOtherPlacements && $placementModel->entryID != $entry->id;
+                $noOtherPlacements = $noOtherPlacements && $placementModel->entry_id != $entry->id;
         }
 
         return $noOtherPlacements;

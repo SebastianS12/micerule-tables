@@ -29,10 +29,11 @@ class RegistrationService{
 
         $classRepository = new ShowClassesRepository(EventProperties::getEventLocationID($this->eventPostID));
         //TODO: make more readable, put into describing functions
-        $userRegistrationCollections = $this->userRegistrationsRepository->getUserRegistrations($userName)->with(["registrationOrder"], ["id"], ["registrationID"], [$this->registrationOrderRepository]);
-        $classIndexCollection = $this->classIndexRepository->getAll()->with(["class"], ["classID"], ["id"], [$classRepository]);
+        $userRegistrationCollections = $this->userRegistrationsRepository->getUserRegistrations($userName)->with(["registrationOrder"], ["id"], ["registration_id"], [$this->registrationOrderRepository]);
+        // $classIndexCollection = $this->classIndexRepository->getAll()->with(["class"], ["class_id"], ["id"], [$classRepository]);
+        $classIndexCollection = $classRepository->getAll()->with(["id"], ["class_id"], [$this->classIndexRepository])->{ClassIndexModel::class};
 
-        ModelHydrator::mapAttribute($userRegistrationCollections, $classIndexCollection, "classIndex", "classIndexID", "id", "index", 0);
+        ModelHydrator::mapAttribute($userRegistrationCollections, $classIndexCollection, "classIndex", "class_index_id", "id", "index", 0);
         $userRegistrationCounts = $this->registrationCountRepository->getUserRegistrationCounts($userName);
         ModelHydrator::mapAttribute($userRegistrationCollections, $userRegistrationCounts, "registrationCount", "classIndex", "index_number","entry_count", 0);        
 
@@ -74,7 +75,7 @@ class RegistrationService{
 
         if($juniorRegistrationCount > 0){
             foreach($classIndexCollection as $classIndexModel){
-                if($classIndexModel->class()->className == "Junior"){
+                if($classIndexModel->class()->class_name == "Junior"){
                     $registrations = $this->addRegistrationRecord($registrations, $classIndexModel, $juniorRegistrationCount);
                 }
             }
@@ -85,8 +86,8 @@ class RegistrationService{
 
     private function addRegistrationRecord(array $registrations, ClassIndexModel $classIndexModel, int $registrationCount): array{
         $registration = array();
-        $registration['classIndex'] = $classIndexModel->index;
-        $registration['className'] = $classIndexModel->class()->className;
+        $registration['classIndex'] = $classIndexModel->class_index;
+        $registration['className'] = $classIndexModel->class()->class_name;
         $registration['age'] = $classIndexModel->age;
         $registration['registrationCount'] = $registrationCount;
         $registrations[] = $registration;

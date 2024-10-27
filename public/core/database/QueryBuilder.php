@@ -7,6 +7,7 @@ class QueryBuilder {
     private array $where;
     private array $groupBy;
     private array $orderBy;
+    private int $limit;
 
     private function __construct()
     {
@@ -15,6 +16,7 @@ class QueryBuilder {
         $this->where = array();
         $this->groupBy = array();
         $this->orderBy = array();
+        $this->limit = 0;
     }
 
     public static function create(): QueryBuilder{
@@ -71,6 +73,12 @@ class QueryBuilder {
         return $this;
     }
 
+    public function limit(int $limit): QueryBuilder
+    {
+        $this->limit = $limit;
+        return $this;
+    }
+
     public function build(): string{
         global $wpdb;
         $queryString = "SELECT ";
@@ -110,6 +118,10 @@ class QueryBuilder {
                 $queryString .= $attribute.",";
             }
             $queryString = rtrim($queryString, ',');
+        }
+
+        if($this->limit > 0){
+            $queryString .= "LIMIT ".$this->limit;
         }
 
         return $queryString;

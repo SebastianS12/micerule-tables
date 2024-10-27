@@ -2,7 +2,7 @@
 
 class ShowClassModel{
     //TODO: Missing Functions from ShowClassesModel.php 
-    public $classID;
+    public $class_id;
     public $name;
     public $index;
     public $age;
@@ -16,7 +16,7 @@ class ShowClassModel{
     private function loadClassData($eventPostID, $className, $age){
         global $wpdb;
         $locationID = EventProperties::getEventLocationID($eventPostID);
-        $this->classID = $wpdb->get_var("SELECT id FROM ".$wpdb->prefix."micerule_show_classes WHERE location_id = ".$locationID." AND class_name = '".$className."'");
+        $this->class_id = $wpdb->get_var("SELECT id FROM ".$wpdb->prefix."micerule_show_classes WHERE location_id = ".$locationID." AND class_name = '".$className."'");
         $this->name = $className;
         $this->index = $wpdb->get_var("SELECT class_index FROM ".$wpdb->prefix."micerule_show_classes_indices INDICES
                                        INNER JOIN ".$wpdb->prefix."micerule_show_classes CLASSES ON INDICES.class_id = CLASSES.id
@@ -44,40 +44,49 @@ class ShowClassModel{
 
 
 class ClassIndexModel extends Model{
-    public int $id;
-    public $index;
-    public $classID;
-    public $age;
+    public int $class_index;
+    public int $class_id;
+    public string $age;
 
-    private function __construct($index, $classID, $age)
+    private function __construct(int $class_index, int $class_id, string $age)
     {
-        $this->index = $index;
-        $this->classID = $classID;
+        $this->class_index = $class_index;
+        $this->class_id = $class_id;
         $this->age = $age;
     }
 
-    public static function create($index, $classID, $age){
-        $instance = new self($index, $classID, $age);
+    public static function create(int $class_index, int $class_id, string $age){
+        $instance = new self($class_index, $class_id, $age);
         return $instance;
     }
 
-    public static function createWithID($id, $index, $classID, $age){
-        $instance = self::create($index, $classID, $age);
+    public static function createWithID(int $id, int $class_index, int $class_id, string $age){
+        $instance = self::create($class_index, $class_id, $age);
         $instance->id = $id;
         return $instance;
     }
 
     public function class(){
-        return $this->hasOne("class");
+        return $this->belongsToOne(EntryClassModel::class, Table::CLASSES, "class_id");
     }
 
     public function showClass(): ?EntryClassModel
     {
-        return $this->belongsToOne(EntryClassModel::class);
+        return $this->belongsToOne(EntryClassModel::class, Table::CLASSES, "class_id");
     }
 
     public function comment(): ?ClassComment
     {
-        return $this->hasOne("comment");
+        return $this->hasOne(ClassComment::class, Table::CLASS_COMMENTS, "class_index_id");
+    }
+
+    public function registrations(): Collection
+    {
+        return $this->hasMany(UserRegistrationModel::class, Table::REGISTRATIONS, "class_index_id");
+    }
+
+    public function placements(): Collection
+    {
+        return $this->hasMany(ClassPlacementModel::class, Table::CLASS_PLACEMENTS, "index_id");
     }
 }

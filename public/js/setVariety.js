@@ -9,6 +9,7 @@ function setCustomClassVariety(entryID, varietyName, tab){
       varietyName: varietyName,
     },
     success: function (data) {
+      console.log(data);
       updateAdminTabs();
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {

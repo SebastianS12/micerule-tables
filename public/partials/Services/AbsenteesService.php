@@ -23,17 +23,21 @@ class AbsenteesService{
         $registrationOrderRepository = new RegistrationOrderRepository($this->eventPostID);
         $entryRepository = new EntryRepository($this->eventPostID);
 
-        $judgeCollection = $judgesRepository->getAll()->with(['sections'], ['id'], ['judgeID'], [$judgesSectionsRepository]);
-        $showClassesCollection = $showClassRepository->getAll()->with(["classIndices", "registrations", "order", "entry"], ["id", "id", "id", "id"], ["classID", "classIndexID", "registrationID", "registrationOrderID"], [$classIndexRepository, $userRegistrationsRepository, $registrationOrderRepository, $entryRepository]);
-        ModelHydrator::mapExistingCollections($judgeCollection->sections, "classes", $showClassesCollection, "section", "sectionName");
+        $judgeCollection = $judgesRepository->getAll()->with([JudgeSectionModel::class], ['id'], ['judgeID'], [$judgesSectionsRepository]);
+        $showClassesCollection = $showClassRepository->getAll()->with(
+            [ClassIndexModel::class, UserRegistrationModel::class, RegistrationOrderModel::class, EntryModel::class], 
+            ["id", "id", "id", "id"], 
+            ["class_id", "class_index_id", "registration_id", "registration_order_id"], 
+            [$classIndexRepository, $userRegistrationsRepository, $registrationOrderRepository, $entryRepository]);
+        ModelHydrator::mapExistingCollections($judgeCollection->{JudgeSectionModel::class}, $showClassesCollection, EntryClassModel::class, "section", "section");
 
         foreach($judgeCollection as $judgeModel){
-            $viewModel->addJudge($judgeModel->judgeName);
+            $viewModel->addJudge($judgeModel->judge_name);
             foreach($judgeModel->sections() as $judgeSectionModel){
                 foreach($judgeSectionModel->classes as $entryClassModel){
-                    foreach($entryClassModel->classIndices() as $classIndexModel){
+                    foreach($entryClassModel->classIndices as $classIndexModel){
                         foreach($classIndexModel->registrations->order->entry->where("absent", true) as $entryModel){
-                            $viewModel->addAbsentee($judgeModel->judgeName, $classIndexModel->index, $entryModel->penNumber);
+                            $viewModel->addAbsentee($judgeModel->judge_name, $classIndexModel->class_index, $entryModel->pen_number);
                         }
                     }
                 }

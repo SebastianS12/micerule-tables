@@ -14,7 +14,7 @@ class EntriesService{
         $registrationsRepository = new UserRegistrationsRepository($eventPostID);
         $registrationsOrderRepository = new RegistrationOrderRepository($eventPostID);
 
-        $showClassesCollection = $showClassesRepository->getAll()->with(["indices", "registrations", "order", "entry"], ["id", "id", "id", "id"], ["classID", "classIndexID", "registrationID", "registrationOrderID"], [$classIndexRepository, $registrationsRepository, $registrationsOrderRepository, $this->entryRepository]);
+        $showClassesCollection = $showClassesRepository->getAll()->with(["indices", "registrations", "order", "entry"], ["id", "id", "id", "id"], ["class_id", "class_index_id", "registration_id", "registration_order_id"], [$classIndexRepository, $registrationsRepository, $registrationsOrderRepository, $this->entryRepository]);
         $showClassesCollection = $showClassesCollection->groupBy("sectionName");
 
         $penNumber = 1;
@@ -27,7 +27,7 @@ class EntriesService{
                             if(isset($entry)){
                                 $entry->penNumber = $penNumber;
                             }else{
-                                $entry = EntryModel::create($registrationOrder->id, $penNumber, $showClassModel->className, false, false, false);
+                                $entry = EntryModel::create($registrationOrder->id, $penNumber, $showClassModel->class_name, false, false, false);
                             }
                             $this->entryRepository->saveEntry($entry);
                             $penNumber++;

@@ -13,7 +13,7 @@ class JudgesReportService{
 
         $judgeCollection = $this->loadJudges($eventPostID);
         $generalCommentRepository = new GeneralCommentRepository($eventPostID);
-        $judgeCollection->with(['comment'], ['id'], ['judgeID'], [$generalCommentRepository]);
+        $judgeCollection->with([GeneralComment::class], ['id'], ['judge_id'], [$generalCommentRepository]);
 
         $challengeIndexCollection = $this->loadChallengeIndices($eventPostID, $locationID);
         $showClassesCollection = $this->loadShowClasses($eventPostID);
@@ -25,63 +25,59 @@ class JudgesReportService{
         $this->mapJudgesToClasses($showClassesCollection, $challengeIndexCollection, $judgeCollection);
 
         $classCommentsRepository = new ClassCommentsRepository($eventPostID);
-        $showClassesCollection->indices->with(['comment'], ['id'], ['classIndexID'], [$classCommentsRepository]);
+        $showClassesCollection->indices->with([ClassComment::class], ['id'], ['class_index_id'], [$classCommentsRepository]);
 
         $placementReportsRepository = new PlacementReportsRepository($eventPostID);
-        $showClassesCollection->indices->placements->with(['report'], ['id'], ['placementID'], [$placementReportsRepository]);
+        $showClassesCollection->indices->placements->with([PlacementReport::class], ['id'], ['placement_id'], [$placementReportsRepository]);
 
         foreach($judgeCollection as $judgeModel){
-            $commentModel = $judgeModel->comment();
-            $commentID = (isset($commentModel)) ? $commentModel->id : null;
-            $comment = (isset($commentModel)) ? $commentModel->comment : "";
-            $viewModel->addJudgeComment($judgeModel->judgeName, $judgeModel->id, $commentID, $comment);
+            $commentID = (isset($judgeModel->{GeneralComment::class}) && $judgeModel->comment !== null) ? $judgeModel->comment->id : null;
+            $comment = (isset($judgeModel->{GeneralComment::class}) && $judgeModel->comment !== null) ? $judgeModel->comment->comment : "";
+            $viewModel->addJudgeComment($judgeModel->judge_name, $judgeModel->id, $commentID, $comment);
 
             foreach($judgeModel->sections() as $judgeSectionModel){
-                $viewModel->addJudgeSection($judgeModel->judgeName, $judgeSectionModel->section);
+                $viewModel->addJudgeSection($judgeModel->judge_name, $judgeSectionModel->section);
             }
         }
 
-        foreach($showClassesCollection->whereNot("sectionName", "optional") as $entryClassModel){
-            foreach($entryClassModel->indices as $classIndexModel){
-                $classCommentModel = $classIndexModel->comment();
-                $commentID = (isset($classCommentModel)) ? $classCommentModel->id : null;
-                $comment = (isset($classCommentModel)) ? $classCommentModel->comment : "";
-                $judge = $entryClassModel->judgeSection()->judge()->judgeName;
-                $viewModel->addClassReport($classIndexModel->id, $commentID, $judge, $classIndexModel->index, $comment, $entryClassModel->sectionName, $entryClassModel->className, $classIndexModel->age, $classIndexModel->registrationCount);
+        foreach($showClassesCollection->whereNot("section", "optional") as $entryClassModel){
+            foreach($entryClassModel->classIndices as $classIndexModel){
+                $commentID = (isset($classIndexModel->{ClassComment::class}) && $classIndexModel->comment !== null) ? $classIndexModel->comment->id : null;
+                $comment = (isset($classIndexModel->{ClassComment::class}) && $classIndexModel->comment !== null) ? $classIndexModel->comment->comment : "";
+                $judge = JudgeFormatter::getJudgeName($entryClassModel);
+                $viewModel->addClassReport($classIndexModel->id, $commentID, $judge, $classIndexModel->class_index, $comment, $entryClassModel->section, $entryClassModel->class_name, $classIndexModel->age, $classIndexModel->registrationCount);
                 foreach($classIndexModel->placements as $placementModel){
-                    $placementReportModel = $placementModel->report();
-                    $placementReportID = isset($placementReportModel) ? $placementReportModel->id : null;
-                    $gender = isset($placementReportModel) ? $placementReportModel->gender : null;
-                    $comment = isset($placementReportModel) ? $placementReportModel->comment : "";
-                    $userName = $placementModel->registration()->userName;
-                    $viewModel->addPlacementReport($placementReportID, $judge, $entryClassModel->sectionName, $classIndexModel->index, $placementModel->id, $placementModel->placement, $userName, $gender, $comment);
+                    $placementReportID = (isset($placementModel->{PlacementReport::class}) && $placementModel->report !== null) ? $placementModel->report->id : null;
+                    $gender = (isset($placementModel->{PlacementReport::class}) && $placementModel->report !== null) ? $placementModel->report->gender : null;
+                    $comment = (isset($placementModel->{PlacementReport::class}) && $placementModel->report !== null) ? $placementModel->report->comment : "";
+                    $userName = $placementModel->registration->user_name;
+                    $viewModel->addPlacementReport($placementReportID, $judge, $entryClassModel->section, $classIndexModel->class_index, $placementModel->id, $placementModel->placement, $userName, $gender, $comment);
                 }
             }
         }
 
-        foreach($challengeIndexCollection->whereNot("challengeName", EventProperties::GRANDCHALLENGE) as $challengeIndexModel){
-            $judge = $challengeIndexModel->judgeSection()->judge()->judgeName;
-            $viewModel->addChallengeReport($judge, $challengeIndexModel->challengeIndex, $challengeIndexModel->section, $challengeIndexModel->challengeName, $challengeIndexModel->age, $challengeIndexModel->registrationCount);
+        foreach($challengeIndexCollection->whereNot("challenge_name", EventProperties::GRANDCHALLENGE) as $challengeIndexModel){
+            $judge = JudgeFormatter::getJudgeName($challengeIndexModel);
+            $viewModel->addChallengeReport($judge, $challengeIndexModel->challenge_index, $challengeIndexModel->section, $challengeIndexModel->challenge_name, $challengeIndexModel->age, $challengeIndexModel->registrationCount);
             foreach($challengeIndexModel->placements as $placementModel){
-                $fancierName = $placementModel->registration()->userName;
-                $varietyName = $placementModel->entry()->varietyName;
-                $viewModel->addChallengePlacementReport($judge, $challengeIndexModel->section, $challengeIndexModel->challengeIndex, $fancierName, $placementModel->placement, $varietyName);
+                $fancierName = $placementModel->registration->user_name;
+                $varietyName = $placementModel->entry->variety_name;
+                $viewModel->addChallengePlacementReport($judge, $challengeIndexModel->section, $challengeIndexModel->challenge_index, $fancierName, $placementModel->placement, $varietyName);
             }
         }
 
-        foreach($showClassesCollection->where("sectionName", "optional")->whereNot("className", "Junior") as $entryClassModel){
-            foreach($entryClassModel->indices as $classIndexModel){
-                $classCommentModel = $classIndexModel->comment();
-                $commentID = (isset($classCommentModel)) ? $classCommentModel->id : null;
-                $comment = (isset($classCommentModel)) ? $classCommentModel->comment : "";
-                $viewModel->addOptionalClassReport($classIndexModel->id, $commentID, $classIndexModel->index, $comment, $entryClassModel->sectionName, $entryClassModel->className, $classIndexModel->age, $classIndexModel->registrationCount);
+        foreach($showClassesCollection->where("section", "optional")->whereNot("class_name", "Junior") as $entryClassModel){
+            foreach($entryClassModel->classIndices as $classIndexModel){
+                $commentID = (isset($classIndexModel->{ClassComment::class}) && $classIndexModel->comment !== null) ? $classIndexModel->comment->id : null;
+                $comment = (isset($classIndexModel->{ClassComment::class}) && $classIndexModel->comment !== null) ? $classIndexModel->comment->comment : "";
+                $viewModel->addOptionalClassReport($classIndexModel->id, $commentID, $classIndexModel->class_index, $comment, $entryClassModel->section, $entryClassModel->class_name, $classIndexModel->age, $classIndexModel->registrationCount);
                 foreach($classIndexModel->placements as $placementModel){
                     $placementReportModel = $placementModel->report();
-                    $placementReportID = isset($placementReportModel) ? $placementReportModel->id : null;
-                    $gender = isset($placementReportModel) ? $placementReportModel->gender : null;
-                    $comment = isset($placementReportModel) ? $placementReportModel->comment : "";
-                    $userName = $placementModel->registration()->userName;
-                    $viewModel->addOptionalClassPlacementReport($placementReportID, $entryClassModel->sectionName, $classIndexModel->index, $placementModel->id, $placementModel->placement, $userName, $gender, $comment);
+                    $placementReportID = (isset($placementModel->{PlacementReport::class}) && $placementModel->report !== null) ? $placementModel->report->id : null;
+                    $gender = (isset($placementModel->{PlacementReport::class}) && $placementModel->report !== null) ? $placementModel->report->gender : null;
+                    $comment = (isset($placementModel->{PlacementReport::class}) && $placementModel->report !== null) ? $placementModel->report->comment : "";
+                    $userName = $placementModel->registration->user_name;
+                    $viewModel->addOptionalClassPlacementReport($placementReportID, $entryClassModel->section, $classIndexModel->class_index, $placementModel->id, $placementModel->placement, $userName, $gender, $comment);
                 }
             }
         }
@@ -93,7 +89,7 @@ class JudgesReportService{
     {
         $judgesRepository = new JudgesRepository($eventPostID);
         $judgesSectionsRepository = new JudgesSectionsRepository($eventPostID);
-        return $judgesRepository->getAll()->with(['sections'], ['id'], ['judgeID'], [$judgesSectionsRepository]);
+        return $judgesRepository->getAll()->with([JudgeSectionModel::class], ['id'], ['judge_id'], [$judgesSectionsRepository]);
     }
 
     private function loadChallengeIndices(int $eventPostID, int $locationID): Collection
@@ -101,12 +97,11 @@ class JudgesReportService{
         $challengeIndexRepository = new ChallengeIndexRepository($locationID);
         $challengePlacementsRepository = new PlacementsRepository($eventPostID, new ChallengePlacementDAO());
         $awardRepository = new AwardsRepository($eventPostID);
-        $awardRepository->getAll();
 
         return $challengeIndexRepository->getAll()->with(
-            ["placements", "award"],
+            [ChallengePlacementModel::class, AwardModel::class],
             ["id", "id"],
-            ["indexID", "challengePlacementID"],
+            ["index_id", "challenge_placement_id"],
             [$challengePlacementsRepository, $awardRepository]
         );
     }
@@ -121,9 +116,9 @@ class JudgesReportService{
         $entryRepository = new EntryRepository($eventPostID);
 
         return $showClassesRepository->getAll()->with(
-            ["indices", "registrations", "order", "entry"],
+            [ClassIndexModel::class, UserRegistrationModel::class, RegistrationOrderModel::class, EntryModel::class],
             ["id", "id", "id", "id"],
-            ["classID", "classIndexID", "registrationID", "registrationOrderID"],
+            ["class_id", "class_index_id", "registration_id", "registration_order_id"],
             [$classIndexRepository, $registrationsRepository, $registrationsOrderRepository, $entryRepository]
         );
     }
@@ -138,36 +133,36 @@ class JudgesReportService{
     {
         // Class Placements
         $classPlacementsRepository = new PlacementsRepository($eventPostID, new ClassPlacementDAO());
-        $showClassesCollection->indices->with(
-            ["placements"], 
+        $showClassesCollection->{ClassIndexModel::class}->with(
+            [ClassPlacementModel::class], 
             ["id"], 
-            ["indexID"], 
+            ["index_id"], 
             [$classPlacementsRepository]
         );
 
         // Map class placements to entries
         ModelHydrator::mapExistingCollections(
-            $showClassesCollection->indices->registrations->order->entry,
-            "placements", 
-            $showClassesCollection->indices->placements, 
+            $showClassesCollection->{ClassIndexModel::class}->{UserRegistrationModel::class}->{RegistrationOrderModel::class}->{EntryModel::class},
+            $showClassesCollection->{ClassIndexModel::class}->{ClassPlacementModel::class}, 
+            ClassPlacementModel::class,
             "id", 
-            "entryID"
+            "entry_id"
         );
 
         // Challenge Placements
         ModelHydrator::mapExistingCollections(
-            $showClassesCollection->indices->registrations->order->entry, 
-            "placements", 
-            $challengeIndexCollection->placements, 
+            $showClassesCollection->{ClassIndexModel::class}->{UserRegistrationModel::class}->{RegistrationOrderModel::class}->{EntryModel::class},
+            $challengeIndexCollection->{ChallengePlacementModel::class}, 
+            ChallengePlacementModel::class,
             "id", 
-            "entryID"
+            "entry_id"
         );
     }
 
     private function mapRegistrationCounts(Collection $showClassesCollection, Collection $challengeIndexCollection, Collection $registrationCountCollection): void
     {
-        ModelHydrator::mapAttribute($showClassesCollection->indices, $registrationCountCollection, "registrationCount", "index", "index_number", "entry_count", 0);
-        ModelHydrator::mapAttribute($challengeIndexCollection, $registrationCountCollection, "registrationCount", "challengeIndex", "index_number", "entry_count", 0);
+        ModelHydrator::mapAttribute($showClassesCollection->{ClassIndexModel::class}, $registrationCountCollection, "registrationCount", "class_index", "index_number", "entry_count", 0);
+        ModelHydrator::mapAttribute($challengeIndexCollection, $registrationCountCollection, "registrationCount", "challenge_index", "index_number", "entry_count", 0);
     }
 
     private function mapJudgesToClasses(Collection $showClassesCollection, Collection $challengeIndexCollection, Collection $judgeCollection): void
@@ -175,17 +170,17 @@ class JudgesReportService{
         // Map judges to show classes
         ModelHydrator::mapExistingCollections(
             $showClassesCollection, 
-            "judgeSection", 
-            $judgeCollection->sections, 
-            "sectionName", 
+            $judgeCollection->{JudgeSectionModel::class},
+            JudgeSectionModel::class, 
+            "section", 
             "section"
         );
 
         // Map judges to challenge indices
         ModelHydrator::mapExistingCollections(
             $challengeIndexCollection, 
-            "judgeSection", 
-            $judgeCollection->sections, 
+            $judgeCollection->{JudgeSectionModel::class}, 
+            JudgeSectionModel::class,
             "section", 
             "section"
         );
@@ -201,7 +196,7 @@ class JudgesReportService{
             $reportID = isset($placementReport->id) && $placementReport->id !== '' ? intval($placementReport->id) : null;
             $gender = ($placementReport->buckChecked) ? "Buck" : "Doe";
             
-            $placementReportModel = isset($reportID) ? PlacementReport::createWithID($reportID, $eventPostID, $indexID, $gender, $placementReport->comment, $placementReport->placementID): PlacementReport::create($eventPostID, $indexID, $gender, $placementReport->comment, $placementReport->placementID);
+            $placementReportModel = isset($reportID) ? PlacementReport::createWithID($reportID, $eventPostID, $indexID, $gender, $placementReport->comment, $placementReport->placement_id): PlacementReport::create($eventPostID, $indexID, $gender, $placementReport->comment, $placementReport->placement_id);
             $placementReportsRepository->save($placementReportModel);
         }
     }

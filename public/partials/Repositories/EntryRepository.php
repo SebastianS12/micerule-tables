@@ -42,16 +42,18 @@ class EntryRepository implements IRepository{
                                 ->build();
 
         $entryData = $wpdb->get_row($query, ARRAY_A);
+        if(!isset($entryData)) return null;
 
         return EntryModel::createWithID($entryData['id'], $entryData['registration_order_id'], $entryData['pen_number'], $entryData['variety_name'], $entryData['absent'], $entryData['added'], $entryData['moved']);
     }
 
-    public function saveEntry(EntryModel $entry): void{
+    public function saveEntry(EntryModel $entry): void
+    {
         global $wpdb;
         if(isset($entry->id)){
-            $wpdb->update($wpdb->prefix.Table::ENTRIES->value, array("registration_order_id" => $entry->registrationOrderID, "pen_number" => $entry->penNumber, "variety_name" => $entry->varietyName, "absent" => $entry->absent, "added" => $entry->added, "moved" => $entry->moved), array("id" => $entry->id));
+            $wpdb->update($wpdb->prefix.Table::ENTRIES->value, array("registration_order_id" => $entry->registration_order_id, "pen_number" => $entry->pen_number, "variety_name" => $entry->variety_name, "absent" => $entry->absent, "added" => $entry->added, "moved" => $entry->moved), array("id" => $entry->id));
         }else{
-            $wpdb->insert($wpdb->prefix.Table::ENTRIES->value, array("registration_order_id" => $entry->registrationOrderID, "pen_number" => $entry->penNumber, "variety_name" => $entry->varietyName, "absent" => $entry->absent, "added" => $entry->added, "moved" => $entry->moved));
+            $wpdb->insert($wpdb->prefix.Table::ENTRIES->value, array("registration_order_id" => $entry->registration_order_id, "pen_number" => $entry->pen_number, "variety_name" => $entry->variety_name, "absent" => $entry->absent, "added" => $entry->added, "moved" => $entry->moved));
         }
     }
 
@@ -59,5 +61,11 @@ class EntryRepository implements IRepository{
     {
         global $wpdb;
         $wpdb->delete($wpdb->prefix.Table::ENTRIES->value, array("id" => $entryId));
+    }
+
+    public function updateVariety(int $entryID, string $varietyName): void
+    {
+        global $wpdb;
+        $wpdb->update($wpdb->prefix.Table::ENTRIES->value, array('variety_name' => $varietyName), array('id' => $entryID));
     }
 }

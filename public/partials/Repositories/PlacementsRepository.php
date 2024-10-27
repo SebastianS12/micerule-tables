@@ -16,7 +16,7 @@ class PlacementsRepository implements IRepository{
 
         $collection = new Collection();
         foreach($placementsQueryResult as $row){
-            $placementModel = PlacementModel::createWithID($row['id'], $row['entry_id'], $row['index_id'], $row['placement'], $row['prize'], $row['printed']);
+            $placementModel = PlacementModelFactory::getPlacementModel($row['prize'], $row);
             $collection->add($placementModel);
         }
 
@@ -30,7 +30,7 @@ class PlacementsRepository implements IRepository{
 
         $collection = new Collection();
         foreach($placementData as $row){
-            $placementModel = PlacementModel::createWithID($row['id'], $row['entry_id'], $row['index_id'], $row['placement'], $row['prize'], $row['printed']);
+            $placementModel = PlacementModelFactory::getPlacementModel($row['prize'], $row);
             $collection->add($placementModel);
         }
 
@@ -41,7 +41,7 @@ class PlacementsRepository implements IRepository{
     {
         $placementData = $this->placementsDAO->getByID($placementID);
         if(isset($placementData))
-            return PlacementModel::createWithID($placementID, $placementData['entry_id'], $placementData['index_id'], $placementData['placement'], $placementData['prize'], $placementData['printed']);
+            return PlacementModelFactory::getPlacementModel($placementData['prize'], $placementData);
     }
 
     public function addPlacement(int $placement, int $indexID, int $entryID, Prize $prize){

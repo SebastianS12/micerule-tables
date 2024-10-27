@@ -32,6 +32,7 @@ class EntryBookController{
         $userClassRegistration->deleteUserRegistration($showEntry->getRegistrationOrder());
         $movedClassRegistration = new UserClassRegistration($eventPostID, $showEntry->userName, $newClassName, $newAge);
         $movedClassRegistration->addUserRegistration();
+
         $movedShowEntry = ShowEntry::createWithPenNumber($eventPostID, $showEntry->penNumber);
         $movedShowEntry->save($movedClassRegistration->registrationID, $movedClassRegistration->getHighestRegistrationOrder(), $newClassName, false, true);
     }
@@ -43,10 +44,14 @@ class EntryBookController{
             $challengeAwardModel->removeAwards();
     }
 
-    public static function editVarietyName($entryID, $varietyName){
-        $showEntry = ShowEntry::createWithEntryID($entryID);
-        if($varietyName == "")
-            $varietyName = $showEntry->className;
-        $showEntry->editVarietyName($varietyName);
+    public static function editVarietyName(int $entryID, string $varietyName, EntryRepository $entryRepository){
+        if($varietyName != "")
+            $entryRepository->updateVariety($entryID, $varietyName);
+    }
+
+    public static function getSelectOptions(ShowClassesRepository $showClassesRepository, ClassIndexRepository $classIndexRepository): void
+    {
+        $editEntryBookService = new EditEntryBookService();
+        wp_send_json($editEntryBookService->getSelectOptions($showClassesRepository, $classIndexRepository));
     }
 }
