@@ -101,7 +101,7 @@ function printPrizeCards(){
 function moveToUnprinted(clickedCard){
 
   var prizeID = clickedCard.parents(".class-card").data("prize-id");
-  var placementID = clickedCard.parents(".class-card").data("placementid");
+  var placementID = clickedCard.parents(".class-card").data("placementId");
 
   jQuery.ajax({
     type: 'POST',

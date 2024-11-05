@@ -30,4 +30,14 @@ class ChallengeIndexRepository implements IRepository{
 
         return ChallengeIndexModel::createWithID($challengeIndexData['id'], $this->locationID, $challengeIndexData['section'], $challengeIndexData['challenge_name'], $challengeIndexData['age'], $challengeIndexData['challenge_index']);
     }
+
+    public function save(ChallengeIndexModel $challengeIndexModel): void
+    {
+        global $wpdb;
+        if(isset($challengeIndexModel->id)){
+            $wpdb->update($wpdb->prefix.Table::CHALLENGE_INDICES->value, array('location_id' => $challengeIndexModel->location_id, 'section' => $challengeIndexModel->section, 'challenge_name' => $challengeIndexModel->challenge_name, 'age' => $challengeIndexModel->age, 'challenge_index' => $challengeIndexModel->challenge_index), array('id' => $challengeIndexModel->id));
+        }else{
+            $wpdb->insert($wpdb->prefix.Table::CHALLENGE_INDICES->value, array('location_id' => $challengeIndexModel->location_id, 'section' => $challengeIndexModel->section, 'challenge_name' => $challengeIndexModel->challenge_name, 'age' => $challengeIndexModel->age, 'challenge_index' => $challengeIndexModel->challenge_index));
+        }
+    }
 }

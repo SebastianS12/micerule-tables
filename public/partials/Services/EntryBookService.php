@@ -1,21 +1,16 @@
 <?php
 
 class EntryBookService{
-    private ChallengeIndexRepository $challengeIndexRepository;
-
-    public function __construct(ChallengeIndexRepository $challengeIndexRepository)
-    {
-        $this->challengeIndexRepository = $challengeIndexRepository;
-    }
-
-    public function prepareViewModel(int $eventPostID, int $locationID, string $eventDeadline): EntryBookViewModel{
+    public function prepareViewModel(int $eventPostID, int $locationID): EntryBookViewModel{
         $viewModel = new EntryBookViewModel();
+        $eventDeadline = EventDeadlineService::getEventDeadline($eventPostID);
         $viewModel->pastDeadline = time() > strtotime($eventDeadline);
 
         $challengePlacementsRepository = new PlacementsRepository($eventPostID, new ChallengePlacementDAO());
+        $challengeIndexRepository = new ChallengeIndexRepository($locationID);
         $awardRepository = new AwardsRepository($eventPostID);
         $awardRepository->getAll();
-        $challengeIndexModelCollection = $this->challengeIndexRepository->getAll()->with([ChallengePlacementModel::class, AwardModel::class], ["id", "id"], ["index_id", "challenge_placement_id"], [$challengePlacementsRepository, $awardRepository]);
+        $challengeIndexModelCollection = $challengeIndexRepository->getAll()->with([ChallengePlacementModel::class, AwardModel::class], ["id", "id"], ["index_id", "challenge_placement_id"], [$challengePlacementsRepository, $awardRepository]);
 
         $sectionchallengeIndexModels = array();
         $grandChallengeIndexModels = array();
@@ -27,8 +22,8 @@ class EntryBookService{
             }
         }
 
-        $showClassesRepository = new ShowClassesRepository(EventProperties::getEventLocationID($eventPostID));
-        $classIndexRepository = new ClassIndexRepository(EventProperties::getEventLocationID($eventPostID));
+        $showClassesRepository = new ShowClassesRepository(LocationHelper::getIDFromEventPostID($eventPostID));
+        $classIndexRepository = new ClassIndexRepository(LocationHelper::getIDFromEventPostID($eventPostID));
         $registrationsRepository = new UserRegistrationsRepository($eventPostID);
         $registrationsOrderRepository = new RegistrationOrderRepository($eventPostID);
         $entryRepository = new EntryRepository($eventPostID);
@@ -87,15 +82,15 @@ class EntryBookService{
         foreach($showClassesCollection[$section] as $showClassModel){
             $className = $showClassModel->class_name;
             $optionalClassData[$className] = array();
-            foreach($showClassModel->classIndices as $classIndexModel){
+            foreach($showClassModel->classIndices() as $classIndexModel){
                 $age = $classIndexModel->age;
                 $optionalClassData[$className] = array();
                 $optionalClassData[$className]['classIndex'] = $classIndexModel->class_index;
                 $optionalClassData[$className]['entries'] = array();
 
                 if($className != "Junior"){
-                    foreach($classIndexModel->registrations as $userRegistration){
-                        foreach($userRegistration->order as $registrationOrder){
+                    foreach($classIndexModel->registrations() as $userRegistration){
+                        foreach($userRegistration->registrationOrder() as $registrationOrder){
                             if(isset($registrationOrder->{EntryModel::class})){
                                 $rowPlacementData = new RowPlacementData($classIndexModel->id, $classIndexModel->placements, 0, new Collection(), 0, new Collection());
                                 $optionalClassData[$className]['entries'][] = $optionalClassRowService->prepareRowData($registrationOrder->entry, $userRegistration->user_name, $rowPlacementData, $age, $section, $viewModel->pastDeadline);
@@ -105,9 +100,10 @@ class EntryBookService{
                 }else{
                     foreach($juniorRegistrationCollection as $juniorRegistration){
                         if(isset($juniorRegistration->{RegistrationOrderModel::class})){
-                            if(isset($juniorRegistration->order->{EntryModel::class}) && isset($juniorRegistration->order->{UserRegistrationModel::class})){
+                            if(isset($juniorRegistration->registrationOrder()->{EntryModel::class}) && isset($juniorRegistration->registrationOrder()->{UserRegistrationModel::class})){
+                                $registrationOrder = $juniorRegistration->registrationOrder();
                                 $rowPlacementData = new RowPlacementData($classIndexModel->id, $classIndexModel->placements, 0, new Collection(), 0, new Collection());
-                                $optionalClassData[$className]['entries'][] = $juniorClassRowService->prepareRowData($registrationOrder->entry, $registrationOrder->registration->user_name, $rowPlacementData, $age, $section, $viewModel->pastDeadline);
+                                $optionalClassData[$className]['entries'][] = $juniorClassRowService->prepareRowData($registrationOrder->entry, $registrationOrder->registration()->user_name, $rowPlacementData, $age, $section, $viewModel->pastDeadline);
                             }
                         }
                     }
@@ -130,11 +126,62 @@ class EntryBookService{
         return $viewModel;
     }
 
-    public function moveEntry(int $entryID, int $newClassIndexID, EntryRepository $entryRepository){
+    public function moveEntry(int $entryID, int $newClassIndexID, EntryRepository $entryRepository, ClassIndexRepository $classIndexRepository, UserRegistrationsRepository $userRegistrationsRepository, RegistrationOrderRepository $registrationOrderRepository): void
+    {
         $entry = $entryRepository->getByID($entryID);
-        //get entry by id + lazy loading order + registration
-        //get classIndexModel by id + lazy loading registrations
-        // if registrations contains user -> add new registration with entry
-        // else create new registration and add entry
+        $registrationOrderModel = $entry->registrationOrder();
+        $registrationModel = $registrationOrderModel->registration();
+
+        $classIndexModel = $classIndexRepository->getByID($newClassIndexID);
+        $registrations = $classIndexModel->registrations();
+        $userRegistration = $registrations->get("user_name", $registrationModel->user_name);
+        $userRegistrationID = ($userRegistration !== null) ? $userRegistration->id : $userRegistrationsRepository->addRegistration($registrationModel->event_post_id, $registrationModel->user_name, $newClassIndexID);
+        $registrationOrderID = $registrationOrderRepository->addRegistration($userRegistrationID, current_time('mysql'));
+        $entry->registration_order_id = $registrationOrderID;
+        $entry->moved = true;
+        $entryRepository->saveEntry($entry);
+
+        if(count($registrationModel->registrationOrder()) > 1){
+            $registrationOrderRepository->removeRegistration($registrationOrderModel->id);
+        }else{
+            $userRegistrationsRepository->removeRegistration($registrationModel->id);
+        }
+    }
+
+    public function addEntry(int $eventPostID, int $classIndexID, string $userName, ClassIndexRepository $classIndexRepository, UserRegistrationsRepository $userRegistrationsRepository, RegistrationOrderRepository $registrationOrderRepository, EntryRepository $entryRepository): void
+    {
+        $classIndexModel = $classIndexRepository->getByID($classIndexID);
+        $registrations = $classIndexModel->registrations();
+        $nextPenNumberModel = $classIndexModel->nextPenNumber();
+        if($nextPenNumberModel !== null){
+            $userRegistration = $registrations->get("user_name", $userName);
+            $userRegistrationID = ($userRegistration !== null) ? $userRegistration->id : $userRegistrationsRepository->addRegistration($eventPostID, $userName, $classIndexID);
+            $registrationOrderID = $registrationOrderRepository->addRegistration($userRegistrationID, current_time('mysql'));
+            $entryModel = EntryModel::create($registrationOrderID, $nextPenNumberModel->next_pen_number, $classIndexModel->showClass()->class_name, false, true, false);
+            $entryRepository->saveEntry($entryModel);
+
+            if(JuniorHelper::addJunior(LocationHelper::getIDFromEventPostID($eventPostID), $userName, new ShowOptionsService())){
+                $registrationOrderRepository->addJuniorRegistration($registrationOrderID, $userRegistrationID);
+            }
+        }
+    }
+
+    public function deleteEntry(int $entryID, EntryRepository $entryRepository, RegistrationOrderRepository $registrationOrderRepository, UserRegistrationsRepository $userRegistrationsRepository, JuniorRegistrationRepository $juniorRegistrationRepository): void
+    {
+        $entry = $entryRepository->getByID($entryID);
+        $registrationOrderModel = $entry->registrationOrder();
+        $registrationModel = $registrationOrderModel->registration();
+        $juniorRegistration = $registrationOrderModel->juniorRegistration();
+
+        if(isset($juniorRegistration)){
+            $juniorRegistrationRepository->remove($juniorRegistration->id);
+        }
+
+        $entryRepository->deleteEntry($entry->id);
+        if(count($registrationModel->registrationOrder()) > 1){
+            $registrationOrderRepository->removeRegistration($registrationOrderModel->id);
+        }else{
+            $userRegistrationsRepository->removeRegistration($registrationModel->id);
+        }
     }
 }

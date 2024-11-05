@@ -9,32 +9,17 @@ class EntryBookController{
         $challengeRowService->editAwards($placementsRepository, $awardsRepository, $prizeID, $bisChallengeIndexID, $boaChallengeIndexID);
     }
 
-    public static function addEntry($eventPostID, $userName, $className, $age){
-        $nextPenNumber = NextPenNumber::getNextPennumber(EventProperties::getEventLocationID($eventPostID), $className, $age);
-        $userClassRegistration = new UserClassRegistration($eventPostID, $userName, $className, $age);
-        $userClassRegistration->addUserRegistration();
-        $showEntry = ShowEntry::createWithPenNumber($eventPostID, $nextPenNumber);
-        $showEntry->save($userClassRegistration->registrationID, $userClassRegistration->getHighestRegistrationOrder(), $className, true, false);
-        NextPenNumber::saveNextPenNumber(EventProperties::getEventLocationID($eventPostID), $className, $age, $nextPenNumber + 1);
+    public static function addEntry(EntryBookService $entryBookService, int $eventPostID, int $locationID, string $userName, int $classIndexID){
+        $entryBookService->addEntry($eventPostID, $classIndexID, $userName, new ClassIndexRepository($locationID), new UserRegistrationsRepository($eventPostID), new RegistrationOrderRepository($eventPostID), new EntryRepository($eventPostID));
     }
 
     public function editEntryAbsent(EntriesService $entriesService, int $entryID){
         $entriesService->editEntryAbsent($entryID);
     }
 
-    public function deleteEntry(EntriesService $entriesService, int $entryID){
-        $entriesService->deleteEntry($entryID);
-    }
-
-    public static function moveEntry($eventPostID, $penNumber, $newClassName, $newAge){
-        $showEntry = ShowEntry::createWithPenNumber($eventPostID, $penNumber);
-        $userClassRegistration = new UserClassRegistration($eventPostID, $showEntry->userName, $showEntry->className, $showEntry->age);
-        $userClassRegistration->deleteUserRegistration($showEntry->getRegistrationOrder());
-        $movedClassRegistration = new UserClassRegistration($eventPostID, $showEntry->userName, $newClassName, $newAge);
-        $movedClassRegistration->addUserRegistration();
-
-        $movedShowEntry = ShowEntry::createWithPenNumber($eventPostID, $showEntry->penNumber);
-        $movedShowEntry->save($movedClassRegistration->registrationID, $movedClassRegistration->getHighestRegistrationOrder(), $newClassName, false, true);
+    public function deleteEntry(int $entryID, int $eventPostID){
+        $entryBookService = new EntryBookService();
+        $entryBookService->deleteEntry($entryID, new EntryRepository($eventPostID), new RegistrationOrderRepository($eventPostID), new UserRegistrationsRepository($eventPostID), new JuniorRegistrationRepository($eventPostID));
     }
 
     public static function editBIS($age, $checkValue, $challengeAwardModel){

@@ -15,20 +15,20 @@ function micerule_shortcode_judges($atts){
 
   $id = filter_var($micerule_settings['id'], FILTER_SANITIZE_NUMBER_INT);
 
-  //get postmeta based on event ID
-  $table_post_meta = get_post_meta($id, 'micerule_data_settings', true);
-
-
   //start html
   $html = '<div class="micerule_judges" style="text-align: center">';
 
   //header
   $html .= "<p>--Judges--</p>";
 
-  foreach(EventJudgesHelper::getEventJudgeNames($id) as $judgeName){
-    $html .= "<span>".$judgeName.":  ";
-      foreach(EventJudgesHelper::getJudgeSections($id, $judgeName) as $judgeSection){
-          $html .= $judgeSection.", ";
+  $judgesRepository = new JudgesRepository($id);
+  $judgesSectionRepository = new JudgesSectionsRepository($id);
+  $judgeCollection = $judgesRepository->getAll()->with([JudgeSectionModel::class], ["id"], ["judge_id"], [$judgesSectionRepository]);
+  foreach($judgeCollection as $judgeModel){
+    $html .= "<span>".$judgeModel->judge_name.":  ";
+      foreach($judgeModel->sections() as $judgeSectionModel){
+        $section = Section::from($judgeSectionModel->section);
+        $html .= $section->getDisplayStringPlural().", ";
       }
       $html = rtrim($html, ', ');
 

@@ -14,7 +14,7 @@ class JudgesService{
     {
         if(!isset($eventJudgesData)) return;
 
-        $judgeCollection = $this->judgesRepository->getAll()->with(['sections'], ['id'], ['judge_id'], [$this->judgesSectionsRepository])->groupByUniqueKey("judge_no");
+        $judgeCollection = $this->judgesRepository->getAll()->with([JudgeSectionModel::class], ['id'], ['judge_id'], [$this->judgesSectionsRepository])->groupByUniqueKey("judge_no");
 
         foreach ($eventJudgesData as $judgeNo => $judgeData) {
             $judgeModel = $judgeCollection[$judgeNo];

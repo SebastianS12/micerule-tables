@@ -27,8 +27,11 @@ function updateOptionalSettings(settingElement){
       thirdPrize : $("#prizeMoney-thirdPlace").val(),
     },
     success: function (data) {
+      console.log(data);
       if(settingElement.hasClass("optionalClasses")){
         addOrDeleteOptionalClass(settingElement);
+      }else{
+        assignLocationSettingsListeners();
       }
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -44,7 +47,8 @@ function addOrDeleteOptionalClass(element){
     if(element.prop('checked')){
       addClass("optional", optionalClassName);
     }else{
-      deleteClass(optionalClassName);
+      const classID = $("#"+optionalClassName+"-tr-location").data("classId");
+      deleteClass(classID, "optional");
     }
   }
 }

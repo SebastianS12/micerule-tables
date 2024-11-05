@@ -4,13 +4,13 @@ jQuery(document).ready(function($){
 
 function assignDeleteClassListener(){
   $("#locationSectionTables").on('click', ".deleteClassButton", function(){
-    var className = this.id.split("&-&")[0];
-    deleteClass(className);
+    var classID = $(this).data("classId");
+    const section = $(this).data("section");
+    deleteClass(classID, section);
   });
 }
 
-function deleteClass(className){
-  console.log(className);
+function deleteClass(classID, section){
   jQuery.ajax({
     type: 'POST',
     url: my_ajax_obj.ajax_url,
@@ -18,7 +18,8 @@ function deleteClass(className){
       _ajax_nonce: my_ajax_obj.nonce,
       action: 'deleteClass',
       id: $("#locationID").val(),
-      className: className,
+      classID: classID,
+      section: section,
     },
     success: function (data) {
       /*
@@ -34,8 +35,7 @@ function deleteClass(className){
       assignMoveClassListener();
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
-      alert(errorThrown);
+      console.log(errorThrown);
     }
   });
-
 }

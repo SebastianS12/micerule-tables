@@ -4,7 +4,6 @@ class LazyLoader{
 
     public static function loadBelongsToOne(Model &$model, string $relationClass, Table $relationTable, string $foreignKey): bool
     {
-        echo("Lazy Load");
         $relationQuery = QueryBuilder::create()
                                         ->select(["*"])
                                         ->from($relationTable)
@@ -16,7 +15,6 @@ class LazyLoader{
 
     public static function loadHasOne(Model &$model, string $relationClass, Table $relationTable, string $foreignKey): bool
     {
-        echo("Lazy Load");
         $relationQuery = QueryBuilder::create()
                                         ->select(["*"])
                                         ->from($relationTable)
@@ -28,7 +26,6 @@ class LazyLoader{
 
     public static function loadHasMany(Model &$model, string $relationClass, Table $relationTable, string $foreignKey): bool
     {
-        echo("Lazy Load");
         $relationQuery = QueryBuilder::create()
                                         ->select(["*"])
                                         ->from($relationTable)

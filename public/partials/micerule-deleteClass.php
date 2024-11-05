@@ -3,8 +3,11 @@ global $post;
 global $wpdb;
 
 $locationID = $_POST['id'];
-$className = $_POST['className'];
+$classID = $_POST['classID'];
+$section = $_POST['section'];
 
-ShowOptionsController::deleteClass($locationID, $className);
+$showClassesController = new ShowClassesController();
+$showClassesController->deleteClass($classID, $locationID, $section);
 echo(ShowOptionsView::getSectionTablesHtml($locationID));
+// echo(ShowClassesView::render($locationID));
 wp_die();

@@ -5,7 +5,7 @@ function registrationDeadline(){
   global $post;
   global $wpdb;
   // $registrationDeadline = get_post_meta($post->ID, 'micerule_data_event_deadline', true);
-  $registrationDeadline = EventProperties::getEventDeadline($post->ID);
+  $registrationDeadline = EventDeadlineService::getEventDeadline($post->ID);
 
   $html = "";
 

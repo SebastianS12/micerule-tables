@@ -32,7 +32,8 @@ function micerule_shortcode_table($atts){
   foreach($resultTableData as $sectionResultData){
     $html .= "<tr>";
     //TODO: There should be a better way to handle this -> add field to db?, helper class?
-    $displayedAwards = array("BIS" => "Best in Show", "BOA" => "Best Opposite Age in Show", "BISec" => "Best ".$sectionResultData['section'], "BOSec" => "Best Opposite Age ".$sectionResultData['section']);
+    $section = Section::from($sectionResultData['section'])->getDisplayString();
+    $displayedAwards = array("BIS" => "Best in Show", "BOA" => "Best Opposite Age in Show", "BISec" => "Best ".$section, "BOSec" => "Best Opposite Age ".$section);
     $html .= "<td class='eventCell2'>".$displayedAwards[$sectionResultData['award']]."</td>";
     $html .= getFancierCellHtml($sectionResultData['fancier_name']);
     $html .= getVarietyCellHtml($sectionResultData['variety_name']);
@@ -67,7 +68,7 @@ function getJudgeHtml($eventPostID){
   $html .= "<p>Judges</p>";
   $judgesData = $wpdb->get_results("SELECT judge_no, judge_name FROM ".$wpdb->prefix."micerule_event_judges WHERE event_post_id = ".$eventPostID, ARRAY_A);
   foreach($judgesData as $judgeData){
-    $judgeSectionData = $wpdb->get_results("SELECT section FROM ".$wpdb->prefix."micerule_event_judges_sections WHERE event_post_id = ".$eventPostID." AND judge_no = ".$judgeData['judge_no'], ARRAY_A);
+    $judgeSectionData = $wpdb->get_results("SELECT section FROM ".$wpdb->prefix."micerule_event_judges_sections Sections INNER JOIN ".$wpdb->prefix."micerule_event_judges Judges ON Judges.id = Sections.judge_id WHERE Judges.event_post_id = ".$eventPostID." AND Judges.judge_no = ".$judgeData['judge_no'], ARRAY_A);
     $html .= "<p>".$judgeData['judge_name'].":  ";
     foreach($judgeSectionData as $sectionData){
       $html .= strtoupper($sectionData['section']).", ";

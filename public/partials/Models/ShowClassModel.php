@@ -89,4 +89,9 @@ class ClassIndexModel extends Model{
     {
         return $this->hasMany(ClassPlacementModel::class, Table::CLASS_PLACEMENTS, "index_id");
     }
+
+    public function nextPenNumber(): ?NextPenNumberModel
+    {
+        return $this->hasOne(NextPenNumberModel::class, Table::NEXT_PENNUMBERS, "class_index_id");
+    }
 }

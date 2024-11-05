@@ -28,7 +28,7 @@ class PrizeCardsViewModel{
             $this->printedCards[$prizeCard->userName][$prizeCard->indexNumber] = array();
         }
 
-        $this->printedCards[$prizeCard->userName][$prizeCard->indexNumber][$prizeCard->prize->value] = $prizeCard;
+        $this->printedCards[$prizeCard->userName][$prizeCard->indexNumber][$prizeCard->prize->value][$prizeCard->placement] = $prizeCard;
     }
 
     private function addUnprintedCard(PrizeCardModel $prizeCard): void
@@ -40,7 +40,7 @@ class PrizeCardsViewModel{
             $this->unprintedCards[$prizeCard->userName][$prizeCard->indexNumber] = array();
         }
 
-        $this->unprintedCards[$prizeCard->userName][$prizeCard->indexNumber][$prizeCard->prize->value] = $prizeCard;
+        $this->unprintedCards[$prizeCard->userName][$prizeCard->indexNumber][$prizeCard->prize->value][$prizeCard->placement] = $prizeCard;
     } 
 
     public function getPrintedCards(): array
@@ -59,7 +59,9 @@ class PrizeCardsViewModel{
         foreach($nestedPrizeCards as $fancierCards){
             foreach($fancierCards as $fancierClassCards){
                 foreach($fancierClassCards as $fancierClassPrizeCards){
-                    $prizeCards[] = $fancierClassPrizeCards;
+                    foreach($fancierClassPrizeCards as $fancierClassPlacementPrizeCards){
+                        $prizeCards[] = $fancierClassPlacementPrizeCards;
+                    }
                 }
             }
         }

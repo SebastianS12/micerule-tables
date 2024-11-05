@@ -5,7 +5,7 @@ $locationID = $_POST['id'];
 $sectionName = $_POST['section'];
 $className = $_POST['className'];
 
-ShowOptionsController::addShowClass($locationID, $className, $sectionName);
+ShowClassesController::addClass($locationID, $className, $sectionName);
 echo(ShowOptionsView::getSectionTablesHtml($locationID));
 
 // $model = new ShowClassesModel();

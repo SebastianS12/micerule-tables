@@ -40,6 +40,7 @@ class JudgesReportService{
             }
         }
 
+        $breedsService = new BreedsService(new BreedsRepository(), new ShowClassesRepository($locationID));
         foreach($showClassesCollection->whereNot("section", "optional") as $entryClassModel){
             foreach($entryClassModel->classIndices as $classIndexModel){
                 $commentID = (isset($classIndexModel->{ClassComment::class}) && $classIndexModel->comment !== null) ? $classIndexModel->comment->id : null;
@@ -51,7 +52,10 @@ class JudgesReportService{
                     $gender = (isset($placementModel->{PlacementReport::class}) && $placementModel->report !== null) ? $placementModel->report->gender : null;
                     $comment = (isset($placementModel->{PlacementReport::class}) && $placementModel->report !== null) ? $placementModel->report->comment : "";
                     $userName = $placementModel->registration->user_name;
-                    $viewModel->addPlacementReport($placementReportID, $judge, $entryClassModel->section, $classIndexModel->class_index, $placementModel->id, $placementModel->placement, $userName, $gender, $comment);
+                    $showVarietySelect = (!$breedsService->isStandardBreed($entryClassModel->class_name));
+                    $varietyOptions = ($showVarietySelect) ? $breedsService->getClassSelectOptionsHtml($entryClassModel->section, $placementModel->entry()->variety_name) : "";
+                    $entryID = $placementModel->entry()->id;
+                    $viewModel->addPlacementReport($placementReportID, $judge, $entryClassModel->section, $classIndexModel->class_index, $placementModel->id, $placementModel->placement, $userName, $gender, $comment, $showVarietySelect, $varietyOptions, $entryID);
                 }
             }
         }
@@ -108,7 +112,7 @@ class JudgesReportService{
 
     private function loadShowClasses(int $eventPostID): Collection
     {
-        $locationID = EventProperties::getEventLocationID($eventPostID);
+        $locationID = LocationHelper::getIDFromEventPostID($eventPostID);
         $showClassesRepository = new ShowClassesRepository($locationID);
         $classIndexRepository = new ClassIndexRepository($locationID);
         $registrationsRepository = new UserRegistrationsRepository($eventPostID);

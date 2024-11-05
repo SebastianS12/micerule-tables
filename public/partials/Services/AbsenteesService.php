@@ -23,7 +23,7 @@ class AbsenteesService{
         $registrationOrderRepository = new RegistrationOrderRepository($this->eventPostID);
         $entryRepository = new EntryRepository($this->eventPostID);
 
-        $judgeCollection = $judgesRepository->getAll()->with([JudgeSectionModel::class], ['id'], ['judgeID'], [$judgesSectionsRepository]);
+        $judgeCollection = $judgesRepository->getAll()->with([JudgeSectionModel::class], ['id'], ['judge_id'], [$judgesSectionsRepository]);
         $showClassesCollection = $showClassRepository->getAll()->with(
             [ClassIndexModel::class, UserRegistrationModel::class, RegistrationOrderModel::class, EntryModel::class], 
             ["id", "id", "id", "id"], 
@@ -34,7 +34,7 @@ class AbsenteesService{
         foreach($judgeCollection as $judgeModel){
             $viewModel->addJudge($judgeModel->judge_name);
             foreach($judgeModel->sections() as $judgeSectionModel){
-                foreach($judgeSectionModel->classes as $entryClassModel){
+                foreach($judgeSectionModel->{EntryClassModel::class} as $entryClassModel){
                     foreach($entryClassModel->classIndices as $classIndexModel){
                         foreach($classIndexModel->registrations->order->entry->where("absent", true) as $entryModel){
                             $viewModel->addAbsentee($judgeModel->judge_name, $classIndexModel->class_index, $entryModel->pen_number);

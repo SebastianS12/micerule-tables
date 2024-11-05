@@ -5,10 +5,9 @@ class JudgesReportView
     public static function getHtml($eventPostID)
     {
         $user = wp_get_current_user();
-        $userName = $user->display_name;
 
         $judgesReportService = new JudgesReportService();
-        $viewModel = $judgesReportService->prepareViewModel($eventPostID, EventProperties::getEventLocationID($eventPostID));
+        $viewModel = $judgesReportService->prepareViewModel($eventPostID, LocationHelper::getIDFromEventPostID($eventPostID));
 
         $html = "<div class = 'judgesReport content' style = 'display: none'>";
 
@@ -32,21 +31,6 @@ class JudgesReportView
         foreach($viewModel->optionalClassReports as $optionalClassReportData){
             $html .= self::getClassReportHtml($optionalClassReportData);
         }
-
-        // $judgesReportController = new JudgesReportController(new JudgesReportService(new JudgesReportRepository($eventPostID)));
-        // $data = $judgesReportController->prepareReportData($eventPostID);
-
-        // foreach ($data['judge_data'] as $judgeName => $judgeCommentData) {
-        //     if ($userName == $judgeName || current_user_can('administrator')) {
-        //         $html .= "<table>";
-        //         $html .= self::getJudgeReportHeaderHtml($judgeCommentData['general'], $data['eventMetaData']);
-        //         $html .= self::getJudgeReportHtml($judgeCommentData['class'], $data['placement_reports']);
-        //         $html .= "</table>";
-        //     }
-        // }
-        // $html .= "<table>";
-        // $html .= self::getJudgeReportHtml($data['junior'], $data['placement_reports']);
-        // $html .= "</table>";
 
         $html .= "</div>";
 
@@ -73,23 +57,6 @@ class JudgesReportView
                         <th>
                       </tr>
                     </thead>";
-
-        return $html;
-    }
-
-    private static function getJudgeReportHtml($judgeClassData, $placementReports)
-    {
-        $html = "";
-        foreach ($judgeClassData as $classData) {
-            if ($classData['prize'] == "Class")
-                $html .= self::getClassReportHtml($classData, $placementReports['class']);
-            if ($classData['prize'] == "Section Challenge"){
-                $html .= self::getChallengeReportHtml($classData, $placementReports['section']);
-            }
-            if($classData['prize'] == "Junior"){
-                $html .= self::getClassReportHtml($classData, $placementReports['junior']);
-            }
-        }
 
         return $html;
     }
@@ -160,7 +127,7 @@ class JudgesReportView
                         </div>
                         <div>";
         //$classSelectOptions = ClassSelectOptions::getClassSelectOptionsHtml($entry->sectionName, $this->locationID, $entry->varietyName);
-        //$html .= (!$this->standardClasses->isStandardClass($entry->className, $entry->sectionName)) ? "<select class='classSelect-judgesReports' id = '" . $entry-> mber . "&-&varietySelect' autocomplete='off'><option value=''>Select a Variety</option>" . $classSelectOptions . "</select>" : "";
+        $html .= ($reportPlacementData['showVarietySelect']) ? "<select class='classSelect-judgesReports' id = '" . $reportPlacementData['entryID'] . "&-&varietySelect' autocomplete='off'><option value=''>Select a Variety</option>" . $reportPlacementData['varietyOptions'] . "</select>" : "";
         $html .=      "</div>
                     </div>
                     </td>";

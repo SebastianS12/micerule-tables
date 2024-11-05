@@ -13,26 +13,40 @@ class EntriesService{
         $classIndexRepository = new ClassIndexRepository($locationID);
         $registrationsRepository = new UserRegistrationsRepository($eventPostID);
         $registrationsOrderRepository = new RegistrationOrderRepository($eventPostID);
+        $nextPenNumberRepository = new NextPenNumberRepository($locationID);
 
-        $showClassesCollection = $showClassesRepository->getAll()->with(["indices", "registrations", "order", "entry"], ["id", "id", "id", "id"], ["class_id", "class_index_id", "registration_id", "registration_order_id"], [$classIndexRepository, $registrationsRepository, $registrationsOrderRepository, $this->entryRepository]);
-        $showClassesCollection = $showClassesCollection->groupBy("sectionName");
+        $showClassesCollection = $showClassesRepository->getAll()->with(
+            [ClassIndexModel::class, UserRegistrationModel::class, RegistrationOrderModel::class, EntryModel::class], 
+            ["id", "id", "id", "id"], 
+            ["class_id", "class_index_id", "registration_id", "registration_order_id"], 
+            [$classIndexRepository, $registrationsRepository, $registrationsOrderRepository, $this->entryRepository]);
+        $showClassesCollection->{ClassIndexModel::class}->with([NextPenNumberModel::class], ["id"], ["class_index_id"], [$nextPenNumberRepository]);
+        $showClassesCollection = $showClassesCollection->groupBy("section");
 
         $penNumber = 1;
         foreach($showClassesCollection as $showClassModelCollection){
             foreach($showClassModelCollection as $showClassModel){
-                foreach($showClassModel->indices as $classIndexModel){
-                    foreach($classIndexModel->registrations as $userRegistration){
-                        foreach($userRegistration->order as $registrationOrder){
+                foreach($showClassModel->classIndices() as $classIndexModel){
+                    foreach($classIndexModel->registrations() as $userRegistration){
+                        foreach($userRegistration->registrationOrder() as $registrationOrder){
                             $entry = $registrationOrder->entry();
-                            if(isset($entry)){
-                                $entry->penNumber = $penNumber;
+                            if($entry !== null){
+                                $registrationOrder->entry()->pen_number = $penNumber;
                             }else{
                                 $entry = EntryModel::create($registrationOrder->id, $penNumber, $showClassModel->class_name, false, false, false);
                             }
+
                             $this->entryRepository->saveEntry($entry);
                             $penNumber++;
                         }
                     }
+                    
+                    $nextPenNumberModel = $classIndexModel->nextPenNumber();
+                    if($nextPenNumberModel === null){
+                        $nextPenNumberModel = NextPenNumberModel::create($classIndexModel->id, $penNumber);
+                    } 
+                    $nextPenNumberModel->next_pen_number = $penNumber;
+                    $nextPenNumberRepository->save($nextPenNumberModel);
 
                     $penNumber = (floor($penNumber / 10) + 1) * 10 + 10;
                 }

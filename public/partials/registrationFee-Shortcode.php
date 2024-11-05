@@ -2,7 +2,7 @@
 
 function showRegistrationFee(){
   global $post;
-  $eventOptionalSettings = EventOptionalSettings::create(EventProperties::getEventLocationID($post->ID));//get_post_meta($post->ID, 'micerule_data_event_optional_settings', true);
+  $eventOptionalSettings = EventOptionalSettings::create(LocationHelper::getIDFromEventPostID($post->ID));//get_post_meta($post->ID, 'micerule_data_event_optional_settings', true);
 
   $html = "<div class='entry-fee-wrapper'>";
   $html .= "<h1 class='blockentry' style= 'font-family: Bree Serif; color: #926939; display: flex; vertical-align: middle; text-align: center; font-size: 46px; font-weight: bold'>";

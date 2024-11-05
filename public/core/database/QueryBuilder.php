@@ -73,6 +73,15 @@ class QueryBuilder {
         return $this;
     }
 
+    public function orderByField(string $column, array $fields): QueryBuilder
+    {
+        $fieldString = implode(',', array_map(function($section) {
+            return "'$section'";
+        }, array_map('esc_sql', $fields)));
+        $this->orderBy[] = "FIELD(".$column.",".$fieldString.")";
+        return $this;
+    }
+
     public function limit(int $limit): QueryBuilder
     {
         $this->limit = $limit;

@@ -155,7 +155,7 @@ class PrizeCardsService{
 
     private function loadShowClasses(int $eventPostID): Collection
     {
-        $locationID = EventProperties::getEventLocationID($eventPostID);
+        $locationID = LocationHelper::getIDFromEventPostID($eventPostID);
         $showClassesRepository = new ShowClassesRepository($locationID);
         $classIndexRepository = new ClassIndexRepository($locationID);
         $registrationsRepository = new UserRegistrationsRepository($eventPostID);

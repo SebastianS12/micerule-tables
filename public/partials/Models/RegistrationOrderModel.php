@@ -28,4 +28,9 @@ class RegistrationOrderModel extends Model{
     public function registration(): ?UserRegistrationModel{
         return $this->belongsToOne(UserRegistrationModel::class, Table::REGISTRATIONS, "registration_id");
     }
+
+    public function juniorRegistration(): ?JuniorRegistrationModel
+    {
+        return $this->hasOne(JuniorRegistrationModel::class, Table::REGISTRATIONS_JUNIOR, "registration_order_id");
+    }
 }

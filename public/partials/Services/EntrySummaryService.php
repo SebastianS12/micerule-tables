@@ -28,8 +28,9 @@ class EntrySummaryService{
         $registrationCollection = $registrationCollection->groupBy("user_name");
 
         //TODO: Service
-        $showOptionsModel = new ShowOptionsModel();
-        $registrationFee = $showOptionsModel->getRegistrationFee($this->locationID);
+        $showOptionsService = new ShowOptionsService();
+        $showOptions = $showOptionsService->getShowOptions(new ShowOptionsRepository(), $this->locationID);
+        $registrationFee = $showOptions->registrationFee;
 
         foreach($registrationCollection as $userName  => $userRegistrationCollection){
             $userRegistrationCount = 0;

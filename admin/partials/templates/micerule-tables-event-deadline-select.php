@@ -1,7 +1,7 @@
 <?php
 global $post;
 
-$eventDeadline = date("Y-m-d H:i", EventProperties::getEventDeadline($post->ID));
+$eventDeadline = date("Y-m-d H:i", EventDeadlineService::getEventDeadline($post->ID));
 
 ?>
 

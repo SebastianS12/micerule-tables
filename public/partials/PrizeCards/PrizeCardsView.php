@@ -7,7 +7,7 @@ class PrizeCardsView
         $html = "<div class = 'prizeCards content' style = 'display : none'>";
         $prizeCardsRepository = new PrizeCardsRepository();
         $prizeCardsService = new PrizeCardsService($prizeCardsRepository);
-        $viewModel = $prizeCardsService->prepareViewModel($eventPostID, EventProperties::getEventLocationID($eventPostID));
+        $viewModel = $prizeCardsService->prepareViewModel($eventPostID, LocationHelper::getIDFromEventPostID($eventPostID));
         $html .= self::getPrintedPrizeCardsHtml($viewModel->getPrintedCards());
         $html .= self::getUnprintedPrizeCardsHtml($viewModel->getUnprintedCards());
         $html .= "</div>";

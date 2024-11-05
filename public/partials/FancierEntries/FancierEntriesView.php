@@ -2,7 +2,7 @@
 
 class FancierEntriesView{
     public static function getFancierEntriesHtml(int $eventPostID){
-        $fancierEntriesService = new FancierEntriesService($eventPostID, EventProperties::getEventLocationID($eventPostID));
+        $fancierEntriesService = new FancierEntriesService($eventPostID, LocationHelper::getIDFromEventPostID($eventPostID));
         $viewModel = $fancierEntriesService->prepareViewModel();
         $html = "<div class = 'fancierEntries content'>";
         $html .= "<div class = 'showStats'>";

@@ -37,7 +37,7 @@ class Model{
     {
         if (property_exists($this, $name)) {
             return isset($this->$name);
-        } elseif (array_key_exists($name, $this->relations)) {
+        } elseif (array_key_exists($name, $this->relations) && count($this->relations[$name]) > 0) {
             return isset($this->relations[$name]);
         } elseif (array_key_exists($name, $this->attributes)) {
             return isset($this->attributes[$name]);
@@ -89,25 +89,25 @@ class Model{
     }
 
     public function hasOne(string $relationModel, Table $relationTable, string $foreignKey): mixed{
-        if(!isset($this->relations[$relationModel])){
-            if(!LazyLoader::loadHasOne($this, $relationModel, $relationTable, $foreignKey));
+        if(!array_key_exists($relationModel, $this->relations)){
+            if(!LazyLoader::loadHasOne($this, $relationModel, $relationTable, $foreignKey)) return null;
         }
 
-        return $this->relations[$relationModel]->first();
+        return isset($this->{$relationModel}) ? $this->relations[$relationModel]->first() : null;
     }
 
     public function belongsToOne(string $relationModel, Table $relationTable, string $foreignKey): ?Model{
-        if(!isset($this->relations[$relationModel])){
+        if(!array_key_exists($relationModel, $this->relations)){
             if(!LazyLoader::loadBelongsToOne($this, $relationModel, $relationTable, $foreignKey)){
                 return null;
             }
         }
 
-        return $this->relations[$relationModel]->first();
+        return isset($this->relations[$relationModel]) ? $this->relations[$relationModel]->first() : null;
     }
 
     public function hasMany(string $relationModel, Table $relationTable, string $foreignKey): Collection{
-        if(!isset($this->relations[$relationModel])){
+        if(!array_key_exists($relationModel, $this->relations)){
             if(!LazyLoader::loadHasMany($this, $relationModel, $relationTable, $foreignKey)){
                 return new Collection();
             }

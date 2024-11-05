@@ -8,12 +8,16 @@ class ClassIndexRepository implements IRepository{
 
     public function getAll(Closure|null $constraintsClosure = null): Collection
     {
+        $query = QueryBuilder::create()
+                                ->select([Table::CLASS_INDICES->getAlias().".*"])
+                                ->from(Table::CLASS_INDICES)
+                                ->join("INNER", Table::CLASSES, [Table::CLASS_INDICES], ["id"], ["class_id"])
+                                ->where(Table::CLASSES->getAlias(), "location_id", "=", $this->locationID)
+                                ->orderBy(Table::CLASS_INDICES->getAlias(), "class_index")
+                                ->build();
+
         global $wpdb;
-        $classIndexQueryData = $wpdb->get_results("SELECT CI.id, class_id, age, class_index 
-                                          FROM ".$wpdb->prefix."micerule_show_classes_indices CI
-                                          INNER JOIN ".$wpdb->prefix."micerule_show_classes C
-                                          ON CI.class_id = C.id
-                                          WHERE location_id = ".$this->locationID, ARRAY_A);
+        $classIndexQueryData = $wpdb->get_results($query, ARRAY_A);
 
         $collection = new Collection();
         foreach($classIndexQueryData as $classIndexData){
@@ -42,14 +46,29 @@ class ClassIndexRepository implements IRepository{
         return ClassIndexModel::createWithID($juniorRow['id'], $juniorRow['class_index'], $juniorRow['class_id'], $juniorRow['age']);
     }
 
-    public function getClassIndexModel($className, $age){
+    public function getByID(int $classIndexID): ?ClassIndexModel
+    {
         global $wpdb;
-        $classIndexData = $wpdb->get_row("SELECT CI.id, class_id, age, class_index 
-                                          FROM ".$wpdb->prefix."micerule_show_classes_indices CI
-                                          INNER JOIN ".$wpdb->prefix."micerule_show_classes C
-                                          ON CI.class_id = C.id
-                                          WHERE location_id = ".$this->locationID." AND class_name = '".$className."' AND age = '".$age."'", ARRAY_A);
+        $query = QueryBuilder::create()
+                                ->select(["*"])
+                                ->from(Table::CLASS_INDICES)
+                                ->where(Table::CLASS_INDICES->getAlias(), "id", "=", $classIndexID)
+                                ->limit(1)
+                                ->build();
 
-        return ClassIndexModel::createWithID($classIndexData['id'], $classIndexData['class_index'], $classIndexData['class_id'], $classIndexData['age']);
+        $classIndexModelData = $wpdb->get_row($query, ARRAY_A);
+        if(!isset($classIndexModelData)) return null;
+
+        return ClassIndexModel::createWithID(...$classIndexModelData);
+    }
+
+    public function save(ClassIndexModel $classIndexModel): void
+    {
+        global $wpdb;
+        if(isset($classIndexModel->id)){
+            $wpdb->update($wpdb->prefix.Table::CLASS_INDICES->value, array('class_index' => $classIndexModel->class_index, 'class_id' => $classIndexModel->class_id, 'age' => $classIndexModel->age), array('id' => $classIndexModel->id));
+        }else{
+            $wpdb->insert($wpdb->prefix.Table::CLASS_INDICES->value, array('class_index' => $classIndexModel->class_index, 'class_id' => $classIndexModel->class_id, 'age' => $classIndexModel->age));
+        }
     }
 }

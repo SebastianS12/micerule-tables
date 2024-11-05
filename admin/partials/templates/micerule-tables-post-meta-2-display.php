@@ -24,7 +24,7 @@ function getJudgesHtml()
         }
         $html .= "</select>";
 
-        $judgeSections = $wpdb->get_results("SELECT section FROM " . $wpdb->prefix . "micerule_event_judges_sections WHERE event_post_id = " . $post->ID . " AND judge_no = " . $judgeNo, ARRAY_A);
+        $judgeSections = $wpdb->get_results("SELECT section FROM " . $wpdb->prefix . "micerule_event_judges_sections JudgeSections INNER JOIN sm1_micerule_event_judges Judges ON Judges.id = JudgeSections.judge_id WHERE Judges.event_post_id = " . $post->ID . " AND Judges.judge_no = " . $judgeNo, ARRAY_A);
         foreach (EventProperties::SECTIONNAMES as $sectionName) {
             $html .= "<input id='judge-section-select-" . $sectionName . "-" . $judgeNo . "' type='checkbox' name='judge_data[" . $judgeNo . "][sections][" . strtolower($sectionName) . "]' " . ((array_search(strtolower($sectionName), array_column($judgeSections, 'section')) !== false) ? 'checked="on"' : '') . ">";
             $html .= "<label for='judge-section-select-" . $sectionName . "-" . $judgeNo . "'>" . $sectionName . "</label>";

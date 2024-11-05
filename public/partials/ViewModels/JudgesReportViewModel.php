@@ -63,7 +63,7 @@ class JudgesReportViewModel{
         $this->classReports[$judge][$section][$classIndex] = $reportData;
     }
 
-    public function addPlacementReport(?int $reportID, string $judge, string $section, int $classIndex, int $placementID, int $placement, string $userName, ?string $gender, string $comment): void
+    public function addPlacementReport(?int $reportID, string $judge, string $section, int $classIndex, int $placementID, int $placement, string $userName, ?string $gender, string $comment, string $showVarietySelect, string $varietySelectOptions, int $entryID): void
     {
         $this->initializeClassReportIfNotSet($judge, $section, $classIndex);
 
@@ -74,6 +74,9 @@ class JudgesReportViewModel{
         $placementReport['gender'] = $gender;
         $placementReport['comment'] = $comment;
         $placementReport['reportID'] = $reportID;
+        $placementReport['showVarietySelect'] = $showVarietySelect;
+        $placementReport['varietyOptions'] = $varietySelectOptions;
+        $placementReport['entryID'] = $entryID;
         
         $this->classReports[$judge][$section][$classIndex]['placements'][$placement] = $placementReport;
     }

@@ -4,7 +4,7 @@ class EntrySummaryView
 {
     public static function getEntrySummaryHtml(int $eventPostID)
     {
-        $entrySummaryService = new EntrySummaryService($eventPostID, EventProperties::getEventLocationID($eventPostID));
+        $entrySummaryService = new EntrySummaryService($eventPostID, LocationHelper::getIDFromEventPostID($eventPostID));
         $viewModel = $entrySummaryService->prepareViewModel();
 
         $html = "<div class = 'entrySummary content'>";
@@ -34,7 +34,7 @@ class EntrySummaryView
                         <td class='js-notes'>" . $fancierEntry['classIndex'] . " | " . $fancierEntry['className'] . " " . $fancierEntry['age'] . "</td>
                     </tr>";
             }
-            $html .= "<tr><td colspan = 2>Entry Fee: " .$fancierEntrySummary['registrationFee']. "£</td></tr>";
+            $html .= "<tr><td colspan = 2>Entry Fee: £" .$fancierEntrySummary['registrationFee']. "</td></tr>";
 
             $html .= "    </tbody>
                     </table>

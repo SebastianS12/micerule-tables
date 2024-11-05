@@ -5,9 +5,10 @@ jQuery(document).ready(function($){
 
 function assignEntryBookListeners(){
   $(".moveEntry").on('click', function(){
-    var penNumber = this.id.split("&-&")[0];
+    var entryID = $(this).parents(".editEntry-td").data("entryId");
+    console.log(entryID);
 
-    openMoveModal(penNumber);
+    openMoveModal(entryID);
   });
 
   $(".addEntry").on('click', function(){
@@ -67,28 +68,25 @@ function debounce(callback, wait) {
 }
 
 
-function openMoveModal(penNumber){
+async function openMoveModal(entryID){
   additionalHtml = "<a class = 'button' id = 'confirmMoveModal'>Move</a>";
-  openEditModal("Move Entry to:", additionalHtml);
+  await openEditModal("Move Entry to:", additionalHtml);
 
   $("#confirmMoveModal").on('click', function(){
-    console.log($("#ageSelect").find('option').filter(":selected").val());
     jQuery.ajax({
       type: 'POST',
       url: my_ajax_obj.ajax_url,
       data: {
         _ajax_nonce: my_ajax_obj.nonce,
         action: 'moveEntry',
-        newSection: $("#sectionSelect").find('option').filter(":selected").val().toLowerCase(),
-        newClassName: $("#classSelect").find('option').filter(":selected").val(),
-        newAge: $("#ageSelect").find('option').filter(":selected").val(),
-        penNumber: penNumber,
+        newClassIndexID: $("#classSelect").find('option').filter(":selected").val(),
+        entryID: entryID,
       },
       success: function (data) {
+        console.log(data);
         $.modal.close();
         $("#editEntryModal").remove();
         updateAdminTabs();
-        console.log(data);
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
         alert(errorThrown);
@@ -98,16 +96,18 @@ function openMoveModal(penNumber){
 }
 
 
-function openAddModal(){
+async function openAddModal(){
   var additionalHtml = "<select id = 'userSelect'>";
   $("#userSelectRegistration option").each(function(){
     additionalHtml += "<option value = '"+$(this).text()+"'>" + $(this).text() + "</option>";
   });
   additionalHtml += "</select>";
   additionalHtml += "<button type = 'button' id = 'confirmAddModal'>Confirm</button>";
-  openEditModal("Add Entry to:", additionalHtml);
+  await openEditModal("Add Entry to:", additionalHtml);
 
   $("#confirmAddModal").on('click', function(){
+    console.log($("#classSelect").find('option').filter(":selected").val());
+    console.log($("#userSelect").find('option').filter(":selected").val());
     $("#spinner-div").show();
     jQuery.ajax({
       type: 'POST',
@@ -115,9 +115,7 @@ function openAddModal(){
       data: {
         _ajax_nonce: my_ajax_obj.nonce,
         action: 'addEntry',
-        section: $("#sectionSelect").find('option').filter(":selected").val().toLowerCase(),
-        className: $("#classSelect").find('option').filter(":selected").val(),
-        age: $("#ageSelect").find('option').filter(":selected").val(),
+        classIndexID: $("#classSelect").find('option').filter(":selected").val(),
         userName: $("#userSelect").find('option').filter(":selected").val(),
       },
       success: function (data) {
@@ -125,7 +123,6 @@ function openAddModal(){
         $.modal.close();
         $("#editEntryModal").remove();
         updateAdminTabs();
-        console.log(data);
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
         alert(errorThrown);

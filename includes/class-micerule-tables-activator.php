@@ -307,7 +307,7 @@ class Micerule_Tables_Activator {
 			comment text,
 			judge_id bigint(20) unsigned NOT NULL,
 			PRIMARY KEY  (id),
-			CONSTRAINT fk_event_post_id_judge_no_general_comment
+			CONSTRAINT fk_judge_id_general_comment
 				FOREIGN KEY (judge_id)
 				REFERENCES ".$event_judges_table_name."(id)
 				ON DELETE CASCADE

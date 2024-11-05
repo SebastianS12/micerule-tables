@@ -28,7 +28,7 @@ class SeasonResultsModel {
     }
 
     private Function getJudgePartnerNamesQuery($dateFrom, $dateTo){
-        return "SELECT partner_name AS name FROM ".$this->em_event_table." INNER JOIN ".$this->judge_partnerships_table." ON ".$this->em_event_table.".post_id=".$this->judge_partnerships_table.".event_post_id WHERE UNIX_TIMESTAMP(event_start_date) >= ".$dateFrom." AND UNIX_TIMESTAMP(event_end_date) <= ".$dateTo;
+        return "SELECT partner_name AS name FROM ".$this->em_event_table." Events INNER JOIN ".$this->judge_table." Judges ON Events.post_id=Judges.event_post_id INNER JOIN ".$this->judge_partnerships_table." JudgePartners ON JudgePartners.judge_id = Judges.id WHERE UNIX_TIMESTAMP(event_start_date) >= ".$dateFrom." AND UNIX_TIMESTAMP(event_end_date) <= ".$dateTo;
     }
 
     private function getJudgeCountQuery($dateFrom, $dateTo){

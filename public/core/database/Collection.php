@@ -102,6 +102,15 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable{
         return $groupedCollection;
     }
 
+    public function sortBy(string $attribute, array $relations = []): Collection
+    {
+        $sortedCollection = new Collection();
+
+
+        
+        return $sortedCollection;
+    }
+
     public function get(string $attribute, mixed $condition): mixed{
         foreach($this as &$collectionItem){
             if($collectionItem->$attribute == $condition){
@@ -145,12 +154,12 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable{
      * @param IRepository[] $repositories  // Array of objects implementing RepositoryInterface
      */
     public function with(array $relationClasses, array $fromKeys, array $relationKeys, array $repositories): Collection{
-        if (count($relationKeys) < 1) {
-            throw new InvalidArgumentException("Expected 2 or more relation keys.");
-        }
-        if (count($repositories) !== count($relationKeys)) {
-            throw new InvalidArgumentException("Number of repositories does not match the number of relations.");
-        }
+        // if (count($relationKeys) < 1) {
+        //     throw new InvalidArgumentException("Expected 2 or more relation keys.");
+        // }
+        // if (count($repositories) !== count($relationKeys)) {
+        //     throw new InvalidArgumentException("Number of repositories does not match the number of relations.");
+        // }
 
         $repositoryData = [];
         foreach($repositories as $index => $repository){

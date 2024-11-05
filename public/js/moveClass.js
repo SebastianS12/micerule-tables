@@ -4,12 +4,8 @@ jQuery(document).ready(function($){
 
 function assignMoveClassListener(){
   $("#locationSectionTables").on('click', ".moveClassButton", function(){
-    var idString = this.id;
-    var section = idString.split("&-&")[0];
-    var firstClassName = idString.split("&-&")[1];
-    var secondClassName = $(this).parents("tr").prev().find(".classNameCell").text();
-    if(idString.split("&-&")[2] == 'moveDown')
-      secondClassName = $(this).parents("tr").next().find(".classNameCell").text();
+    const firstClassID = $(this).data("classId");
+    const secondClassID = ($(this).data('moveAction') == 'moveDown') ? $(this).parents("tr").next().data("classId") : $(this).parents("tr").prev().data("classId");;
 
     jQuery.ajax({
       type: 'POST',
@@ -18,9 +14,8 @@ function assignMoveClassListener(){
         _ajax_nonce: my_ajax_obj.nonce,
         action: 'moveClass',
         id: $("#locationID").val(),
-        section: section.toLowerCase(),
-        firstClassName: firstClassName,
-        secondClassName: secondClassName,
+        firstClassID: firstClassID,
+        secondClassID: secondClassID,
       },
       success: function (data) {
         $("#locationSectionTables").replaceWith(data);
@@ -30,7 +25,7 @@ function assignMoveClassListener(){
         assignMoveClassListener();
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
-        alert(errorThrown);
+        console.log(errorThrown);
       }
     });
   });

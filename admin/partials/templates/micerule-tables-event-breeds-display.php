@@ -2,12 +2,10 @@
 global $wpdb;
 global $post;
 
-//TODO: move html to LocationSecretaries function
-
 //Get all user names
 $users = (array) $wpdb->get_results("SELECT display_name FROM " .$wpdb->prefix."users ORDER BY display_name;");
 
-$locationSecretaryNames = LocationSecretaries::getLocationSecretaryNames(LocationSecretaries::getLocationIDFromPostID($post->ID));
+$locationSecretaryNames = LocationSecretariesService::getLocationSecretaries(LocationHelper::getIDFromLocationPostID($post->ID));
 ?>
 <h3>Location Secretaries</h3>
 <select autocomplete = "off" name= "micerule_table_location_secretaries_names[]">

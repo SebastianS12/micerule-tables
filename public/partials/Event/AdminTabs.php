@@ -3,15 +3,14 @@
 class AdminTabs{
 
   public static function getAdminTabsHtml($eventID){
-    $showOptionsModel = new ShowOptionsModel();
-    $showOptions = $showOptionsModel->getShowOptions(EventProperties::getEventLocationID($eventID));
+    $showOptions = ShowOptionsController::getShowOptions(LocationHelper::getIDFromEventPostID($eventID), new ShowOptionsService(), new ShowOptionsRepository());
 
     $html = "<div class = 'adminTabs'>";
-    $locationSecretaries = EventProperties::getLocationSecretaries(EventProperties::getEventLocationID($eventID));
+    $locationSecretaries = LocationSecretariesService::getLocationSecretaries(LocationHelper::getIDFromEventPostID($eventID));
     $eventJudges = new EventJudges($eventID);
-    if(($showOptions['allow_online_registrations'] && is_user_logged_in()) && ((in_array(wp_get_current_user()->display_name, $locationSecretaries['name']) || in_array(wp_get_current_user()->display_name, $eventJudges->judgeNames)) || current_user_can('administrator'))){
+    if(($showOptions->allowOnlineRegistrations && is_user_logged_in()) && ((in_array(wp_get_current_user()->display_name, $locationSecretaries) || in_array(wp_get_current_user()->display_name, $eventJudges->judgeNames)) || current_user_can('administrator'))){
       $html .= "<ul class='tabbed-summary' id='admin-tabs'>";
-      if((in_array(wp_get_current_user()->display_name, $locationSecretaries['name'])) || current_user_can('administrator')){
+      if((in_array(wp_get_current_user()->display_name, $locationSecretaries)) || current_user_can('administrator')){
         $html .= " <li class = 'fancierEntries tab active' style='height: 26px;'>Entries per Fancier</li>
                    <li class = 'label tab' style='height: 26px;'>Label</li>
                    <li class = 'entrySummary tab' style='height: 26px;'>Entry Summary</li>
@@ -23,7 +22,7 @@ class AdminTabs{
       $html .= " <li class = 'judgesReport tab' style='height: 26px;'>Judge's Report</li>
               </ul>";
       $empty = "";
-      if((in_array(wp_get_current_user()->display_name, $locationSecretaries['name'])) || current_user_can('administrator')){
+      if((in_array(wp_get_current_user()->display_name, $locationSecretaries)) || current_user_can('administrator')){
         $html .= "<div class = 'fancierEntries content'>".FancierEntriesView::getFancierEntriesHtml($eventID)."</div>
                   <div class = 'label content' style = 'display : none'>".LabelView::getHtml($eventID)."</div>
                   <div class = 'entrySummary content' style = 'display : none'>".EntrySummaryView::getEntrySummaryHtml($eventID)."</div>

@@ -4,7 +4,7 @@ class JudgingSheetsView
 {
     public static function getHtml($eventPostID)
     {
-        $judgingSheetsService = new JudgingSheetsService($eventPostID, EventProperties::getEventLocationID($eventPostID));
+        $judgingSheetsService = new JudgingSheetsService($eventPostID, LocationHelper::getIDFromEventPostID($eventPostID));
         $viewModel = $judgingSheetsService->prepareViewModel();
         $html = "<div class = 'judgingSheets content' style = 'display : none'>";
         $html .= "<div class = 'sheet-set'>";
@@ -44,7 +44,7 @@ class JudgingSheetsView
     {
         $showClassesModel = new ShowClassesModel();
         $html = "";
-        foreach ($showClassesModel->getShowSectionClassNames(EventProperties::getEventLocationID($eventPostID), $sectionName) as $className) {
+        foreach ($showClassesModel->getShowSectionClassNames(LocationHelper::getIDFromEventPostID($eventPostID), $sectionName) as $className) {
             $html .= self::getClassSheetHtml($eventPostID, $className, "Ad", $judgeName);
             $html .= self::getClassSheetHtml($eventPostID, $className, "U8", $judgeName);
         }

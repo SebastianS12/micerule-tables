@@ -4,7 +4,7 @@ class AbsenteesView
 {
     public static function getHtml($eventPostID)
     {
-        $absenteesService = new AbsenteesService($eventPostID, EventProperties::getEventLocationID($eventPostID));
+        $absenteesService = new AbsenteesService($eventPostID, LocationHelper::getIDFromEventPostID($eventPostID));
         $viewModel = $absenteesService->prepareViewModel();
 
         $html = "<div class = 'absentees content' style = 'display : none'>";

@@ -4,7 +4,7 @@ class LabelView
 {
     public static function getHtml(int $eventPostID)
     {
-        $labelService = new LabelService($eventPostID, EventProperties::getEventLocationID($eventPostID));
+        $labelService = new LabelService($eventPostID, LocationHelper::getIDFromEventPostID($eventPostID));
         $viewModel = $labelService->prepareViewModel();
         $html = "<div class = 'label content' style = 'display : none'>";
         $html .= "<div class='print-tray-header'><h3>Labels Print Preview<span class='print-alert'>On Mac, these must be printed from Safari</span></h3><a class='print-button'><img src='/wp-content/plugins/micerule-tables/admin/svg/print.svg'></a></div>";

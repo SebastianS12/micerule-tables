@@ -10,21 +10,20 @@ function sectionTablesFrontend($atts){
   $sectionNames = EventProperties::SECTIONNAMES;
   $challengeNames = EventProperties::CHALLENGENAMES;
 
-  $locationID = EventProperties::getEventLocationID($post->ID);
+  $locationID = LocationHelper::getIDFromEventPostID($post->ID);
   $eventRegistrationData = EventRegistrationData::create($post->ID);//get_post_meta($post->ID, 'micerule_data_event_class_registrations', true);
-  $eventOptionalSettings = EventOptionalSettings::create($locationID);
 
   $html = "<div id='eventSectionTables'>";
 
   //$html .= "<p>".var_export(EntryBookData::create($post->ID), true)."</p>";
 
-  $registrationTables = new RegistrationTables($post->ID, $userName);
   $html .= RegistrationTablesView::getRegistrationTablesHtml($post->ID, $userName);//$registrationTables->getHtml();
   $html .= "</div>";
   $html .= "<div class = 'header-info'>";
+  $showOptionsService = new ShowOptionsService();
+  $eventOptionalSettings = $showOptionsService->getShowOptions(new ShowOptionsRepository(), $locationID);
   if($eventOptionalSettings->allowOnlineRegistrations){
-    $entryCountRepository = new RegistrationCountRepository($post->ID, EventProperties::getEventLocationID($post->ID));
-    $html .= "<h3>Total Entries: ".$entryCountRepository->getEntryCount()."</h3>";
+    $entryCountRepository = new RegistrationCountRepository($post->ID, LocationHelper::getIDFromEventPostID($post->ID));
     $html .= "<h3>Total Exhibits: ".$entryCountRepository->getExhibitCount()."</h3>";
   }
   $html .= "<hr>";
@@ -44,7 +43,7 @@ add_shortcode('sectionTablesFrontend','sectionTablesFrontend');
 
 function addClassToShowCalendar($output, $event){
   if(is_page(2862)){
-    $eventOptionalSettings = EventOptionalSettings::create($event->location_id);
+    $eventOptionalSettings = ShowOptionsController::getShowOptions($event->location_id, new ShowOptionsService(), new ShowOptionsRepository());
     if($eventOptionalSettings->allowOnlineRegistrations){
       $output = "<div class = 'online-registration'>".$output."</div>";
     }

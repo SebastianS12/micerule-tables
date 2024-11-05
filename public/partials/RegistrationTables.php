@@ -12,7 +12,7 @@ class RegistrationTables {
 
   public function __construct($eventID, $userName){
     $this->eventID = $eventID;
-    $this->locationID = EventProperties::getEventLocationID($eventID);
+    $this->locationID = LocationHelper::getIDFromEventPostID($eventID);
     $this->eventClasses = EventClasses::create($this->locationID);
     $this->eventRegistrationData = EventRegistrationData::create($eventID);
     $this->userName = $userName;

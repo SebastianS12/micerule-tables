@@ -28,4 +28,10 @@ class JuniorRegistrationRepository implements IRepository{
 
         return $collection;
     }
+
+    public function remove(int $id): void
+    {
+        global $wpdb;
+        $wpdb->delete(Table::REGISTRATIONS_JUNIOR, array('id' => $id));
+    }
 }

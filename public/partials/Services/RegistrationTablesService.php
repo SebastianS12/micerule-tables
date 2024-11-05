@@ -17,7 +17,7 @@ class RegistrationTablesService{
     public function prepareViewModel(int $eventPostID, int $locationID, string $userName): RegistrationTablesViewModel{
         $viewModel = new RegistrationTablesViewModel();
         $viewModel->allowOnlineRegistrations = $this->getAllowOnlineRegistrations($locationID);
-        $viewModel->beforeDeadline = time() < EventProperties::getEventDeadline($eventPostID);
+        $viewModel->beforeDeadline = time() < EventDeadlineService::getEventDeadline($eventPostID);
         $viewModel->isLoggedIn = is_user_logged_in();
         $viewModel->isMember = EventUser::isMember($userName);
         $viewModel->isAdmin = current_user_can('administrator');
@@ -56,9 +56,9 @@ class RegistrationTablesService{
 
     //TODO: ShowOptionsService
     private function getAllowOnlineRegistrations(int $locationID){
-        $showOptionsModel = new ShowOptionsModel();
-        $showOptions = $showOptionsModel->getShowOptions($locationID);
-        $allowOnlineRegistrations = (isset($showOptions)) ? $showOptions['allow_online_registrations'] : false;
+        $showOptionsService = new ShowOptionsService();
+        $showOptions = $showOptionsService->getShowOptions(new ShowOptionsRepository(), $locationID);
+        $allowOnlineRegistrations = $showOptions->allowOnlineRegistrations;
         return $allowOnlineRegistrations;
     }
 }

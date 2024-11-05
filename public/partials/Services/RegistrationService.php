@@ -27,21 +27,19 @@ class RegistrationService{
         // ModelHydrator::mapAttribute($userRegistrationCollections[$userName], $userRegistrationCounts, "registrationCount", "classIndex", "index_number","entry_count", 0);
         // $userRegistrationsByIndex = isset($userRegistrationCollections[$userName]) ? $userRegistrationCollections[$userName]->groupByUniqueKey("classIndex") : new Collection();
 
-        $classRepository = new ShowClassesRepository(EventProperties::getEventLocationID($this->eventPostID));
+        $classRepository = new ShowClassesRepository(LocationHelper::getIDFromEventPostID($this->eventPostID));
         //TODO: make more readable, put into describing functions
-        $userRegistrationCollections = $this->userRegistrationsRepository->getUserRegistrations($userName)->with(["registrationOrder"], ["id"], ["registration_id"], [$this->registrationOrderRepository]);
-        // $classIndexCollection = $this->classIndexRepository->getAll()->with(["class"], ["class_id"], ["id"], [$classRepository]);
-        $classIndexCollection = $classRepository->getAll()->with(["id"], ["class_id"], [$this->classIndexRepository])->{ClassIndexModel::class};
+        $userRegistrationCollections = $this->userRegistrationsRepository->getUserRegistrations($userName)->with([RegistrationOrderModel::class], ["id"], ["registration_id"], [$this->registrationOrderRepository]);
+        $classIndexCollection = $classRepository->getAll()->with([ClassIndexModel::class], ["id"], ["class_id"], [$this->classIndexRepository])->{ClassIndexModel::class};
 
-        ModelHydrator::mapAttribute($userRegistrationCollections, $classIndexCollection, "classIndex", "class_index_id", "id", "index", 0);
+        ModelHydrator::mapAttribute($userRegistrationCollections, $classIndexCollection, "classIndex", "class_index_id", "id", "class_index", 0);
         $userRegistrationCounts = $this->registrationCountRepository->getUserRegistrationCounts($userName);
         ModelHydrator::mapAttribute($userRegistrationCollections, $userRegistrationCounts, "registrationCount", "classIndex", "index_number","entry_count", 0);        
 
         $userRegistrationsByIndex = $userRegistrationCollections->groupByUniqueKey("classIndex");
-        $classIndexCollection = $classIndexCollection->groupByUniqueKey("index");
+        $classIndexCollection = $classIndexCollection->groupByUniqueKey("class_index");
 
-        $showOptionsModel = new ShowOptionsModel();
-        $addJunior = EventUser::isJuniorMember($userName) && $showOptionsModel->getShowOptions(EventProperties::getEventLocationID($this->eventPostID))['allow_junior'];
+        $addJunior = JuniorHelper::addJunior(LocationHelper::getIDFromEventPostID($this->eventPostID), $userName, new ShowOptionsService());
 
         foreach($classRegistrations as $classRegistrationData){
             $classIndex = $classRegistrationData['classIndex'];
@@ -59,7 +57,7 @@ class RegistrationService{
             if(isset($userRegistrationID) && $registrationCount > 0){
                 $registrations = $this->addRegistrationRecord($registrations, $classIndexCollection[$classIndex], $registrationCount);
 
-                $userRegistrationCount = 0;//(isset($userRegistrationsByIndex[$classIndex])) ? $userRegistrationsByIndex[$classIndex]->registrationCount : 0;
+                $userRegistrationCount = (isset($userRegistrationsByIndex[$classIndex])) ? $userRegistrationsByIndex[$classIndex]->registrationCount : 0;
                 for($i = $userRegistrationCount; $i < $registrationCount; $i++){
                     $registrationOrderID = $this->registrationOrderRepository->addRegistration($userRegistrationID, current_time("mysql"));
                     if($addJunior){

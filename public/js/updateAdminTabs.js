@@ -9,8 +9,7 @@ function updateAdminTabs(/*adminTabsHtml, activeTabClass*/){
       action: 'getAdminTabsHtml',
     },
     success: function (data) {
-      console.log(data);
-      // $(".adminTabs").replaceWith(data);
+      $(".adminTabs").replaceWith(data);
       assignTabListeners();
       assignEntrySummaryListeners();
       assignEntryBookListeners();

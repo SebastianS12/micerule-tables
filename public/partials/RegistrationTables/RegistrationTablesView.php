@@ -4,7 +4,7 @@ class RegistrationTablesView
 {
   public static function getRegistrationTablesHtml(int $eventID, string $userName)
   {
-    $eventLocationID = EventProperties::getEventLocationID($eventID);
+    $eventLocationID = LocationHelper::getIDFromEventPostID($eventID);
     $registrationTablesController = new RegistrationTablesController(new RegistrationTablesService(new ChallengeIndexRepository($eventLocationID), new ShowClassesRepository($eventLocationID), new ClassIndexRepository($eventLocationID), new RegistrationCountRepository($eventID, $eventLocationID)));
     $html = "<div id='registrationTables'>";
     $viewModel = $registrationTablesController->prepareViewModel($eventID, $eventLocationID, $userName);
@@ -204,7 +204,7 @@ class RegistrationTablesView
   {
     $html = "<td class = 'positionCell AA'>" . $classData['AA']['index_number'] . "</td>";
     if ($viewModel->allowOnlineRegistrations) {
-      $html .= ($viewModel->beforeDeadline && $viewModel->isLoggedIn && ($viewModel->isMember || $viewModel->isAdmin)) ? "<td id = '" . $className . "&-&AA&-&RegistrationInput' class = 'registrationInput-optionalClass'><input type = 'number' min = '0' value = '" . $classData['AA']['entry_count'] . "'></input></td>" : "";
+      $html .= ($viewModel->beforeDeadline && $viewModel->isLoggedIn && ($viewModel->isMember || $viewModel->isAdmin)) ? "<td id = '" . $className . "&-&AA&-&RegistrationInput' class = 'registrationInput' data-class-index = ".$classData["AA"]["index_number"]."><input type = 'number' min = '0' value = '" . $classData['AA']['entry_count'] . "'></input></td>" : "";
       $html .= ($viewModel->beforeDeadline && !$viewModel->isLoggedIn) ? "<td></td>" : "";
       $html .= (!$viewModel->beforeDeadline) ? "<td class='entries-count-AA'>(" . $classData['AA']['entry_count'] . ")</td>" : "";
     } else {
@@ -218,11 +218,11 @@ class RegistrationTablesView
   {
     global $wpdb;
     $allowOnlineRegistrations = RegistrationTablesController::getAllowOnlineRegistrations($eventLocationID);
-    $registrationDeadline = EventProperties::getEventDeadline($eventPostID);
+    $registrationDeadline = EventDeadlineService::getEventDeadline($eventPostID);
     $html = "<div class='update-button-wrapper'>";
     $html .= ($allowOnlineRegistrations && time() < $registrationDeadline && is_user_logged_in() && (EventUser::isMember($userName) || current_user_can('administrator'))) ? "<button type ='button' class = 'registerClassesButton'>Update Entries</button>" : "";
 
-    $html .= "<div style = " . (($allowOnlineRegistrations && is_user_logged_in() && time() < $registrationDeadline && $allowOnlineRegistrations && (current_user_can('administrator') || in_array(wp_get_current_user()->display_name, LocationSecretaries::getLocationSecretaryNames($eventLocationID)))) ? '' : 'visibility:hidden') . ">";
+    $html .= "<div style = " . (($allowOnlineRegistrations && is_user_logged_in() && time() < $registrationDeadline && $allowOnlineRegistrations && (current_user_can('administrator') || in_array(wp_get_current_user()->display_name, LocationSecretariesService::getLocationSecretaries($eventLocationID)))) ? '' : 'visibility:hidden') . ">";
     //Get all user names
     //TODO: User Helper Class
     $users = (array) $wpdb->get_results("SELECT display_name, id FROM " . $wpdb->prefix . "users ORDER BY display_name;");

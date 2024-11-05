@@ -270,11 +270,10 @@ class Micerule_Tables_Admin{
           // EventJudgesHelper::convertPostMeta();
           
           if(isset($_POST['micerule_table_location_secretaries_names']))
-            LocationSecretaries::saveLocationSecretaryNames($post->ID, $_POST['micerule_table_location_secretaries_names']);
+            LocationSecretariesService::saveLocationSecretaryNames($post->ID, $_POST['micerule_table_location_secretaries_names']);
 
           if(isset($_POST['micerule_table_data_deadline']))
-            EventProperties::saveEventDeadline($post->ID, $_POST['micerule_table_data_deadline']);
-          
+            EventDeadlineService::saveEventDeadline($post->ID, $_POST['micerule_table_data_deadline']);              
       }
       
     }
