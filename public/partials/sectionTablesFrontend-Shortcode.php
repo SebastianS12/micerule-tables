@@ -11,21 +11,21 @@ function sectionTablesFrontend($atts)
   $sectionNames = EventProperties::SECTIONNAMES;
   $challengeNames = EventProperties::CHALLENGENAMES;
 
-  $locationID = EventProperties::getEventLocationID($post->ID);
-  $eventRegistrationData = EventRegistrationData::create($post->ID); //get_post_meta($post->ID, 'micerule_data_event_class_registrations', true);
-  $eventOptionalSettings = EventOptionalSettings::create($locationID);
+  $locationID = LocationHelper::getIDFromEventPostID($post->ID);
+  $eventRegistrationData = EventRegistrationData::create($post->ID);//get_post_meta($post->ID, 'micerule_data_event_class_registrations', true);
 
   $html = "<div id='eventSectionTables'>";
 
   //$html .= "<p>".var_export(EntryBookData::create($post->ID), true)."</p>";
 
-  $registrationTables = new RegistrationTables($post->ID, $userName);
-  $html .= $registrationTables->getHtml();
+  $html .= RegistrationTablesView::getRegistrationTablesHtml($post->ID, $userName);//$registrationTables->getHtml();
   $html .= "</div>";
   $html .= "<div class = 'header-info'>";
-  if ($eventOptionalSettings->allowOnlineRegistrations) {
-    $html .= "<h3>Total Entries: " . $eventRegistrationData->getEntryCount() . "</h3>";
-    $html .= "<h3>Total Exhibits: " . $eventRegistrationData->getExhibitCount() . "</h3>";
+  $showOptionsService = new ShowOptionsService();
+  $eventOptionalSettings = $showOptionsService->getShowOptions(new ShowOptionsRepository(), $locationID);
+  if($eventOptionalSettings->allowOnlineRegistrations){
+    $entryCountRepository = new RegistrationCountRepository($post->ID, LocationHelper::getIDFromEventPostID($post->ID));
+    $html .= "<h3>Total Exhibits: ".$entryCountRepository->getExhibitCount()."</h3>";
   }
   $html .= "<hr>";
   $html .= "</div>";
@@ -48,12 +48,11 @@ function sectionTablesFrontend($atts)
 add_shortcode('sectionTablesFrontend', 'sectionTablesFrontend');
 
 
-function addClassToShowCalendar($output, $event)
-{
-  if (is_page(2862)) {
-    $eventOptionalSettings = EventOptionalSettings::create($event->location_id);
-    if ($eventOptionalSettings->allowOnlineRegistrations) {
-      $output = "<div class = 'online-registration'>" . $output . "</div>";
+function addClassToShowCalendar($output, $event){
+  if(is_page(2862)){
+    $eventOptionalSettings = ShowOptionsController::getShowOptions($event->location_id, new ShowOptionsService(), new ShowOptionsRepository());
+    if($eventOptionalSettings->allowOnlineRegistrations){
+      $output = "<div class = 'online-registration'>".$output."</div>";
     }
   }
 

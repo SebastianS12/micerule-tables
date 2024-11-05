@@ -19,7 +19,7 @@ function updateAdminTabs(/*adminTabsHtml, activeTabClass*/){
       selectTab();
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
-      alert(errorThrown);
+      console.log(errorThrown);
     }
   });
 }

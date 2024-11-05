@@ -8,6 +8,7 @@ function assignAddClassListener(){
 
     if($(".confirmClass").length == 0)
       getSelectClassRowHtml(section, $("#locationID").val());
+    // convertPostMeta();
   });
 }
 
@@ -43,14 +44,6 @@ function getSelectClassRowHtml(section, id){
   });
 }
 
-function updateRowPositions(){
-  var position = 1;
-  $(".classRow-location").each(function(){
-    $(this).find(".positionCell").text(position + "/" + (position + 1));
-    position += 2;
-  });
-}
-
 function addClass(section, className){
   jQuery.ajax({
     type: 'POST',
@@ -63,12 +56,6 @@ function addClass(section, className){
       className: className,
     },
     success: function (data) {
-      console.log(data);
-      //rowSelector.remove();
-      //var position = $(tableID).find(".classRow-location").length - 1;
-
-      //addConfirmedClassRowHtml(section, className, position, tableID);
-      //updateRowPositions();
       $("#locationSectionTables").replaceWith(data);
       assignLocationSettingsListeners();
       assignAddClassListener();
@@ -79,21 +66,6 @@ function addClass(section, className){
       alert(errorThrown);
     }
   });
-}
-
-function addConfirmedClassRowHtml(section,className, position, tableID){
-  console.log("test");
-  //Position text is updated by updateRowPositions in addClass
-  positionCellHtml = '<td class = "positionCell"></td>'
-  classNameCellHtml = '<td class = "classNameCell">'+className+'</td>';
-  moveClassUpButtonHtml = "<td class='class-order'><button type = 'button' class = 'moveClassButton "+ ((position > 0) ? 'active' :'') +"' id = '"+ section +"&-&"+ className +"&-&"+ position +"&-&moveUp'><img class='button-img' src='/wp-content/plugins/micerule-tables/admin/svg/up.svg'></button>"/*</td>"*/;
-  moveClassDownButtonHtml = /*"<td>*/"<button type = 'button' class = 'moveClassButton'  id = '"+ section +"&-&"+ className +"&-&"+ position +"&-&moveDown'><img class='button-img' src='/wp-content/plugins/micerule-tables/admin/svg/down.svg'></button></td>";
-  deleteClassButtonHtml = "<td class='class-delete'><button type = 'button' class = 'deleteClassButton' id = '"+ section +"&-&"+ className +"&-&"+ position +"&-&delete'><img class='button-img' src='/wp-content/plugins/micerule-tables/admin/svg/trash.svg'></button></td>";
-  //added Class is not the first class to be added so current last class move down can be activated
-  if(position > 0){
-    $($(tableID + ' tr:last').prev().find(".moveClassButton")[1]).addClass("active");
-  }
-  $(tableID + ' tr:last').before('<tr id = "'+className+'-tr-location" class = "classRow-location">' + positionCellHtml + classNameCellHtml + moveClassUpButtonHtml + moveClassDownButtonHtml + deleteClassButtonHtml +'</tr>');
 }
 
 function addSelectClassRowHtml(section, position, tableID, selectHTML){
@@ -115,5 +87,22 @@ function addSelectClassRowHtml(section, position, tableID, selectHTML){
 
   $(".cancelClass").on("click", function(){
     $(this).closest('tr').remove();
+  });
+}
+
+function convertPostMeta(){
+  jQuery.ajax({
+    type: 'POST',
+    url: my_ajax_obj.ajax_url,
+    data: {
+      _ajax_nonce: my_ajax_obj.nonce,
+      action: 'addClass',
+    },
+    success: function (data) {
+      console.log(data);
+    },
+    error: function (XMLHttpRequest, textStatus, errorThrown) {
+      alert(errorThrown);
+    }
   });
 }

@@ -30,12 +30,11 @@ class JudgingSheets implements IAdminTab{
 
   private function getGrandChallengeSheets($judgeGrandChallenge, $judgeNames){
     $html = "";
-    $grandChallengeJudgeName = "";
-    foreach($judgeNames as $judgeName){
-      $grandChallengeJudgeName .= $judgeName."  ";
-    }
+    $judgesService = new JudgesService(new JudgesRepository());
+    $judgesNamesString = $judgesService->getJudgesNamesString($this->eventID);
+
     foreach($judgeGrandChallenge as $sheetData){
-      $html .= $this->getChallengeSheetHtml($sheetData, $grandChallengeJudgeName);
+      $html .= $this->getChallengeSheetHtml($sheetData, $judgesNamesString);
     }
     return $html;
   }

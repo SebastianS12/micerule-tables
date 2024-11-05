@@ -15,35 +15,26 @@ function micerule_shortcode_judges($atts){
 
   $id = filter_var($micerule_settings['id'], FILTER_SANITIZE_NUMBER_INT);
 
-  //get postmeta based on event ID
-  $table_post_meta = get_post_meta($id, 'micerule_data_settings', true);
-
-
   //start html
   $html = '<div class="micerule_judges" style="text-align: center">';
 
   //header
   $html .= "<p>--Judges--</p>";
 
-  //create rows with names of judges and their classes
-  for($i=0;$i<3;$i++){
-    if($table_post_meta['judges'][$i] != ''){
-      $html .= "<span>".$table_post_meta['judges'][$i].":  ";
-      $index=0;
-      foreach($table_post_meta['classes'][$i] as $value){
-        if(isset($table_post_meta['classes'][$i][$index+1])){
-          $html .= $value.", ";
-          $index++;
-        }else{
-          $html .= $value;
-          $index++;
-        }
+  $judgesRepository = new JudgesRepository($id);
+  $judgesSectionRepository = new JudgesSectionsRepository($id);
+  $judgeCollection = $judgesRepository->getAll()->with([JudgeSectionModel::class], ["id"], ["judge_id"], [$judgesSectionRepository]);
+  foreach($judgeCollection as $judgeModel){
+    $html .= "<span>".$judgeModel->judge_name.":  ";
+      foreach($judgeModel->sections() as $judgeSectionModel){
+        $section = Section::from($judgeSectionModel->section);
+        $html .= $section->getDisplayStringPlural().", ";
       }
+      $html = rtrim($html, ', ');
+
       $html .= "</span>";
       $html .= "<br>";
-    }
   }
-
 
   //end html
   $html .= '</div>';

@@ -5,9 +5,10 @@ jQuery(document).ready(function($){
 
 function assignEntryBookListeners(){
   $(".moveEntry").on('click', function(){
-    var penNumber = this.id.split("&-&")[0];
+    var entryID = $(this).parents(".editEntry-td").data("entryId");
+    console.log(entryID);
 
-    openMoveModal(penNumber);
+    openMoveModal(entryID);
   });
 
   $(".addEntry").on('click', function(){
@@ -15,53 +16,46 @@ function assignEntryBookListeners(){
   });
 
   $(".deleteEntry").on('click', function(){
-    var penNumber = this.id.split("&-&")[0];
+    let entryID = $(this).parents(".editEntry-td").data("entryId");
 
-    openDeleteModal(penNumber);
+    openDeleteModal(entryID);
   });
 
-
   $(".placementCheck").on('change', function(){
-    var prize = this.id.split("&-&")[0];
-    var placement = this.id.split("&-&")[1];
-    var penNumber = this.id.split("&-&")[2];
-    var checkValue = $(this).prop('checked');
+    var prize = $(this).data("prize");
+    var placement = $(this).data("placement");
+    var indexID = $(this).parent().data("index-id");
+    var entryID = $(this).parent().data("entry-id");
 
-    editPlacement(prize, placement, penNumber, checkValue)
+    editPlacement(prize, placement, indexID, entryID);
   });
 
   $(".BISCheck").on('change', function(){
-    var prize = this.id.split("&-&")[0];
-    var age = this.id.split("&-&")[1];
-    var section = this.id.split("&-&")[2];
-    var checkValue = $(this).prop('checked');
-    var oppositeAge = (age == "Ad") ? "U8" : "Ad";
+    var prizeID = $(this).data("prize-id");
+    var challengeIndexID = $(this).data("index-id");
+    var oaChallengeIndexID = $(this).data("oa-index-id");
 
-    editBIS(prize, age, section, oppositeAge, checkValue);
+    editBIS(prizeID, challengeIndexID, oaChallengeIndexID);
   });
 
   $(".absentCheck").on('change', function(){
-    var penNumber = this.id.split("&-&")[0];
-    var checkValue = $(this).prop('checked');
+    let entryID = $(this).parents(".absent-td").data("entryId");
 
-    editAbsent(penNumber, checkValue);
+    editAbsent(entryID);
   });
 
   $(".classSelect-entryBook").on('change', function(){
-    var penNumber = this.id.split("&-&")[0];
-    var selectValue = $(this).val();
+    var entryID = this.id.split("&-&")[0];
+    var varietyName = $(this).val();
 
-    setCustomClassVariety(penNumber, selectValue, ".entryBook.content");
+    setCustomClassVariety(entryID, varietyName, ".entryBook.content");
   });
 
   $(".unstandardised-input").on('keyup', debounce((eventObject) => {
-    var section =eventObject.currentTarget.id.split("&-&")[0];
-    var className = eventObject.currentTarget.id.split("&-&")[1];
-    var age = eventObject.currentTarget.id.split("&-&")[2];
-    var penNumber = eventObject.currentTarget.id.split("&-&")[3];
-    var inputValue = $(eventObject.currentTarget).val();
+    var entryID = eventObject.currentTarget.id.split("&-&")[0];
+    var varietyName = $(eventObject.currentTarget).val();
 
-    setCustomClassVariety(penNumber, inputValue);
+    setCustomClassVariety(entryID, varietyName);
   }, 1000));
 }
 
@@ -74,24 +68,22 @@ function debounce(callback, wait) {
 }
 
 
-function openMoveModal(penNumber){
+async function openMoveModal(entryID){
   additionalHtml = "<a class = 'button' id = 'confirmMoveModal'>Move</a>";
-  openEditModal("Move Entry to:", additionalHtml);
+  await openEditModal("Move Entry to:", additionalHtml);
 
   $("#confirmMoveModal").on('click', function(){
-    console.log("move");
     jQuery.ajax({
       type: 'POST',
       url: my_ajax_obj.ajax_url,
       data: {
         _ajax_nonce: my_ajax_obj.nonce,
         action: 'moveEntry',
-        newSection: $("#sectionSelect").find('option').filter(":selected").val().toLowerCase(),
-        newClassName: $("#classSelect").find('option').filter(":selected").val(),
-        newAge: $("#ageSelect").find('option').filter(":selected").val(),
-        penNumber: penNumber,
+        newClassIndexID: $("#classSelect").find('option').filter(":selected").val(),
+        entryID: entryID,
       },
       success: function (data) {
+        console.log(data);
         $.modal.close();
         $("#editEntryModal").remove();
         updateAdminTabs();
@@ -104,16 +96,18 @@ function openMoveModal(penNumber){
 }
 
 
-function openAddModal(){
+async function openAddModal(){
   var additionalHtml = "<select id = 'userSelect'>";
   $("#userSelectRegistration option").each(function(){
     additionalHtml += "<option value = '"+$(this).text()+"'>" + $(this).text() + "</option>";
   });
   additionalHtml += "</select>";
   additionalHtml += "<button type = 'button' id = 'confirmAddModal'>Confirm</button>";
-  openEditModal("Add Entry to:", additionalHtml);
+  await openEditModal("Add Entry to:", additionalHtml);
 
   $("#confirmAddModal").on('click', function(){
+    console.log($("#classSelect").find('option').filter(":selected").val());
+    console.log($("#userSelect").find('option').filter(":selected").val());
     $("#spinner-div").show();
     jQuery.ajax({
       type: 'POST',
@@ -121,9 +115,7 @@ function openAddModal(){
       data: {
         _ajax_nonce: my_ajax_obj.nonce,
         action: 'addEntry',
-        section: $("#sectionSelect").find('option').filter(":selected").val().toLowerCase(),
-        className: $("#classSelect").find('option').filter(":selected").val(),
-        age: $("#ageSelect").find('option').filter(":selected").val(),
+        classIndexID: $("#classSelect").find('option').filter(":selected").val(),
         userName: $("#userSelect").find('option').filter(":selected").val(),
       },
       success: function (data) {
@@ -140,55 +132,58 @@ function openAddModal(){
 }
 
 
-function openEditModal(title, additionalHtml){
+async function openEditModal(title, additionalHtml){
+  const selectOptions = await getEditSelectOptions();
   var html = "<div class = 'modal-content'><h2>"+title+"</h2>";
 
   html += "<select id = 'sectionSelect'>";
-  sectionNames.forEach(function(sectionName){
-    html += "<option value = '"+sectionName+"'>"+sectionName+"</option>"
-  })
-  html += "<option value = 'optional'>Optional</option>";
+  $.each(selectOptions, function(sectionName){
+    html += "<option value = '"+sectionName+"'>"+sectionName+"</option>";
+  });
   html += "</select>";
 
   html += "<select id = 'classSelect'>";
-  $("#" + sectionNames[0].toLowerCase() + "-registrationTable").find(".classNameCell:visible").not(".challenge").each(function(){
-    html += "<option value = '"+$(this).text() + "'>"+$(this).text()+"</option>";
-  })
+  const classes = Object.values(selectOptions)[0];
+  $.each(classes, function(_, selectOption){
+    html += "<option value = '"+ selectOption.index_id + "'>"+ selectOption.classIndex +" - "+selectOption.className+" - "+selectOption.age+"</option>";
+  });
   html += "</select>";
 
-  html += "<select id = 'ageSelect'><option value = 'Ad'>Ad</option><option value = 'U8'>U8</option><option value = 'AA' disabled = 'disabled'>AA</option></select></div>";
-
   html += additionalHtml;
-  //html += "<input type = 'button' id = 'confirmEditModal'>Move</input>";
+
   $("#editEntryModal").html(html);
   $("#editEntryModal").modal();
 
   $("#sectionSelect").on('change', function(){
     $("#classSelect").empty();
-    $("#"+$.escapeSelector($(this).val().toLowerCase() + "-registrationTable")).find(".classNameCell:visible").not(".challenge").each(function(){
-      var className = $(this).parent().attr("id").split("-tr")[0];
-      if(className.toLowerCase() != "junior"){
-        $("#classSelect").append($("<option></option>").attr("value", className).text($(this).text()));
-      }
-    })
-
-    //lock age select for optional classes
-    if($(this).val() === 'optional'){
-      $("#ageSelect option[value='AA']").prop('disabled', false);
-      $("#ageSelect option[value='AA']").prop('selected', true);
-      $('#ageSelect :not(:selected)').prop('disabled',true);
-    }else{
-      $("#ageSelect option[value='Ad']").prop('selected', true);
-      $("#ageSelect option[value='AA']").prop('disabled', true);
-      $("#ageSelect :not(option[value='AA']").prop('disabled', false);
-    }
+    const section = ($(this).val());
+    $.each(selectOptions[section], function(_, selectOption){
+      $("#classSelect").append($("<option></option>").attr("value", selectOption.index_id).text(selectOption.classIndex +" - "+selectOption.className+" - "+selectOption.age));
+    });
   });
+}
 
-
+function getEditSelectOptions(){
+  return new Promise((resolve, reject) => {
+    jQuery.ajax({
+        type: 'GET',
+        url: my_ajax_obj.ajax_url,
+        data: {
+            _ajax_nonce: my_ajax_obj.nonce,
+            action: 'getSelectOptions',
+        },
+        success: function (data) {
+            resolve(data); // Pass data when the call succeeds
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            reject(errorThrown); // Handle errors by rejecting the Promise
+        }
+    });
+});
 }
 
 
-function openDeleteModal(penNumber){
+function openDeleteModal(entryID){
   var modalHtml = "<h2>Delete Entry</h2>";
   modalHtml += "<p>Are you sure you want to delete this entry?</p>";
   modalHtml += "<div class = 'button-row'><a class= 'button' id = 'confirmDeleteEntry'>Delete</a>";
@@ -198,7 +193,7 @@ function openDeleteModal(penNumber){
   $("#editEntryModal").modal();
 
   $("#confirmDeleteEntry").on('click', function(){
-    deleteEntry(penNumber);
+    deleteEntry(entryID);
   });
 
   $("#cancelDeleteEntry").on('click', function(){
@@ -206,7 +201,7 @@ function openDeleteModal(penNumber){
   });
 }
 
-function deleteEntry(penNumber){
+function deleteEntry(entryID){
   $("#spinner-div").show();
   jQuery.ajax({
     type: 'POST',
@@ -214,7 +209,7 @@ function deleteEntry(penNumber){
     data: {
       _ajax_nonce: my_ajax_obj.nonce,
       action: 'deleteEntry',
-      penNumber: penNumber,
+      entryID: entryID,
     },
     success: function (data) {
       $("#spinner-div").hide();
@@ -227,7 +222,7 @@ function deleteEntry(penNumber){
   });
 }
 
-function editPlacement(prize, placement, penNumber, checkValue){
+function editPlacement(prize, placement, indexID, entryID){
   $("#spinner-div").show();
   jQuery.ajax({
     type: 'POST',
@@ -237,37 +232,13 @@ function editPlacement(prize, placement, penNumber, checkValue){
       action: 'editPlacement',
       prize: prize,
       placement: placement,
-      penNumber: penNumber,
-      checkValue: checkValue,
+      indexID: indexID,
+      entryID: entryID,
     },
     success: function (data) {
       $("#spinner-div").hide();
       updateAdminTabs();
-    },
-    error: function (XMLHttpRequest, textStatus, errorThrown) {
-      alert(errorThrown);
-    }
-  });
-}
-
-
-function editBIS(prize, age, section, oppositeAge, checkValue){
-  $("#spinner-div").show();
-  jQuery.ajax({
-    type: 'POST',
-    url: my_ajax_obj.ajax_url,
-    data: {
-      _ajax_nonce: my_ajax_obj.nonce,
-      action: 'editBIS',
-      prize: prize,
-      section: section.toLowerCase(),
-      age: age,
-      oppositeAge : oppositeAge,
-      checkValue: checkValue,
-    },
-    success: function (data) {
-      $("#spinner-div").hide();
-      updateAdminTabs();
+      console.log(data);
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
       console.log(errorThrown);
@@ -275,7 +246,32 @@ function editBIS(prize, age, section, oppositeAge, checkValue){
   });
 }
 
-function editAbsent(penNumber, checkValue){
+
+function editBIS(prizeID, challengeIndexID, oaChallengeIndexID){
+  $("#spinner-div").show();
+  jQuery.ajax({
+    type: 'POST',
+    url: my_ajax_obj.ajax_url,
+    data: {
+      _ajax_nonce: my_ajax_obj.nonce,
+      action: 'editBIS',
+      prizeID: prizeID,
+      challengeIndexID: challengeIndexID,
+      oaChallengeIndexID: oaChallengeIndexID,
+    },
+    success: function (data) {
+      $("#spinner-div").hide();
+      updateAdminTabs();
+      console.log(data);
+    },
+    error: function (XMLHttpRequest, textStatus, errorThrown) {
+      console.log(errorThrown);
+    }
+  });
+}
+
+function editAbsent(entryID){
+  console.log(entryID);
   $("#spinner-div").show();
   jQuery.ajax({
     type: 'POST',
@@ -283,8 +279,7 @@ function editAbsent(penNumber, checkValue){
     data: {
       _ajax_nonce: my_ajax_obj.nonce,
       action: 'editAbsent',
-      penNumber: penNumber,
-      checkValue: checkValue,
+      entryID: entryID,
     },
     success: function (data) {
       $("#spinner-div").hide();

@@ -23,7 +23,6 @@ function activate_micerule_tables(){
 	require_once plugin_dir_path(__FILE__).'includes/class-micerule-tables-activator.php';
 	Micerule_Tables_Activator::activate();
 }
-
 register_activation_hook(__FILE__,'activate_micerule_tables');
 
 require plugin_dir_path( __FILE__ ) . 'includes/class-micerule-tables.php';

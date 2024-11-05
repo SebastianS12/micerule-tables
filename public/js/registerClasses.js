@@ -1,6 +1,5 @@
 function registerClasses(){
   var classRegistrations = [];
-  var optionalClassRegistrations = [];
 
   $(".registrationInput").each(function(){
     var inputVal = $(this).find("input").val();
@@ -8,28 +7,12 @@ function registerClasses(){
       inputVal = 0;
     }
 
-    var className = this.id.split("&-&")[0];
-    var classIndex = this.id.split("&-&")[1];
-    var age = this.id.split("&-&")[2];
+    var classIndex = $(this).data("classIndex");
 
-    const registrationData = {className : className, classIndex: classIndex, age: age, registrationCount : inputVal,};
+    const registrationData = {classIndex : classIndex, registrationCount : inputVal,};
     classRegistrations.push(registrationData);
   });
 
-  $(".registrationInput-optionalClass").each(function(){
-    var inputVal = $(this).find("input").val();
-    if(inputVal == ""){
-      inputVal = 0;
-    }
-    var className = this.id.split("&-&")[0];
-    var classIndex = this.id.split("&-&")[1];
-    var age = this.id.split("&-&")[2];
-
-    const registrationData = {className : className, classIndex: classIndex, age: age, registrationCount : inputVal,};
-    optionalClassRegistrations.push(registrationData);
-  });
-
-  
   $("#spinner-div").show();
   jQuery.ajax({
     type: 'POST',
@@ -38,7 +21,6 @@ function registerClasses(){
       _ajax_nonce: my_ajax_obj.nonce,
       action: 'registerClasses',
       classRegistrations: classRegistrations,
-      optionalClassRegistrations: optionalClassRegistrations,
       userName: $("#userSelectRegistration").val(),
       locationID: $("#locationID").val(),
     },
@@ -47,9 +29,8 @@ function registerClasses(){
       displayRegisterModalHtml(data);
       updateAdminTabs();
     },
-    error: function (XMLHttpRequest, textStatus, errorThrown) {
-      alert(errorThrown);
-      console.log("Fail");
+    error: function(xhr, status, error) {
+      console.error('AJAX Error:', error);
     }
   });
 }

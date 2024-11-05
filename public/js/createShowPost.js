@@ -10,7 +10,8 @@ jQuery(document).ready(function($){
         action: 'createShowPost',
       },
       success: function (data) {
-        alert(data);
+        // alert(data);
+        console.log(data);
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
         alert(errorThrown);

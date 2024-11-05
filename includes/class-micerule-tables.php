@@ -9,18 +9,21 @@ class Micerule_Tables{
 
   public function __construct(){
     $this->plugin_name = 'micerule_tables';
-    $this->version = '1.0';
+    $this->version = '2.0';
+    $this->define_constants();
     $this->load_dependencies();
     $this->define_admin_hooks();
     $this->define_public_hooks();
   }
 
+  private function define_constants(){
+    define("BREED_ICONS_DIR", ABSPATH."wp-content/plugins/micerule-tables/res/breed-icons/");
+    define("BREED_ICONS_DIR_URL", plugin_dir_url("")."micerule-tables/res/breed-icons/");
+  }
+
   private function load_dependencies(){
-
     require_once plugin_dir_path(dirname(__FILE__)).'includes/class-micerule-tables-loader.php';
-
     require_once plugin_dir_path(dirname(__FILE__)).'admin/micerule-tables-admin.php';
-
     require_once plugin_dir_path(dirname(__FILE__)).'public/class-micerule-tables-public.php';
 
     $this->loader = new Micerule_Tables_Loader();
@@ -29,11 +32,8 @@ class Micerule_Tables{
   private function define_admin_hooks(){
     $plugin_admin = new Micerule_Tables_Admin($this->get_plugin_name(), $this->get_version());
 
-
     $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
     $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-
 
     //add ajax actions
     $this->loader->add_action('wp_ajax_tableCreate',$plugin_admin,'tableCreate');
@@ -50,7 +50,7 @@ class Micerule_Tables{
 
     $this->loader->add_action('wp_ajax_deleteBreed',$plugin_admin,'deleteBreed');
 
-    $this->loader->add_action('wp_ajax_breedAdd',$plugin_admin,'breedAdd');
+    $this->loader->add_action('wp_ajax_addBreed',$plugin_admin,'addBreed');
 
     $this->loader->add_action('wp_ajax_getUploads',$plugin_admin,'getUploads');
 
@@ -66,13 +66,10 @@ class Micerule_Tables{
   }
 
   private function define_public_hooks() {
-
     $plugin_public = new Micerule_Tables_Public( $this->get_plugin_name(), $this->get_version() );
 
     $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-
     $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
 
     //add ajax actions
     $this->loader->add_action('wp_ajax_lbTables',$plugin_public,'lbTables');
@@ -91,10 +88,12 @@ class Micerule_Tables{
     $this->loader->add_action('wp_ajax_deleteEntry', $plugin_public, 'deleteEntry');
     $this->loader->add_action('wp_ajax_editPlacement', $plugin_public, 'editPlacement');
     $this->loader->add_action('wp_ajax_editBIS', $plugin_public, 'editBIS');
+    $this->loader->add_action('wp_ajax_getSelectOptions', $plugin_public, 'getSelectOptions');
     $this->loader->add_action('wp_ajax_editAbsent', $plugin_public, 'editAbsent');
     $this->loader->add_action('wp_ajax_setAllAbsent', $plugin_public, 'setAllAbsent');
     $this->loader->add_action('wp_ajax_setCustomClassVariety', $plugin_public, 'setCustomClassVariety');
-    $this->loader->add_action('wp_ajax_setPrinted', $plugin_public, 'setPrinted');
+    $this->loader->add_action('wp_ajax_printAll', $plugin_public, 'printAll');
+    $this->loader->add_action('wp_ajax_moveToUnprinted', $plugin_public, 'moveToUnprinted');
     $this->loader->add_action('wp_ajax_submitReport', $plugin_public, 'submitReport');
     $this->loader->add_action('wp_ajax_createShowPost', $plugin_public, 'createShowPost');
     $this->loader->add_action('wp_ajax_getAdminTabsHtml', $plugin_public, 'getAdminTabsHtml');
@@ -128,6 +127,4 @@ class Micerule_Tables{
   public function get_version() {
     return $this->version;
   }
-
-
 }

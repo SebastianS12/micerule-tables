@@ -19,10 +19,7 @@ jQuery(document).ready(function($){
         dateTo: dateTo,
       },
       success: function (data) {
-
         location.reload();
-        console.log(data);
-
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
         alert(errorThrown);

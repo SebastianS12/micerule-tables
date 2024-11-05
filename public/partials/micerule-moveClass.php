@@ -6,20 +6,9 @@ $url     = wp_get_referer();
 $event_id = url_to_postid( $url );
 
 $locationID = $_POST['id'];
-$sectionName = $_POST['section'];
-$position = $_POST['position'];
-$direction = $_POST['direction'];
+$firstClassID = $_POST['firstClassID'];
+$secondClassID = $_POST['secondClassID'];
 
-$eventClasses = EventClasses::create($locationID);
-if($sectionName != "optional")
-  $eventClasses->moveClass($sectionName, $position, $direction);
-else
-  $eventClasses->moveOptionalClass($position, $direction);
-$eventClasses->updatePostMeta($locationID);
-
-$locationSecretaries = EventProperties::getLocationSecretaries($locationID);
-$locationOptionalSettings = EventOptionalSettings::create($locationID);
-$locationSectionTables = new LocationSectionTables($locationID);
-echo($locationSectionTables->getSectionTablesHtml($eventClasses, $locationSecretaries, $locationOptionalSettings));
-
+ShowClassesController::swapClasses($locationID, $firstClassID, $secondClassID);
+echo(ShowOptionsView::getSectionTablesHtml($locationID));
 wp_die();

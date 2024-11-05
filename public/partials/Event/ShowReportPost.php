@@ -1,18 +1,17 @@
 <?php
 
 class ShowReportPost {
-  public function __construct($eventID){
-    $this->eventID = $eventID;
-    $this->entryBookData = EntryBookData::create($eventID);
-    $this->eventJudges = new EventJudges($eventID);
-    $this->judgesReportData = new JudgesReportData($eventID);
+  private $eventPostID;
+
+  public function __construct($eventPostID){
+    $this->eventPostID = $eventPostID;
   }
 
-  public function createPost(){
-    $postTitle = EventProperties::getEventMetaData($this->eventID)['event_name'];
+  public function createPost(array $data){
+    $postTitle = $data['eventMetaData']['event_name'];
     $post = array(
       'post_title' => $postTitle,
-      'post_content' => html_entity_decode($this->getHtml()),
+      'post_content' => html_entity_decode($this->getHtml($data)),
       'post_status' => 'draft',
       'post_type' => array(1),
     );
@@ -20,32 +19,39 @@ class ShowReportPost {
     return $post;
   }
 
-  public function getHtml(){
+  public function getHtml(array $data){
     $html = "";
-    foreach($this->eventJudges->judgeNames as $index => $judgeName){
-      $html .= $this->getJudgeReportHtml($judgeName, $index);
+    foreach ($data['judge_data'] as $judgeName => $judgeCommentData) {
+      $html .= $this->getJudgeReportHtml($judgeCommentData, $data['placement_reports']);
     }
+
+    $html .= "<h1>Grand Challenge</h1><div class = 'section-placement-reports' style= 'flex-direction: column'>";
+    $html .= $this->getSectionChallengeReportsHtml($data['grand_challenge'], $data['placement_reports']['section']);
+    $html .= "</div>";
+    $html .= "<h1>Junior</h1><div class = 'section-placement-reports' style= 'flex-direction: column'>";
+    $html .= $this->getClassReportsHtml($data['junior'], $data['placement_reports']['junior']);
+    $html .= "</div>";
+
     return $html;
   }
 
-  private function getJudgeReportHtml($judgeName, $index){
-    $html = "<H2 class='judge-header'>".$this->getJudgeInfoString($judgeName, $index)."</h2>";
+  private function getJudgeReportHtml(array $judgeCommentData, array $placementReports){
+    $html = "<H2 class='judge-header'>".$this->getJudgeInfoString($judgeCommentData['general']['judge_name'], $judgeCommentData['sections'])."</h2>";
 
     $html .= "<h4 class = 'p1'>General Comments</h4>";
-    $judgeGeneralComments = (isset($this->entryBookData->judgesComments[$judgeName])) ? $this->entryBookData->judgesComments[$judgeName] : "";
-    $html .= "<div>".$judgeGeneralComments."</div>";
+    $html .= "<div>".$judgeCommentData['general']['comment']."</div>";
 
-    foreach($this->eventJudges->judgeSections[$index] as $sectionName){
-      $html .= $this->getJudgeSectionReportHtml($sectionName);
+    foreach($judgeCommentData['class'] as $sectionName => $judgeSectionData){
+      $html .= $this->getJudgeSectionReportHtml($judgeSectionData, $placementReports, $sectionName);
     }
 
     return $html;
   }
 
-  private function getJudgeInfoString($judgeName, $index){
+  private function getJudgeInfoString($judgeName, $judgeSections){
     $judgeString = "Judge: ".$judgeName." ";
-    foreach($this->eventJudges->judgeSections[$index] as $judgeSection){
-      $judgeString .= $judgeSection.", ";
+    foreach($judgeSections as $judgeSection){
+      $judgeString .= ucfirst($judgeSection).", ";
     }
     $judgeString = rtrim($judgeString, ", ");
 
@@ -53,15 +59,24 @@ class ShowReportPost {
     return $judgeString;
   }
 
-  private function getJudgeSectionReportHtml($sectionName){
+  private function getJudgeSectionReportHtml(array $judgeSectionData, array $placementReports, string $sectionName){
+    $classReportData = array();
+    $challengeReportData = array();
+    foreach ($judgeSectionData as $judgeClassData) {
+      if ($judgeClassData['prize'] == "Class")
+          array_push($classReportData, $judgeClassData);
+      if ($judgeClassData['prize'] == "Section Challenge")
+          array_push($challengeReportData, $judgeClassData);
+    }
+
     $html = "<h1>".$sectionName."</h1>";
     $html .= "<div class = 'section-placement-reports'>";
     $html .= "<div class = 'class-reports' style = 'width: 65.667%'>";
-    $html .= $this->getClassReportsHtml($sectionName);
+    $html .= $this->getClassReportsHtml($classReportData, $placementReports['class']);
     $html .= "</div>";
 
     $html .= "<div class = 'section-challenge-reports' style = 'width: 31.3333%'>";
-    $html .= $this->getSectionChallengeReportsHtml($sectionName);
+    $html .= $this->getSectionChallengeReportsHtml($challengeReportData, $placementReports['section']);
     $html .= "</div>";
 
     $html .= "</div>";
@@ -69,39 +84,33 @@ class ShowReportPost {
     return $html;
   }
 
-  private function getClassReportsHtml($sectionName){
+  private function getClassReportsHtml($classReportData, $placementReports){
     $html = "";
-    foreach($this->entryBookData->sections[strtolower($sectionName)]->classNames as $className){
-      foreach($this->judgesReportData->classReports[$className] as $age => $reportDataItem){
-        $html .= $this->getReportDataItemHtml($reportDataItem, false);
-      }
+    foreach($classReportData as $classReport){
+      $html .= $this->getReportDataItemHtml($classReport, $placementReports[$classReport['class_index']], false);
+    }
+
+    return $html;
+  }
+
+  private function getSectionChallengeReportsHtml(array $sectionReportData, array $placementReports){
+    $html = "";
+    foreach($sectionReportData as $sectionReport){
+      $html .= $this->getReportDataItemHtml($sectionReport, $placementReports[$sectionReport['class_index']], true);
     }
     return $html;
   }
 
-  private function getSectionChallengeReportsHtml($sectionName){
-    $html = "";
-    foreach($this->judgesReportData->challengeReports[$sectionName] as $age => $reportDataItem){
-      $html .= $this->getReportDataItemHtml($reportDataItem, true);
-    }
-    return $html;
-  }
-
-  private function getReportDataItemHtml($reportDataItem, $isSectionChallengeReport){
+  private function getReportDataItemHtml($reportData, $placementReports, $isSectionChallengeReport){
     $displayedPlacements = array('1' => '1st', '2' => '2nd', '3' => '3rd');
 
-    $html = "<h4>".$reportDataItem->className." ".$reportDataItem->age." - ".$reportDataItem->entryCount."</h4>";
-    $html .= "<div>".$this->entryBookData->getClassData($reportDataItem->className)->getJudgesComments($reportDataItem->age)."</div>";
-    foreach($reportDataItem->placementEntries as $placement => $prizeEntry){
-      if($prizeEntry != null){
-        $entry = $this->entryBookData->entries[$prizeEntry->penNumber];
-        $displayedGender = ($prizeEntry->buck) ? "B" : "D";
-        $displayedGender = (!$prizeEntry->buck && !$prizeEntry->doe) ? "" : $displayedGender;
-        if(isset($entry)){
-          $displayedVariety = ($entry->className != $entry->varietyName || $isSectionChallengeReport) ? $entry->varietyName : "";
-          $html .= "<div>".$displayedPlacements[$placement]." ".$this->formatNameString($entry->userName)." ".$displayedVariety." ".$displayedGender." ".$prizeEntry->judgesComments."</div>";
-        }
-      }
+    $html = "<h4>".$reportData['class_name']." ".$reportData['age']." - ".$reportData['entry_count']."</h4>";
+    $html .= "<div class = 'class-comments'>".$reportData['comment']."</div>";
+    foreach ($placementReports as $placementReport) {
+        $displayedGender = "";
+        $displayedGender = ($placementReport['gender'] != "" && $placementReport['gender'] == "Buck") ? "B" : "D";
+        $displayedVariety = ($placementReport['class_name'] != $placementReport['variety_name'] || $isSectionChallengeReport) ? $placementReport['variety_name'] : "";
+        $html .= "<div>".$displayedPlacements[$placementReport['placement']]." ".$this->formatNameString($placementReport['user_name'])." ".$displayedVariety." ".$displayedGender." ".$placementReport['comment']."</div>";
     }
 
     return $html;

@@ -1,5 +1,58 @@
 jQuery(document).ready(function($){
   assignPrizeCardsListeners();
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Function to check if an element has an ancestor with a given class
+    function hasAncestorWithClass(element, className) {
+        while (element) {
+            if (element.classList && element.classList.contains(className)) {
+                return true;
+            }
+            element = element.parentElement;
+        }
+        return false;
+    }
+  
+    // Function to handle click event on prize card
+    function toggleExpanded(event) {
+        // Check if the clicked element is a prize card with the appropriate ancestor
+        if (event.target.closest('.prize-card') && hasAncestorWithClass(event.target.closest('.prize-card'), 'prize-cards-sent')) {
+            const clickedCard = event.target.closest('.prize-card');
+  
+            if (clickedCard.classList.contains('expanded')) {
+                // If the clicked card is already expanded, remove the expanded class
+                clickedCard.classList.remove('expanded');
+            } else {
+                // Remove .expanded class from all prize cards with the appropriate ancestor
+                document.querySelectorAll('.prize-card').forEach(function(card) {
+                    if (hasAncestorWithClass(card, 'prize-cards-sent')) {
+                        card.classList.remove('expanded');
+                    }
+                });
+  
+                // Add .expanded class to the clicked prize card
+                clickedCard.classList.add('expanded');
+            }
+  
+            // Stop the click event from propagating to the document
+            event.stopPropagation();
+        }
+    }
+  
+    // Add event listener to handle clicks on prize cards using event delegation
+    document.addEventListener('click', toggleExpanded);
+  
+    // Add click event listener to the document to remove .expanded class when clicked outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.prize-card')) {
+            document.querySelectorAll('.prize-card').forEach(function(card) {
+                if (hasAncestorWithClass(card, 'prize-cards-sent')) {
+                    card.classList.remove('expanded');
+                }
+            });
+        }
+    });
+  });
 });
 
 function assignPrizeCardsListeners(){
@@ -19,61 +72,54 @@ function updatePrizeCardsHtml(prizeCardsHtml){
 }
 
 function printPrizeCards(){
-  var prizeCardsData = [];
-
-  $(".prize-cards-print").find(".prize-card").each(function(){
-    var prize = $(this).find(".prize").text();
-    var sectionName = $(this).find(".prize-card-section-name").text();
-    var placement = $(this).find(".prize-card-placement").not(".card-info").text();
-    var className = $(this).find(".prize-card-class-name").text();
-    var age = $(this).find(".prize-card-age").text();
-
-    prizeCardsData.push({prize : prize, sectionName : sectionName, placement : placement, className : className, age : age});
-  });
-  console.log(prizeCardsData);
+    var prizeCardsToPrint = [];
+    $(".prize-cards-print").find(".prize-card").each(function(){
+      console.log($(this));
+      let placementID = $(this).data("placementId");
+      let prize = $(this).data("prize");
+      prizeCardsToPrint.push({"placementID" : placementID, "prize" : prize});
+    });
 
   jQuery.ajax({
     type: 'POST',
     url: my_ajax_obj.ajax_url,
     data: {
       _ajax_nonce: my_ajax_obj.nonce,
-      action: 'setPrinted',
-      prizeCardsData : JSON.stringify(prizeCardsData),
-      print : true,
+      action: 'printAll',
+      prizeCardsData: prizeCardsToPrint,
     },
     success: function (data) {
+      console.log(data);
       updateAdminTabs();
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
-      alert(errorThrown);
+      console.log(errorThrown);
     }
   });
 }
 
 function moveToUnprinted(clickedCard){
-  var prizeCardsData = [];
 
-  var prize = clickedCard.parents(".class-card").find(".prize").text();
-  var sectionName = clickedCard.parents(".class-card").find(".prize-card-section-name").text();
-  var placement = clickedCard.parents(".class-card").find(".prize-card-placement").text();
-  var className = clickedCard.parents(".class-card").find(".prize-card-class-name").text();
-  var age = clickedCard.parents(".class-card").find(".prize-card-age").text();
+  var prizeID = clickedCard.parents(".class-card").data("prize-id");
+  var placementID = clickedCard.parents(".class-card").data("placementId");
 
-  prizeCardsData.push({prize : prize, sectionName : sectionName, placement : placement, className : className, age : age});
   jQuery.ajax({
     type: 'POST',
     url: my_ajax_obj.ajax_url,
     data: {
       _ajax_nonce: my_ajax_obj.nonce,
-      action: 'setPrinted',
-      prizeCardsData : JSON.stringify(prizeCardsData),
-      print : false,
+      action: 'moveToUnprinted',
+      placementID : placementID,
+      prizeID : prizeID,
     },
     success: function (data) {
+      console.log(data);
       updateAdminTabs();
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
-      alert(errorThrown);
+      console.log(errorThrown);
     }
   });
 }
+
+

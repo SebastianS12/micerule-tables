@@ -1,7 +1,7 @@
 <?php
 global $post;
 
-$eventDeadline = get_post_meta($post->ID, 'micerule_data_event_deadline', true);
+$eventDeadline = date("Y-m-d H:i", EventDeadlineService::getEventDeadline($post->ID));
 
 ?>
 

@@ -1,5 +1,4 @@
 <?php
-
 /*
 * adds breed to option db and uploads icon 
 *
@@ -14,75 +13,74 @@ if ( !defined('ABSPATH') ) {
 global $wpdb;
 global $post;
 
-$upload_dir= ABSPATH."wp-content/plugins/micerule-tables/admin/svg/".basename($_FILES["file"]["name"]);
-
+$name = $_POST['name'];
+$colour = $_POST['colour'];
+$section = $_POST['section'];
+$iconURL = $_POST['iconURL'];
+$cssClass = "";
 
 //set path
-if(isset($_POST['path'])){
-  $url = $_POST['path'];
-  $css_Class = basename($url,".".pathinfo($url)['extension']);
-}else{
-  $url =$upload_dir;
-  //css_Class based on upload url
-  $css_Class = basename($url,".".pathinfo($url)['extension']);
-
-}
-
-
-//prepare data, get data from ajax post
-if(isset($_POST['name'])){
-  $data = array("name"=>$_POST['name'], "colour"=>$_POST['colour'],"class"=>$css_Class,"category"=>$_POST['category']);
-}
-
-if(isset($_POST['name'])){
-  //set option_name based on name and category and add option
-  $option_name = 'mrTables_'.$_POST['name'].'_'.$_POST['category'];
-  add_option($option_name,$data);
-
-
-  //add option id of inserted option to option_value
-  $options=$wpdb->get_results("SELECT option_id FROM ".$wpdb->prefix."options WHERE option_name ='" .$option_name."'",ARRAY_N);
-  if(isset($options[0][0])){
-    $id= $options[0][0];
-  }
-  $data['id']=$id;
-  update_option($option_name,$data);
-
-  //update option_id option
-  $ids = get_option("mrOption_id");
-  $ids[$id]= $option_name;
-  update_option("mrOption_id",$ids);
-}
-
-//update svg-Path:
-
-//get path option array
-$paths = get_option("mrOption_paths");
-//update svg-Path:
-if(isset($_POST['path'])){  //Selected from already uploaded
-  //update path option
-
-  $paths[$id]= $_POST['path'];
-  update_option("mrOption_paths",$paths);
-}else{
-
-
-
+if(!isset($iconURL)){
+  $upload_dir= BREED_ICONS_DIR.basename($_FILES["file"]["name"]);
   //Check if file is already uploaded
   if( !file_exists($upload_dir)){
     //file is not yet uploaded, so we upload it
     move_uploaded_file($_FILES['file']['tmp_name'], $upload_dir);
-
   }
+  $iconURL= BREED_ICONS_DIR_URL.basename($_FILES["file"]["name"]); 
+}
+$cssClass = basename($iconURL,".".pathinfo($iconURL)['extension']);
 
-  //update path option
-  $paths[$id]= content_url()."/plugins/micerule-tables/admin/svg/".basename($_FILES["file"]["name"]);
-  update_option("mrOption_paths",$paths);
+if(isset($name)){
+  $breedTableName = $wpdb->prefix."micerule_breeds";
+  $wpdb->insert(
+    $breedTableName,
+    array(
+      'name' => $name,
+      'colour' => $colour,
+      'css_class' => $cssClass,
+      'section' => $section,
+      'icon_url' => $iconURL,
+    )
+  );
+}
 
-}//end else fileUpload
+
+//move options to DB
+
+// $options = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."options WHERE option_name LIKE 'mrTables%'",ARRAY_A);
+// $paths = get_option("mrOption_paths");
+// foreach($options as $option){
+//   $id = $option['option_id'];
+//   $iconURL = $paths[$id];
+//   $option = get_option($option['option_name']);
+//   $name = $option['name'];
+//   $colour = $option['colour'];
+//   $cssClass = $option['class'];
+//   $section = $option['category'];
+  
+//   $breedTableName = $wpdb->prefix."micerule_breeds";
+//   $wpdb->insert(
+//     $breedTableName,
+//     array(
+//       'name' => $name,
+//       'colour' => $colour,
+//       'css_class' => $cssClass,
+//       'section' => $section,
+//       'icon_url' => $iconURL,
+//     )
+//   );
+// }
 
 
-
-echo(var_dump($data));
+//move icon files and adjust icon urls
+// $breedPaths = $wpdb->get_results("SELECT id, icon_url FROM " . $wpdb->prefix . "micerule_breeds", ARRAY_A);
+// foreach($breedPaths as $index => $path){
+//   $targetPath = BREED_ICONS_DIR.basename($path['icon_url']);//ABSPATH."wp-content/plugins/micerule-tables/admin/svg/breed-icons/".basename($path["icon_url"]);
+//   // rename(download_url($path['icon_url']), $targetPath);
+//   //   //echo(plugin_dir_url(__FILE__)."admin/svg/breed-icons/".basename($path['icon_url']));
+//   $iconURL = BREED_ICONS_DIR_URL.basename($path['icon_url']);
+//   $wpdb->update($wpdb->prefix."micerule_breeds", array('icon_url' => $iconURL), array('id' => $path['id']));
+// }
 
 wp_die();

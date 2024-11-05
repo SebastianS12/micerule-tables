@@ -12,7 +12,5 @@ $firstPrize = $_POST['firstPrize'];
 $secondPrize = $_POST['secondPrize'];
 $thirdPrize = $_POST['thirdPrize'];
 
-$optionalSettings = new EventOptionalSettings($allowOnlineRegistrations, $registrationFee, $allowUnstandardised, $allowJunior, $allowAuction, $firstPrize, $secondPrize, $thirdPrize);
-
-update_post_meta($locationID, 'micerule_data_location_optional_settings', json_encode($optionalSettings));
+ShowOptionsController::saveShowOptions($locationID, $allowOnlineRegistrations, $registrationFee, $firstPrize, $secondPrize, $thirdPrize, $allowUnstandardised, $allowJunior, $allowAuction);
 wp_die();

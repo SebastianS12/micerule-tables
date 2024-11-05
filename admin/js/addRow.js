@@ -1,34 +1,18 @@
 jQuery(document).ready(function($){
-  $(".addRow").on('click',function(){
-    if(this.id=="addRowU"){
-      if($("#unstandardisedRow").css("display")=="none"){
-        $("#unstandardisedRow").css("display","table-row");
-        $("#uAward").attr("name","micerule_table_data[awards][]");
-        $("#uName").attr("name","micerule_table_data[name][]");
-        $("#uBreed").attr("name","micerule_table_data[breeds][]");
-        $("#uPoints").attr("name","micerule_table_data[points][]");
-      }else{
-        $("#unstandardisedRow").css("display","none");
-        $("#uAward").attr("name","");
-        $("#uName").attr("name","");
-        $("#uBreed").attr("name","");
-        $("#uPoints").attr("name","");
-      }
-    }else{
-      if($("#juniorRow").css("display")=="none"){
-        $("#juniorRow").css("display","table-row");
-        $("#jAward").attr("name","micerule_table_data[awards][]");
-        $("#jName").attr("name","micerule_table_data[name][]");
-        $("#jBreed").attr("name","micerule_table_data[breeds][]");
-        $("#jPoints").attr("name","micerule_table_data[points][]");
-      }else{
-        $("#juniorRow").css("display","none");
-        $("#jAward").attr("name","");
-        $("#jName").attr("name","");
-        $("#jBreed").attr("name","");
-        $("#jPoints").attr("name","");
-      }
-    }
 
+  $("#unstandardised-row-toggle").on('click', function(){
+    $("#unstandardisedRow").toggle();
+    if($("#unstandardisedRow").css("display") == "none"){
+      $("#unstandardisedRow").find(".fancier-select").val("");
+      $("#unstandardisedRow").find(".variety-select").val("");
+    }
+  });
+
+  $("#junior-row-toggle").on('click', function(){
+    $("#juniorRow").toggle();
+    if($("#juniorRow").css("display") == "none"){
+      $("#juniorRow").find(".fancier-select").val("");
+      $("#juniorRow").find(".variety-select").val("");
+    }
   });
 });
