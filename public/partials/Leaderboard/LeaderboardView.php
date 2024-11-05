@@ -63,7 +63,7 @@ class LeaderboardView
 
     private static function getBlurredTableCells()
     {
-        $html = "<td class = 'avatarCell'><img src = '" . plugin_dir_url(__FILE__) . "lock.svg' style = 'height:96px; width:96px'></td>";
+        $html = "<td class = 'avatarCell'><img src = '" . RES_DIR_URL . "lock.svg' style = 'height:96px; width:96px'></td>";
         $html .= "<td class = 'resultCellBlur'>";
         $html .= self::getBlurredNameDiv();
         $html .= "</td>";
@@ -72,8 +72,8 @@ class LeaderboardView
     }
 
     private static function getBlurredNameDiv(){
-        return "<div class ='blurDiv' style='width:" . random_int(35, 82) . "px;background-image: url(" . plugin_dir_url(__FILE__) . "blur.png);height:20px ;display:inline-block;" . random_int(0, 500) . "px 0'></div><span> </span>
-                <div class ='blurDiv' style='width:" . random_int(35, 90) . "px;background-image: url(" . plugin_dir_url(__FILE__) . "blur.png);height:20px ;display:inline-block;" . random_int(0, 500) . "px 0'></div>";
+        return "<div class ='blurDiv' style='width:" . random_int(35, 82) . "px;background-image: url(" . RES_DIR_URL . "blur.png);height:20px ;display:inline-block;" . random_int(0, 500) . "px 0'></div><span> </span>
+                <div class ='blurDiv' style='width:" . random_int(35, 90) . "px;background-image: url(" . RES_DIR_URL . "blur.png);height:20px ;display:inline-block;" . random_int(0, 500) . "px 0'></div>";
     }
 
     public static function getVarietyPopularityHtml($seasonStartDate, $seasonEndDate)

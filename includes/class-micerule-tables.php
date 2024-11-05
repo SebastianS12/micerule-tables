@@ -19,6 +19,8 @@ class Micerule_Tables{
   private function define_constants(){
     define("BREED_ICONS_DIR", ABSPATH."wp-content/plugins/micerule-tables/res/breed-icons/");
     define("BREED_ICONS_DIR_URL", plugin_dir_url("")."micerule-tables/res/breed-icons/");
+    define("RES_DIR", ABSPATH."wp-content/plugins/micerule-tables/res/");
+    define("RES_DIR_URL", plugin_dir_url("")."micerule-tables/res/");
   }
 
   private function load_dependencies(){
