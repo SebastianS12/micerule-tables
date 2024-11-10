@@ -10,8 +10,11 @@ jQuery(document).ready(function($){
         action: 'createShowPost',
       },
       success: function (data) {
-        // alert(data);
-        console.log(data);
+        if(data != ""){
+          $("#create-show-post").after("<a href = '" + data + "'>Show Report Draft</a>")
+        }else{
+          alert("Something went wrong");
+        }
       },
       error: function (XMLHttpRequest, textStatus, errorThrown) {
         alert(errorThrown);

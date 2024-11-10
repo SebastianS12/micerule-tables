@@ -9,10 +9,10 @@ $newPost = ShowReportPostController::createPost($viewModel);
 
 $postID = wp_insert_post($newPost);
 if($postID == 0){
-  echo("Something went wrong");
+  echo("");
 }else{
-  echo("Show Post successfully created");
   update_post_meta($event_id, "show_report_post_id", $postID);
+  echo(get_post_permalink($postID));
 }
 
 wp_die();
