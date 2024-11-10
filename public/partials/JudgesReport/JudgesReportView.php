@@ -4,8 +4,6 @@ class JudgesReportView
 {
     public static function getHtml($eventPostID)
     {
-        $user = wp_get_current_user();
-
         $judgesReportService = new JudgesReportService();
         $viewModel = $judgesReportService->prepareViewModel($eventPostID, LocationHelper::getIDFromEventPostID($eventPostID));
 

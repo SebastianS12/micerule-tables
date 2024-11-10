@@ -1,7 +1,7 @@
 <?php
 
 class EntryBookRowView{
-    public static function render($data){
+    public static function render($data, bool $optionalClass = false){
         $html = "<tr class='entry-pen-number'>";
         $html .= "<td class='pen-numbers " . $data['classMoved'] . " " . $data['classAbsent'] . " " . $data['classAdded'] . "'><span>" . $data['penNumber'] . "</span></td>";
         $html .= self::getAbsentCell($data);
@@ -10,8 +10,10 @@ class EntryBookRowView{
 
         //TODO: Enums for Prize
         $html .= EntryBookPlacementView::render($data['classPlacementData']);
-        $html .= EntryBookPlacementView::render($data['sectionPlacementData']);
-        $html .= EntryBookPlacementView::render($data['grandChallengePlacementData']);
+        if(!$optionalClass){
+            $html .= EntryBookPlacementView::render($data['sectionPlacementData']);
+            $html .= EntryBookPlacementView::render($data['grandChallengePlacementData']);  
+        }
         $html .= "</tr>";
 
         return $html;
@@ -29,9 +31,11 @@ class EntryBookRowView{
     private static function getEditCell($data)
     {
         $html  = "<td class = 'editEntry-td' data-entry-id = ".$data['entryID'].">";
-        $html .= "<div class='button-wrapper' visibility = '".$data['editVisibility']."'><button class = 'moveEntry' id = '" . $data['penNumber'] . "&-&move'><img src='/wp-content/plugins/micerule-tables/admin/svg/move.svg'></button>
+        if($data['editVisibility']){
+            $html .= "<div class='button-wrapper'><button class = 'moveEntry' id = '" . $data['penNumber'] . "&-&move'><img src='/wp-content/plugins/micerule-tables/admin/svg/move.svg'></button>
                   <button class = 'deleteEntry' id = '" . $data['penNumber'] . "&-&delete'><img src='/wp-content/plugins/micerule-tables/admin/svg/trash.svg'></button></div>";
-        $html .=  "<select class = 'classSelect-entryBook' id = '".$data['entryID']."&-&varietySelect' autocomplete='off' style='display:".$data['showVarietySelect']."'><option value = ''>Select a Variety</option>".$data['varietyOptions']."</select>";
+            $html .=  "<select class = 'classSelect-entryBook' id = '".$data['entryID']."&-&varietySelect' autocomplete='off' style='display:".$data['showVarietySelect']."'><option value = ''>Select a Variety</option>".$data['varietyOptions']."</select>";
+        }
         $html .= "</td>";
 
         return $html;

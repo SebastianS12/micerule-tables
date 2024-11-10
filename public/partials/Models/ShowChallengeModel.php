@@ -1,27 +1,5 @@
 <?php
 
-class ShowChallengeModel{
-    //TODO: Missing Functions from ShowClassesModel.php 
-    public $name;
-    public $challengeSection;
-    public $index;
-    public $age;
-
-    public function __construct($eventPostID, $challenge_name, $sectionName, $age)
-    {
-        $this->loadClassData($eventPostID, $challenge_name, $sectionName, $age);
-    }
-
-    private function loadClassData($eventPostID, $challenge_name, $sectionName, $age){
-        global $wpdb;
-        $location_id = EventProperties::getEventLocationID($eventPostID);
-        $this->name = $challenge_name;
-        $this->challengeSection = $sectionName;
-        $this->index = $wpdb->get_var("SELECT challenge_index FROM ".$wpdb->prefix."micerule_show_challenges_indices 
-                                            WHERE location_id = '".$location_id."' AND challenge_name = '".$challenge_name."' AND age = '".$age."'");
-        $this->age = $age;
-    }
-}
 
 class ChallengeIndexModel extends Model{
     public int $id;

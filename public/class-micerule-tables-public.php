@@ -25,6 +25,7 @@ require_once plugin_dir_path(__FILE__) . 'partials/Helpers/JudgeFormatter.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Helpers/LocationHelper.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Helpers/PermissionHelper.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Helpers/JuniorHelper.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Helpers/FancierNameFormatter.php';
 
 include_once plugin_dir_path(__FILE__)."partials/Location/EventClasses.php";
 include_once plugin_dir_path(__FILE__)."partials/Event/EventRegistrationData.php";
@@ -171,6 +172,7 @@ require_once plugin_dir_path(__FILE__) . 'partials/Services/LocationSecretariesS
 require_once plugin_dir_path(__FILE__) . 'partials/Services/ShowOptionsService.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Services/ShowClassesService.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Services/IndicesService.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Services/ShowReportPostService.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/Factories/PrizeCardFactory.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Factories/PrintDAOFactory.php';
@@ -178,6 +180,7 @@ require_once plugin_dir_path(__FILE__) . 'partials/Factories/PlacementDAOFactory
 require_once plugin_dir_path(__FILE__) . 'partials/Factories/PlacementModelFactory.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/Views/ShowClassesView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/ShowReportPostView.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/FancierEntriesViewModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/LabelViewModel.php';
@@ -187,9 +190,19 @@ require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/AbsenteesViewModel
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/PrizeCardsViewModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/JudgesReportViewModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/ShowClassesViewModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/ShowReportPostViewModel.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/Controllers/ShowClassesController.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Controllers/ShowReportPostController.php';
 
+require_once plugin_dir_path(__FILE__) . 'partials/DataLoaders/AbstractDataLoader.php';
+require_once plugin_dir_path(__FILE__) . 'partials/DataLoaders/ChallengeIndexDataLoader.php';
+require_once plugin_dir_path(__FILE__) . 'partials/DataLoaders/JudgeDataLoader.php';
+require_once plugin_dir_path(__FILE__) . 'partials/DataLoaders/ShowClassDataLoader.php';
+
+require_once plugin_dir_path(__FILE__) . 'partials/DataMappers/JudgeMapper.php';
+require_once plugin_dir_path(__FILE__) . 'partials/DataMappers/PlacementsMapper.php';
+require_once plugin_dir_path(__FILE__) . 'partials/DataMappers/RegistrationCountMapper.php';
 
 
 class Micerule_Tables_Public {

@@ -2,14 +2,19 @@ jQuery(document).ready(function($){
   assignLocationSettingsListeners();
 });
 
+
+let debounceTimeout;
 function assignLocationSettingsListeners(){
-  $(".optionalSettings").on('change', function(){
-    updateOptionalSettings($(this));
+  $(".optionalSettings").on('input', function(){
+    clearTimeout(debounceTimeout);
+    
+    debounceTimeout = setTimeout(() => {
+      updateOptionalSettings($(this));
+    }, 3000);
   });
 }
 
 function updateOptionalSettings(settingElement){
-  $(".optionalSettings").off();
   jQuery.ajax({
     type: 'POST',
     url: my_ajax_obj.ajax_url,

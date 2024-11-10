@@ -21,7 +21,7 @@ class EntryRowService implements IRowService{
         $entryRowData['absentChecked'] = ($entry->absent) ? "checked" : "";
 
         $entryRowData['absentVisibility'] = (PlacementsService::entryInPlacements($entry, Prize::STANDARD)) ? "hidden" : "visible";
-        $entryRowData['editVisibility'] = (PlacementsService::entryInPlacements($entry, Prize::STANDARD) && time() > strtotime($pastDeadline)) ? "hidden" : "visible";
+        $entryRowData['editVisibility'] = (!PlacementsService::entryInPlacements($entry, Prize::STANDARD) || !$pastDeadline);
         $entryRowData['showVarietySelect'] = (PlacementsService::entryInPlacements($entry, Prize::STANDARD) && !$this->breedsService->isStandardBreed($entry->showClass()->class_name)) ? "flex" : "none";
         $entryRowData['varietyOptions'] = ($entryRowData['showVarietySelect'] == "flex") ? $this->breedsService->getClassSelectOptionsHtml($section, $entry->variety_name) : "";
         $entryRowData['classPlacementData'] = $this->placementsRowService->prepareEntryPlacementData($entry, Prize::STANDARD, new Collection(), $rowPlacementData->classPlacements, Prize::SECTION, $rowPlacementData->classIndexID, $age);

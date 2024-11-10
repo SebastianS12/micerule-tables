@@ -84,6 +84,19 @@ class EntryBookView
         return $html;
     }
 
+    private static function getOptionalBreedNameHeader(int $index, string $className, string $age)
+    {
+        $html = "<tr class='breed-name-header'>";
+        $html .= "<td class='table-pos'>" . $index. "</td>";
+        $html .= "<td class = 'absent-td'>Abs</td>";
+        $html .= "<td class='breed-class'>" . $className . " " . $age . "</td>";
+        $html .= "<td class='age'></td>";
+        $html .= "<td class = 'placement-" . $age . "'><img src='/wp-content/plugins/micerule-tables/admin/svg/class-ranking.svg'></td>";
+        $html .= "</tr>";
+
+        return $html;
+    }
+
     private static function addEmptyRows($rowCount, $age)
     {
         $html = "";
@@ -107,26 +120,13 @@ class EntryBookView
         $html = "";
         foreach($optionalClassData as $className => $classData){
             $html .= "<table class='optional'><tbody>";
-            $html .= self::getBreedNameHeader($classData['classIndex'], $className, "AA");
+            $html .= self::getOptionalBreedNameHeader($classData['classIndex'], $className, "AA");
             foreach ($classData['entries'] as $entryRowData) {
-                $html .= EntryBookRowView::render($entryRowData);
+                $html .= EntryBookRowView::render($entryRowData, true);
             }
 
             $html .= "</table></tbody>";
         }
-
-        return $html;
-    }
-
-    private static function getOptionalClassHeaderRowHtml(int $classIndex, string $className)
-    {
-        $html = "<tr class='breed-name-header'>";
-        $html .= "<td class='table-pos'>" . $classIndex . "</td>";
-        $html .= "<td class = 'absent-td'>Abs</td>";
-        $html .= "<td class='breed-class'>" . ucfirst($className) . " AA</td>";
-        $html .= "<td class='age'></td>";
-        $html .= "<td class = 'placement-ads'><img src='/wp-content/plugins/micerule-tables/admin/svg/class-ranking.svg'></td>";
-        $html .= "</tr>";
 
         return $html;
     }

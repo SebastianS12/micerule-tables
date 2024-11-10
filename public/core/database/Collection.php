@@ -147,6 +147,7 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable{
         return $collection;
     }
 
+    //TODO: Move to Hydrator, have it only called by Data Loaders
     /**
      * @param string[] $childClasses
      * @param string[] $fromKeys

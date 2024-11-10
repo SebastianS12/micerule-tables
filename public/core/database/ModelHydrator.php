@@ -35,7 +35,6 @@ class ModelHydrator{
                     $childItem->$itemClass->add($parentItem);
                 }
             }
-            
         }
     }
 }
