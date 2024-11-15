@@ -24,4 +24,9 @@ class FancierEntriesViewModel{
     {
         $this->fancierEntries[$userName]['totalRegistrationCount'] = $registrationCount;
     }
+
+    public function addPrizeMoney(string $userName, float $prizeMoney): void
+    {
+        $this->fancierEntries[$userName]['prizeMoney'] = $prizeMoney;
+    }
 }

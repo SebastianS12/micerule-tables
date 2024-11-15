@@ -36,6 +36,7 @@ class LazyLoader{
 
     private static function loadRelations(Model &$model, string $relationClass, QueryBuilder $relationQuery): bool
     {
+        echo("LazyLoad");
         global $wpdb;
         $relationQueryResults = $wpdb->get_results($relationQuery->build(), ARRAY_A);
         $modelClass = get_class($model);

@@ -15,7 +15,7 @@ class FancierEntriesView{
 
             $html .= "<p class='single-entry'><span>Total Entries:</span><span>".$fancierRegistrations['totalRegistrationCount']."</span></p>";
             $prizeMoney = 0;
-            $html .= "<p class='single-entry'><span>Prize Money:</span><span>£"./*number_format((float)$this->userPrizeData->getUserPrizeMoney($userName, $eventOptionalSettings->prizeMoney['firstPrize'], $eventOptionalSettings->prizeMoney['secondPrize'], $eventOptionalSettings->prizeMoney['thirdPrize']), 2, '.', '')*/$prizeMoney."</span></p>";
+            $html .= "<p class='single-entry'><span>Prize Money:</span><span>£".$fancierRegistrations['prizeMoney']."</span></p>";
             $html .= "</div>";
         }
         $html .= "</div>";

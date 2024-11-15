@@ -27,27 +27,8 @@ require_once plugin_dir_path(__FILE__) . 'partials/Helpers/PermissionHelper.php'
 require_once plugin_dir_path(__FILE__) . 'partials/Helpers/JuniorHelper.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Helpers/FancierNameFormatter.php';
 
-include_once plugin_dir_path(__FILE__)."partials/Location/EventClasses.php";
-include_once plugin_dir_path(__FILE__)."partials/Event/EventRegistrationData.php";
 include_once plugin_dir_path(__FILE__)."partials/Event/EventProperties.php";
 include_once plugin_dir_path(__FILE__)."partials/Event/EventUser.php";
-include_once plugin_dir_path(__FILE__)."partials/ClassSelectOptions.php";
-include_once plugin_dir_path(__FILE__)."partials/StandardClasses.php";
-include_once plugin_dir_path(__FILE__)."partials/RegistrationTables.php";
-include_once plugin_dir_path(__FILE__)."partials/Event/EventOptionalSettings.php";
-include_once plugin_dir_path(__FILE__)."partials/Event/EntryBookData.php";
-include_once plugin_dir_path(__FILE__)."partials/Event/AdminTabData.php";
-include_once plugin_dir_path(__FILE__)."partials/Event/AdminTabDataFactory.php";
-include_once plugin_dir_path(__FILE__)."partials/Event/IAdminTab.php";
-include_once plugin_dir_path(__FILE__)."partials/Event/FancierEntries.php";
-include_once plugin_dir_path(__FILE__)."partials/Event/EntryBook.php";
-include_once plugin_dir_path(__FILE__)."partials/Event/Label.php";
-include_once plugin_dir_path(__FILE__)."partials/Event/EntrySummary.php";
-include_once plugin_dir_path(__FILE__)."partials/Event/JudgingSheets.php";
-include_once plugin_dir_path(__FILE__)."partials/Event/Absentees.php";
-include_once plugin_dir_path(__FILE__)."partials/Event/PriceCards.php";
-include_once plugin_dir_path(__FILE__)."partials/Event/JudgesReport.php";
-include_once plugin_dir_path(__FILE__)."partials/Event/ShowReportPost.php";
 include_once plugin_dir_path(__FILE__)."partials/Event/AdminTabs.php";
 
 require_once plugin_dir_path(__FILE__) . 'partials/Leaderboard/LeaderboardController.php';
@@ -62,7 +43,6 @@ require_once plugin_dir_path(__FILE__) . 'partials/Repositories/AwardsRepository
 require_once plugin_dir_path(__FILE__) . 'partials/Repositories/PrizeCardsRepository.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Repositories/JudgesRepository.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Repositories/BreedsRepository.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Repositories/ShowSectionRepository.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Repositories/JudgesReportRepository.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Repositories/ChallengeIndexRepository.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Repositories/ClassIndexRepository.php';
@@ -77,65 +57,21 @@ require_once plugin_dir_path(__FILE__) . 'partials/Repositories/PlacementReports
 require_once plugin_dir_path(__FILE__) . 'partials/Repositories/NextPenNumberRepository.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Repositories/ShowOptionsRepository.php';
 
-require_once plugin_dir_path(__FILE__) . 'partials/RegistrationTables/RegistrationTablesController.php';
-require_once plugin_dir_path(__FILE__) . 'partials/RegistrationTables/RegistrationTablesModel.php';
-require_once plugin_dir_path(__FILE__) . 'partials/RegistrationTables/RegistrationTablesView.php';
-require_once plugin_dir_path(__FILE__) . 'partials/RegistrationTables/RegistrationTablesViewModel.php';
-
-require_once plugin_dir_path(__FILE__) . 'partials/FancierEntries/FancierEntriesController.php';
-require_once plugin_dir_path(__FILE__) . 'partials/FancierEntries/FancierEntriesView.php';
-
-require_once plugin_dir_path(__FILE__) . 'partials/EntrySummary/EntrySummaryController.php';
-require_once plugin_dir_path(__FILE__) . 'partials/EntrySummary/EntrySummaryModel.php';
-require_once plugin_dir_path(__FILE__) . 'partials/EntrySummary/EntrySummaryView.php';
-
-require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/EntryBookController.php';
-require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/EntryBookModel.php';
-require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/EntryBookView.php';
-require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/EntryBookPlacementController.php';
-require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/EntryBookPlacementView.php';
-require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/EntryBookRowController.php';
-require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/EntryBookRowView.php';
-require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/RowPlacementData.php';
-require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/ChallengeRowView.php';
-require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/ChallengeRowController.php';
-require_once plugin_dir_path(__FILE__) . 'partials/EntryBook/EntryBookViewModel.php';
-
-require_once plugin_dir_path(__FILE__) . 'partials/Label/LabelModel.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Label/LabelView.php';
-
-require_once plugin_dir_path(__FILE__) . 'partials/JudgingSheets/JudgingSheetsModel.php';
-require_once plugin_dir_path(__FILE__) . 'partials/JudgingSheets/JudgingSheetsView.php';
-
-require_once plugin_dir_path(__FILE__) . 'partials/Absentees/AbsenteesModel.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Absentees/AbsenteesView.php';
-
-require_once plugin_dir_path(__FILE__) . 'partials/PrizeCards/PrizeCardsController.php';
-require_once plugin_dir_path(__FILE__) . 'partials/PrizeCards/PrizeCardsModel.php';
-require_once plugin_dir_path(__FILE__) . 'partials/PrizeCards/PrizeCardsView.php';
-
-require_once plugin_dir_path(__FILE__) . 'partials/JudgesReport/JudgesReportController.php';
-require_once plugin_dir_path(__FILE__) . 'partials/JudgesReport/JudgesReportModel.php';
-require_once plugin_dir_path(__FILE__) . 'partials/JudgesReport/JudgesReportView.php';
-
 require_once plugin_dir_path(__FILE__) . 'partials/DAOs/IPrintDAO.php';
 require_once plugin_dir_path(__FILE__) . 'partials/DAOs/AwardsDAO.php';
 require_once plugin_dir_path(__FILE__) . 'partials/DAOs/IPlacementDAO.php';
 require_once plugin_dir_path(__FILE__) . 'partials/DAOs/PlacementDAO.php';
 
-require_once plugin_dir_path(__FILE__) . 'partials/Models/ShowEntry.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/EntryModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/PlacementModel.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Models/SinglePlacement.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Models/NextPenNumber.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/NextPenNumberModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/PrizeCards.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Models/UserClassRegistration.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Models/ChallengeAwards.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/PlacementReport.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/ClassComment.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/GeneralComment.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/EntryClassModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/UserRegistrationModel.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Models/ShowClassModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/ClassIndexModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/ShowChallengeModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/RegistrationOrderModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/AwardModel.php';
@@ -143,8 +79,9 @@ require_once plugin_dir_path(__FILE__) . 'partials/Models/JuniorRegistrationMode
 require_once plugin_dir_path(__FILE__) . 'partials/Models/JudgeModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/JudgeSectionModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/BreedModel.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Models/NextPenNumberModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Models/ShowOptions.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/ShowOptionsModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Models/RowPlacementData.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/Services/PlacementsService.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Services/EntriesService.php';
@@ -181,7 +118,15 @@ require_once plugin_dir_path(__FILE__) . 'partials/Factories/PlacementModelFacto
 
 require_once plugin_dir_path(__FILE__) . 'partials/Views/ShowClassesView.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Views/ShowReportPostView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/ChallengeRowView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/LabelView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/JudgingSheetsView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/AbsenteesView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/PrizeCardsView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/JudgesReportView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/ShowOptionsView.php';
 
+require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/EntryBookViewModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/FancierEntriesViewModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/LabelViewModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/EntrySummaryViewModel.php';
@@ -191,9 +136,23 @@ require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/PrizeCardsViewMode
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/JudgesReportViewModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/ShowClassesViewModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/ShowReportPostViewModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/RegistrationTablesViewModel.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/Controllers/ShowClassesController.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Controllers/ShowReportPostController.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Controllers/RegistrationTablesController.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Controllers/JudgesReportController.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Controllers/PrizeCardsController.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Controllers/EntryBookController.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Controllers/EntrySummaryController.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Controllers/ShowOptionsController.php';
+
+require_once plugin_dir_path(__FILE__) . 'partials/Views/FancierEntriesView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/EntrySummaryView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/EntryBookView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/EntryBookPlacementView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/EntryBookRowView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/RegistrationTablesView.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/DataLoaders/AbstractDataLoader.php';
 require_once plugin_dir_path(__FILE__) . 'partials/DataLoaders/ChallengeIndexDataLoader.php';

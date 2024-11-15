@@ -18,6 +18,7 @@ enum Table : string{
     case CLASS_REPORTS = "micerule_show_judges_class_reports";
     case BREEDS = "micerule_breeds";
     case NEXT_PENNUMBERS = "micerule_show_classes_next_pen_numbers";
+    case SHOW_OPTIONS = "micerule_show_options";
 
     public function getAlias(): string
     {
@@ -39,6 +40,7 @@ enum Table : string{
             self::CLASS_REPORTS => 'ClassReports',
             self::BREEDS => 'Breeds',
             self::NEXT_PENNUMBERS => 'NextPenNumbers',
+            self::SHOW_OPTIONS => 'ShowOptions',
         };
     }
 }

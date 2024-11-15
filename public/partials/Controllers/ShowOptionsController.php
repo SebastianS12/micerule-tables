@@ -1,15 +1,15 @@
 <?php
 
 class ShowOptionsController{
-    public static function getShowOptions(int $locationID, ShowOptionsService $showOptionsService, ShowOptionsRepository $showOptionsRepository): ShowOptions
+    public static function getShowOptions(int $locationID, ShowOptionsService $showOptionsService, ShowOptionsRepository $showOptionsRepository): ShowOptionsModel
     {
         return $showOptionsService->getShowOptions($showOptionsRepository, $locationID);
     }
 
-    public static function saveShowOptions(int $locationID, bool $allowOnlineRegistrations, float $registrationFee, float $pmFirstPlace, float $pmSecondPlace, float $pmThirdPlace, bool $allowUnstandardised, bool $allowJunior, bool $allowAuction): void
+    public static function saveShowOptions(?int $id, int $locationID, bool $allowOnlineRegistrations, float $registrationFee, float $pmFirstPlace, float $pmSecondPlace, float $pmThirdPlace, bool $allowUnstandardised, bool $allowJunior, bool $allowAuction, float $pmBiSec, float $pmBoSec, float $pmBIS, float $pmBOA): void
     {
         $showOptionsService = new ShowOptionsService();
-        $showOptionsService->saveShowOptions(new ShowOptionsRepository, $locationID, $allowOnlineRegistrations, $registrationFee, $pmFirstPlace, $pmSecondPlace, $pmThirdPlace, $allowUnstandardised, $allowJunior, $allowAuction);
+        $showOptionsService->saveShowOptions(new ShowOptionsRepository, $id, $locationID, $allowOnlineRegistrations, $registrationFee, $pmFirstPlace, $pmSecondPlace, $pmThirdPlace, $allowUnstandardised, $allowJunior, $allowAuction, $pmBiSec, $pmBoSec, $pmBIS, $pmBOA);
     }
 
 
@@ -39,18 +39,5 @@ class ShowOptionsController{
         // }
         $indicesService = new IndicesService();
         $indicesService->updateIndices($locationID);
-    }
-
-    public static function swapSectionClasses($locationID, $firstClassName, $secondClassName){
-        $showClassesModel = new ShowClassesModel();
-        $showClassesModel->swapSectionPosition($locationID, $firstClassName, $secondClassName);
-        $showClassesModel->swapClassIndices($locationID, $firstClassName, $secondClassName, "Ad");
-        $showClassesModel->swapClassIndices($locationID, $firstClassName, $secondClassName, "U8");
-    }
-
-    public static function swapOptionalClasses($locationID, $firstClassName, $secondClassName){
-        $showClassesModel = new ShowClassesModel();
-        $showClassesModel->swapSectionPosition($locationID, $firstClassName, $secondClassName);
-        $showClassesModel->swapClassIndices($locationID, $firstClassName, $secondClassName, "AA");
     }
 }

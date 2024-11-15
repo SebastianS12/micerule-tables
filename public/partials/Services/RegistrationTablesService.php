@@ -58,7 +58,7 @@ class RegistrationTablesService{
     private function getAllowOnlineRegistrations(int $locationID){
         $showOptionsService = new ShowOptionsService();
         $showOptions = $showOptionsService->getShowOptions(new ShowOptionsRepository(), $locationID);
-        $allowOnlineRegistrations = $showOptions->allowOnlineRegistrations;
+        $allowOnlineRegistrations = $showOptions->allow_online_registrations;
         return $allowOnlineRegistrations;
     }
 }

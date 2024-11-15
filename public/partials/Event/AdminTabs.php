@@ -7,8 +7,9 @@ class AdminTabs{
 
     $html = "<div class = 'adminTabs'>";
     $locationSecretaries = LocationSecretariesService::getLocationSecretaries(LocationHelper::getIDFromEventPostID($eventID));
-    $eventJudges = new EventJudges($eventID);
-    if(($showOptions->allowOnlineRegistrations && is_user_logged_in()) && ((in_array(wp_get_current_user()->display_name, $locationSecretaries) || in_array(wp_get_current_user()->display_name, $eventJudges->judgeNames)) || current_user_can('administrator'))){
+    $judgeDataLoader = new JudgeDataLoader();
+    $judgeDataLoader->load(new JudgesRepository($eventID));
+    if(($showOptions->allow_online_registrations && is_user_logged_in()) && ((in_array(wp_get_current_user()->display_name, $locationSecretaries) || PermissionHelper::canViewShowReport(wp_get_current_user()->display_name, $judgeDataLoader->getCollection())) || current_user_can('administrator'))){
       $html .= "<ul class='tabbed-summary' id='admin-tabs'>";
       if((in_array(wp_get_current_user()->display_name, $locationSecretaries)) || current_user_can('administrator')){
         $html .= " <li class = 'fancierEntries tab active' style='height: 26px;'>Entries per Fancier</li>
@@ -21,7 +22,6 @@ class AdminTabs{
       }
       $html .= " <li class = 'judgesReport tab' style='height: 26px;'>Judge's Report</li>
               </ul>";
-      $empty = "";
       if((in_array(wp_get_current_user()->display_name, $locationSecretaries)) || current_user_can('administrator')){
         $html .= "<div class = 'fancierEntries content'>".FancierEntriesView::getFancierEntriesHtml($eventID)."</div>
                   <div class = 'label content' style = 'display : none'>".LabelView::getHtml($eventID)."</div>

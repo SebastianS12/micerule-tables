@@ -21,7 +21,8 @@ function updateOptionalSettings(settingElement){
     data: {
       _ajax_nonce: my_ajax_obj.nonce,
       action: 'eventOptionalSettings',
-      id: $("#locationID").val(),
+      id: $(".showsec-options").data("optionId"),
+      locationID: $("#locationID").val(),
       allowOnlineRegistrations: $("#enableOnlineRegistrations").prop('checked'),
       registrationFee: $("#registrationFeeInput").val(),
       allowUnstandardised: $("#allow-Unstandardised").prop('checked'),
@@ -30,6 +31,10 @@ function updateOptionalSettings(settingElement){
       firstPrize : $("#prizeMoney-firstPlace").val(),
       secondPrize : $("#prizeMoney-secondPlace").val(),
       thirdPrize : $("#prizeMoney-thirdPlace").val(),
+      pmBiSec : $("#prizeMoney-biSec").val(),
+      pmBoSec : $("#prizeMoney-boSec").val(),
+      pmBIS: $("#prizeMoney-bis").val(),
+      pmBOA: $("#prizeMoney-boa").val(),
     },
     success: function (data) {
       console.log(data);

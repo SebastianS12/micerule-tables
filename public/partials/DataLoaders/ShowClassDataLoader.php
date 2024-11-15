@@ -27,6 +27,41 @@ class ShowClassDataLoader extends AbstractDataLoader{
             ["index_id"], 
             [$classPlacementsRepository]
         );
+
+        $this->collection->{ClassIndexModel::class}->{UserRegistrationModel::class}->{RegistrationOrderModel::class}->{EntryModel::class}->with(
+            [ClassPlacementModel::class], 
+            ["id"], 
+            ["entry_id"], 
+            [$classPlacementsRepository]
+        );
+    }
+
+    public function withChallengePlacements(PlacementsRepository $challengePlacementsRepository): void
+    {
+        if(!isset($this->collection)){
+            throw new UnexpectedValueException("Collection is not loaded");
+        }
+
+        $this->collection->{ClassIndexModel::class}->{UserRegistrationModel::class}->{RegistrationOrderModel::class}->{EntryModel::class}->with(
+            [ChallengePlacementModel::class], 
+            ["id"], 
+            ["entry_id"], 
+            [$challengePlacementsRepository]
+        );
+    }
+
+    public function withAwards(AwardsRepository $awardsRepository): void
+    {
+        if(!isset($this->collection)){
+            throw new UnexpectedValueException("Collection is not loaded");
+        }
+
+        $this->collection->{ClassIndexModel::class}->{UserRegistrationModel::class}->{RegistrationOrderModel::class}->{EntryModel::class}->{ChallengePlacementModel::class}->with(
+            [AwardModel::class], 
+            ["id"], 
+            ["challenge_placement_id"], 
+            [$awardsRepository]
+        );
     }
 
     public function withClassComments(ClassCommentsRepository $classCommentsRepository): void

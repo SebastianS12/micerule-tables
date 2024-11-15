@@ -30,7 +30,7 @@ class EntrySummaryService{
         //TODO: Service
         $showOptionsService = new ShowOptionsService();
         $showOptions = $showOptionsService->getShowOptions(new ShowOptionsRepository(), $this->locationID);
-        $registrationFee = $showOptions->registrationFee;
+        $registrationFee = $showOptions->registration_fee;
 
         foreach($registrationCollection as $userName  => $userRegistrationCollection){
             $userRegistrationCount = 0;

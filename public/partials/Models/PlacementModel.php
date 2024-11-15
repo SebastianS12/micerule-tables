@@ -108,6 +108,6 @@ class ChallengePlacementModel extends PlacementModel implements IPlacementModel{
 
     public function award(): ?AwardModel
     {
-        return $this->hasOne(AwardModel::class, Table::AWARDS, "placement_id");
+        return $this->hasOne(AwardModel::class, Table::AWARDS, "challenge_placement_id");
     }
 }

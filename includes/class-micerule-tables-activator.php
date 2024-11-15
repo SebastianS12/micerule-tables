@@ -107,16 +107,21 @@ class Micerule_Tables_Activator {
 
 		$show_options_table_name = $wpdb->prefix."micerule_show_options";
 		$sql_create_show_options_table = "CREATE TABLE IF NOT EXISTS ".$show_options_table_name. " (
-			location_id bigint(20) unsigned NOT NULL,
-			allow_online_registrations bool NOT NULL,
-			registration_fee float NOT NULL,
-			pm_first_place float NOT NULL,
-			pm_second_place float NOT NULL,
-			pm_third_place float NOT NULL,
-			allow_unstandardised bool NOT NULL,
-			allow_junior bool NOT NULL,
-			allow_auction bool NOT NULL,
-			PRIMARY KEY  (location_id)
+			id bigint(20) unsigned NOT NULL auto_increment,
+			location_id bigint(20) unsigned NOT NULL UNIQUE,
+			allow_online_registrations bool NOT NULL DEFAULT FALSE,
+			registration_fee float NOT NULL DEFAULT 0.0,
+			pm_first_place float NOT NULL DEFAULT 0.0,
+			pm_second_place float NOT NULL DEFAULT 0.0,
+			pm_third_place float NOT NULL DEFAULT 0.0,
+			allow_unstandardised bool NOT NULL DEFAULT FALSE,
+			allow_junior bool NOT NULL DEFAULT FALSE,
+			allow_auction bool NOT NULL DEFAULT FALSE,
+			pm_bisec float NOT NULL DEFAULT 0.0,
+			pm_bosec float NOT NULL DEFAULT 0.0,
+			pm_bis float NOT NULL DEFAULT 0.0,
+			pm_boa float NOT NULL DEFAULT 0.0,
+			PRIMARY KEY  (id)
 			) $charset_collate; ";
 		dbDelta($sql_create_show_options_table);
 
