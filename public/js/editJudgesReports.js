@@ -22,12 +22,12 @@ function assignJudgesReportsListeners(){
 }
 
 function submitReport(buttonElement){
-  var commentID = buttonElement.parent().data('comment-id');
+  var commentID = buttonElement.parent().data('comment-id') || null;
   var indexID = buttonElement.parent().data('index-id');
   var classComment = buttonElement.parent().find(".jr-class-report").val();
   var placementReportData = [];
   buttonElement.prev().find(".placement-report").each(function(){
-    var id = $(this).data('report-id');
+    var id = $(this).data('report-id') || null;
     var placementID = $(this).data('placement-id');
     var buckChecked = $(this).find(".buck").eq(0).prop('checked');
     var doeChecked = $(this).find(".doe").eq(0).prop('checked');
@@ -39,16 +39,17 @@ function submitReport(buttonElement){
   $("#spinner-div").show();
   jQuery.ajax({
     type: 'POST',
-    url: my_ajax_obj.ajax_url,
-    data: {
-      _ajax_nonce: my_ajax_obj.nonce,
-      action: 'submitReport',
+    url: getRoute("classReport"),
+    beforeSend: function ( xhr ) {
+      xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
+    },
+    contentType: 'application/json',
+    data: JSON.stringify({
       commentID: commentID,
       indexID: indexID,
-      classComment: classComment,
-      placementReportData : JSON.stringify(placementReportData),
-      submitType: "classReport",
-    },
+      comment: classComment,
+      placementReports : placementReportData,
+    }),
     success: function (data) {
       console.log(data);
       $("#spinner-div").hide();
@@ -64,20 +65,21 @@ function submitReport(buttonElement){
 }
 
 function submitGeneralComment(buttonElement){
-  var commentID = buttonElement.parent().data('comment-id');
+  var commentID = buttonElement.parent().data('comment-id') || null;
   var judgeID = buttonElement.parent().data('judge-id');
   var comment = buttonElement.prev().find("textarea").eq(0).val();
   jQuery.ajax({
     type: 'POST',
-    url: my_ajax_obj.ajax_url,
-    data: {
-      _ajax_nonce: my_ajax_obj.nonce,
-      action: 'submitReport',
+    url: getRoute("generalComment"),
+    beforeSend: function ( xhr ) {
+      xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
+    },
+    contentType: 'application/json',
+    data: JSON.stringify({
       commentID: commentID,
       judgeID: judgeID,
       comment: comment,
-      submitType: "generalComment"
-    },
+    }),
     success: function (data) {
       console.log(data);
       $("#spinner-div").hide();

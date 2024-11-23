@@ -12,14 +12,15 @@ function assignDeleteClassListener(){
 
 function deleteClass(classID, section){
   jQuery.ajax({
-    type: 'POST',
-    url: my_ajax_obj.ajax_url,
+    type: 'DELETE',
+    url: getRoute("deleteClass"),
+    beforeSend: function ( xhr ) {
+      xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
+    },
     data: {
-      _ajax_nonce: my_ajax_obj.nonce,
-      action: 'deleteClass',
-      id: $("#locationID").val(),
+      locationID: $("#locationID").val(),
       classID: classID,
-      section: section,
+      sectionName: section,
     },
     success: function (data) {
       /*

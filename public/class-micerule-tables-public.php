@@ -21,11 +21,16 @@ require_once plugin_dir_path(__FILE__) . 'core/database/QueryBuilder.php';
 require_once plugin_dir_path(__FILE__) . 'core/database/ModelHydrator.php';
 require_once plugin_dir_path(__FILE__) . 'core/database/LazyLoader.php';
 
+require_once plugin_dir_path(__FILE__) . 'core/Router/Route.php';
+require_once plugin_dir_path(__FILE__) . 'core/Router/Router.php';
+require_once plugin_dir_path(__FILE__) . 'core/Router/Logger.php';
+
 require_once plugin_dir_path(__FILE__) . 'partials/Helpers/JudgeFormatter.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Helpers/LocationHelper.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Helpers/PermissionHelper.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Helpers/JuniorHelper.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Helpers/FancierNameFormatter.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Helpers/EventHelper.php';
 
 include_once plugin_dir_path(__FILE__)."partials/Event/EventProperties.php";
 include_once plugin_dir_path(__FILE__)."partials/Event/EventUser.php";
@@ -110,21 +115,12 @@ require_once plugin_dir_path(__FILE__) . 'partials/Services/ShowOptionsService.p
 require_once plugin_dir_path(__FILE__) . 'partials/Services/ShowClassesService.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Services/IndicesService.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Services/ShowReportPostService.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Services/AdminTabsService.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/Factories/PrizeCardFactory.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Factories/PrintDAOFactory.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Factories/PlacementDAOFactory.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Factories/PlacementModelFactory.php';
-
-require_once plugin_dir_path(__FILE__) . 'partials/Views/ShowClassesView.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Views/ShowReportPostView.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Views/ChallengeRowView.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Views/LabelView.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Views/JudgingSheetsView.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Views/AbsenteesView.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Views/PrizeCardsView.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Views/JudgesReportView.php';
-require_once plugin_dir_path(__FILE__) . 'partials/Views/ShowOptionsView.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/EntryBookViewModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/FancierEntriesViewModel.php';
@@ -137,6 +133,7 @@ require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/JudgesReportViewMo
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/ShowClassesViewModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/ShowReportPostViewModel.php';
 require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/RegistrationTablesViewModel.php';
+require_once plugin_dir_path(__FILE__) . 'partials/ViewModels/AdminTabsViewModel.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/Controllers/ShowClassesController.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Controllers/ShowReportPostController.php';
@@ -146,6 +143,7 @@ require_once plugin_dir_path(__FILE__) . 'partials/Controllers/PrizeCardsControl
 require_once plugin_dir_path(__FILE__) . 'partials/Controllers/EntryBookController.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Controllers/EntrySummaryController.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Controllers/ShowOptionsController.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Controllers/AdminTabsController.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/Views/FancierEntriesView.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Views/EntrySummaryView.php';
@@ -153,6 +151,16 @@ require_once plugin_dir_path(__FILE__) . 'partials/Views/EntryBookView.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Views/EntryBookPlacementView.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Views/EntryBookRowView.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Views/RegistrationTablesView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/ShowClassesView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/ShowReportPostView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/ChallengeRowView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/LabelView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/JudgingSheetsView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/AbsenteesView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/PrizeCardsView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/JudgesReportView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/ShowOptionsView.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Views/AdminTabsView.php';
 
 require_once plugin_dir_path(__FILE__) . 'partials/DataLoaders/AbstractDataLoader.php';
 require_once plugin_dir_path(__FILE__) . 'partials/DataLoaders/ChallengeIndexDataLoader.php';
@@ -214,6 +222,7 @@ class Micerule_Tables_Public {
 	*/
 	public function enqueue_scripts() {
 
+		wp_enqueue_script('route',plugin_dir_url( __FILE__ ) . 'js/route.js',array('jquery'),$this->plugin_name, true);
 
 		//---------------------------lbTables------------------
 		wp_enqueue_script('lbTables', plugin_dir_url( __FILE__ ).'js/lbTables.js', array( 'jquery' ), $this->version, false );
@@ -227,56 +236,39 @@ class Micerule_Tables_Public {
 		//--------------------------------------------
 
 		//---------------------------addBreed------------------
-		wp_enqueue_script('addClass', plugin_dir_url( __FILE__ ).'js/addClass.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script('addClass', plugin_dir_url( __FILE__ ).'js/addClass.js', array( 'wp-api', 'jquery' ), $this->version, false );
 
-		$title_nonce = wp_create_nonce('addClass');
-		wp_localize_script('addClass','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
-
+		// wp_localize_script('addClass','my_ajax_obj',array('wp-api'));
+		wp_localize_script('addClass','miceruleApi', array(
+			'nonce' => wp_create_nonce('wp_rest'),
+			'root' => esc_url_raw(rest_url()),
 		));
 		//--------------------------------------------
 
 		//---------------------------registerClasses------------------
 		wp_enqueue_script('registerClasses', plugin_dir_url( __FILE__ ).'js/registerClasses.js', array( 'jquery' ), $this->version, false );
 
-		$title_nonce = wp_create_nonce('registerClasses');
-		wp_localize_script('registerClasses','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
-
+		wp_localize_script('registerClasses','miceruleApi',array(
+			'nonce'    => wp_create_nonce('wp_rest'),
 		));
 		//--------------------------------------------
 
-		//---------------------------getClassSelectOptions------------------
-
-		$title_nonce = wp_create_nonce('getClassSelectOptions');
-		wp_localize_script('getClassSelectOptions','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
-
-		));
-		//--------------------------------------------
 
 		//---------------------------moveClass------------------
-		wp_enqueue_script('moveClass', plugin_dir_url( __FILE__ ).'js/moveClass.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script('moveClass', plugin_dir_url( __FILE__ ).'js/moveClass.js', array( 'wp-api', 'jquery' ), $this->version, false );
 
-		$title_nonce = wp_create_nonce('moveClass');
-		wp_localize_script('moveClass','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
-
+		wp_localize_script('moveClass','miceruleApi',array(
+			'nonce' => wp_create_nonce('wp_rest'),
+        	'root' => esc_url_raw(rest_url()),
 		));
 		//--------------------------------------------
 
 
 		//--------------------editClass-----------------------------
-    wp_enqueue_script('deleteClass',plugin_dir_url( __FILE__ ) . 'js/deleteClass.js',array('jquery'),$this->plugin_name, true);
+    	wp_enqueue_script('deleteClass',plugin_dir_url( __FILE__ ) . 'js/deleteClass.js',array('jquery'),$this->plugin_name, true);
 
-		$title_nonce = wp_create_nonce('deleteClass');
-		wp_localize_script('deleteClass','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
+		wp_localize_script('deleteClass','miceruleApi',array(
+			'nonce'    => wp_create_nonce('wp_rest'),
 		));
     //---------------------------------------------
 
@@ -284,22 +276,8 @@ class Micerule_Tables_Public {
 		//----------------------location settings-----------------
 		wp_enqueue_script('locationSettings',plugin_dir_url( __FILE__ ) . 'js/locationSettings.js',array('jquery'),$this->plugin_name, true);
 
-		$title_nonce = wp_create_nonce('allowOptionalClasses');
-		wp_localize_script('allowOptionalClasses','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
-		));
-
-		$title_nonce = wp_create_nonce('enableOnlineRegistrations');
-		wp_localize_script('enableOnlineRegistrations','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
-		));
-
-		$title_nonce = wp_create_nonce('eventOptionalSettings');
-		wp_localize_script('eventOptionalSettings','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
+		wp_localize_script('locationSettings','miceruleApi',array(
+			'nonce'    => wp_create_nonce('wp_rest'),
 		));
 		//-----------------------------------------------------------
 
@@ -307,26 +285,16 @@ class Micerule_Tables_Public {
 		//--------------------editClass-----------------------------
     wp_enqueue_script('updateRegistrationTables',plugin_dir_url( __FILE__ ) . 'js/updateRegistrationTables.js',array('jquery'),$this->plugin_name, true);
 
-		$title_nonce = wp_create_nonce('updateRegistrationTables');
-		wp_localize_script('updateRegistrationTables','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
-		));
+	wp_localize_script('updateRegistrationTables','miceruleApi',array(
+		'nonce'    => wp_create_nonce('wp_rest'),
+	));
     //---------------------------------------------
-
-
-		//--------------------editLabel---------------------------------
-		wp_enqueue_script('editLabel',plugin_dir_url( __FILE__ ) . 'js/editLabel.js',array('jquery'),$this->plugin_name, true);
-		//--------------------------------------------------------------
-
 
 		//--------------------editEntrySummary---------------------------------
 		wp_enqueue_script('editEntrySummary',plugin_dir_url( __FILE__ ) . 'js/editEntrySummary.js',array('jquery'),$this->plugin_name, true);
 
-		$title_nonce = wp_create_nonce('setAllAbsent');
-		wp_localize_script('setAllAbsent','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
+		wp_localize_script('setAllAbsent','miceruleApi',array(
+			'nonce'    => wp_create_nonce('wp-rest'),
 		));
 		//--------------------------------------------------------------
 
@@ -334,46 +302,8 @@ class Micerule_Tables_Public {
 		//--------------------editEntryBook-----------------------------
 		wp_enqueue_script('editEntryBook', plugin_dir_url(__FILE__) . 'js/editEntryBook.js', array('jquery'), $this->plugin_name, true);
 
-		$title_nonce = wp_create_nonce('moveEntry');
-		wp_localize_script('moveEntry','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
-		));
-
-		$title_nonce = wp_create_nonce('addEntry');
-		wp_localize_script('addEntry','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
-		));
-
-		$title_nonce = wp_create_nonce('deleteEntry');
-		wp_localize_script('deleteEntry','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
-		));
-
-		$title_nonce = wp_create_nonce('editPlacement');
-		wp_localize_script('editPlacement','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
-		));
-
-		$title_nonce = wp_create_nonce('editBIS');
-		wp_localize_script('editBIS','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
-		));
-
-		$title_nonce = wp_create_nonce('editAbsent');
-		wp_localize_script('editAbsent','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
-		));
-
-		$title_nonce = wp_create_nonce('getSelectOptions');
-		wp_localize_script('getSelectOptions','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
+		wp_localize_script('editEntryBook','miceruleApi',array(
+			'nonce'    => wp_create_nonce('wp-rest'),
 		));
     //---------------------------------------------
 
@@ -381,43 +311,32 @@ class Micerule_Tables_Public {
 		//--------------------printPrizeCards---------------------------------
 		wp_enqueue_script('printPrizeCards',plugin_dir_url( __FILE__ ) . 'js/printPrizeCards.js',array('jquery'),$this->plugin_name, true);
 
-		wp_localize_script('printAll','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
-		));
-
-		wp_localize_script('moveToUnprinted','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
+		wp_localize_script('printPrizeCards','miceruleApi', array(
+			'nonce'    => wp_create_nonce('wp_rest'),
 		));
 		//--------------------------------------------------------------
 
 		//--------------------editJudgesReports---------------------------------
 		wp_enqueue_script('editJudgesReports',plugin_dir_url( __FILE__ ) . 'js/editJudgesReports.js',array('jquery'),$this->plugin_name, true);
 
-		wp_localize_script('submitReport','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
+		wp_localize_script('editJudgesReports','miceruleApi', array(
+			'nonce'    => wp_create_nonce('wp_rest'),
 		));
 		//--------------------------------------------------------------
 
 		//--------------------createShowPost---------------------------------
 		wp_enqueue_script('createShowPost',plugin_dir_url( __FILE__ ) . 'js/createShowPost.js',array('jquery'),$this->plugin_name, true);
 
-		$title_nonce = wp_create_nonce('createShowPost');
-		wp_localize_script('createShowPost','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
+		wp_localize_script('createShowPost','miceruleApi', array(
+			'nonce'    => wp_create_nonce('wp_rest'),
 		));
 		//--------------------------------------------------------------
 
 		//--------------------setVariety---------------------------------
 		wp_enqueue_script('setVariety',plugin_dir_url( __FILE__ ) . 'js/setVariety.js',array('jquery'),$this->plugin_name, true);
 
-		$title_nonce = wp_create_nonce('setCustomClassVariety');
-		wp_localize_script('setCustomClassVariety','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
+		wp_localize_script('setVariety','miceruleApi', array(
+			'nonce'    => wp_create_nonce('wp_rest'),
 		));
 		//--------------------------------------------------------------
 

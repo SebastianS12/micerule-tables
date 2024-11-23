@@ -74,14 +74,16 @@ async function openMoveModal(entryID){
 
   $("#confirmMoveModal").on('click', function(){
     jQuery.ajax({
-      type: 'POST',
-      url: my_ajax_obj.ajax_url,
-      data: {
-        _ajax_nonce: my_ajax_obj.nonce,
-        action: 'moveEntry',
+      type: 'PUT',
+      url: getRoute("moveEntry"),
+      beforeSend: function ( xhr ) {
+        xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
+      },
+      contentType: 'application/json',
+      data: JSON.stringify({
         newClassIndexID: $("#classSelect").find('option').filter(":selected").val(),
         entryID: entryID,
-      },
+      }),
       success: function (data) {
         console.log(data);
         $.modal.close();
@@ -106,18 +108,18 @@ async function openAddModal(){
   await openEditModal("Add Entry to:", additionalHtml);
 
   $("#confirmAddModal").on('click', function(){
-    console.log($("#classSelect").find('option').filter(":selected").val());
-    console.log($("#userSelect").find('option').filter(":selected").val());
     $("#spinner-div").show();
     jQuery.ajax({
       type: 'POST',
-      url: my_ajax_obj.ajax_url,
-      data: {
-        _ajax_nonce: my_ajax_obj.nonce,
-        action: 'addEntry',
+      url: getRoute("addEntry"),
+      beforeSend: function ( xhr ) {
+        xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
+      },
+      contentType: 'application/json',
+      data: JSON.stringify({
         classIndexID: $("#classSelect").find('option').filter(":selected").val(),
         userName: $("#userSelect").find('option').filter(":selected").val(),
-      },
+      }),
       success: function (data) {
         $("#spinner-div").hide();
         $.modal.close();
@@ -167,10 +169,9 @@ function getEditSelectOptions(){
   return new Promise((resolve, reject) => {
     jQuery.ajax({
         type: 'GET',
-        url: my_ajax_obj.ajax_url,
-        data: {
-            _ajax_nonce: my_ajax_obj.nonce,
-            action: 'getSelectOptions',
+        url: getRoute("getSelectOptions"),
+        beforeSend: function ( xhr ) {
+          xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
         },
         success: function (data) {
             resolve(data); // Pass data when the call succeeds
@@ -204,13 +205,15 @@ function openDeleteModal(entryID){
 function deleteEntry(entryID){
   $("#spinner-div").show();
   jQuery.ajax({
-    type: 'POST',
-    url: my_ajax_obj.ajax_url,
-    data: {
-      _ajax_nonce: my_ajax_obj.nonce,
-      action: 'deleteEntry',
-      entryID: entryID,
+    type: 'DELETE',
+    url: getRoute("deleteEntry"),
+    beforeSend: function ( xhr ) {
+      xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
     },
+    contentType: 'application/json',
+    data: JSON.stringify({
+      entryID: entryID,
+    }),
     success: function (data) {
       $("#spinner-div").hide();
       updateAdminTabs();
@@ -226,15 +229,17 @@ function editPlacement(prize, placement, indexID, entryID){
   $("#spinner-div").show();
   jQuery.ajax({
     type: 'POST',
-    url: my_ajax_obj.ajax_url,
-    data: {
-      _ajax_nonce: my_ajax_obj.nonce,
-      action: 'editPlacement',
-      prize: prize,
-      placement: placement,
+    url: getRoute("editPlacement"),
+    beforeSend: function ( xhr ) {
+      xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
+    },
+    contentType: 'application/json',
+    data: JSON.stringify({
+      placementNumber: placement,      
       indexID: indexID,
       entryID: entryID,
-    },
+      prizeID: prize,
+    }),
     success: function (data) {
       $("#spinner-div").hide();
       updateAdminTabs();
@@ -251,14 +256,17 @@ function editBIS(prizeID, challengeIndexID, oaChallengeIndexID){
   $("#spinner-div").show();
   jQuery.ajax({
     type: 'POST',
-    url: my_ajax_obj.ajax_url,
-    data: {
+    url: getRoute("editAwards"),
+    beforeSend: function ( xhr ) {
+      xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
+    },
+    contentType: 'application/json',
+    data: JSON.stringify({
       _ajax_nonce: my_ajax_obj.nonce,
-      action: 'editBIS',
       prizeID: prizeID,
       challengeIndexID: challengeIndexID,
       oaChallengeIndexID: oaChallengeIndexID,
-    },
+    }),
     success: function (data) {
       $("#spinner-div").hide();
       updateAdminTabs();
@@ -271,16 +279,17 @@ function editBIS(prizeID, challengeIndexID, oaChallengeIndexID){
 }
 
 function editAbsent(entryID){
-  console.log(entryID);
   $("#spinner-div").show();
   jQuery.ajax({
-    type: 'POST',
-    url: my_ajax_obj.ajax_url,
-    data: {
-      _ajax_nonce: my_ajax_obj.nonce,
-      action: 'editAbsent',
-      entryID: entryID,
+    type: 'PUT',
+    url: getRoute("editAbsent"),
+    beforeSend: function ( xhr ) {
+      xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
     },
+    contentType: 'application/json',
+    data: JSON.stringify({
+      entryID: entryID,
+    }),
     success: function (data) {
       $("#spinner-div").hide();
       updateAdminTabs();

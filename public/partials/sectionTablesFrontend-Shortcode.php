@@ -3,7 +3,6 @@
 function sectionTablesFrontend($atts)
 {
   global $post;
-  global $wpdb;
 
   $user = wp_get_current_user();
   $userName = $user->display_name;
@@ -34,7 +33,8 @@ function sectionTablesFrontend($atts)
     $html .= "</div>";
   }
 
-  $html .= AdminTabs::getAdminTabsHtml($post->ID);
+  $adminTabsController = new AdminTabsController();
+  $html .= $adminTabsController->getViewHtml();
 
   $html .= "<div id = 'spinner-div' style = 'display:none'><div class = 'spinner-wrapper'><img src = '" . get_stylesheet_directory_uri() . "/Assets/mouse-loader.svg'></div></div>";
 

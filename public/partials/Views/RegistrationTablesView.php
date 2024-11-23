@@ -214,6 +214,7 @@ class RegistrationTablesView
     return $html;
   }
 
+  //TODO: View
   private static function getUpdateEntriesHtml($eventPostID, $eventLocationID, $userName)
   {
     global $wpdb;

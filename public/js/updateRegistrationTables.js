@@ -5,22 +5,23 @@ jQuery(document).ready(function($){
 function initRegistrationTablesJS(){
   $("#userSelectRegistration").select2();
   $("#userSelectRegistration").on('change',function(){
-    userName = $(this).val();
-    updateEntryFields(userName);
+    fancierName = $(this).val();
+    updateEntryFields(fancierName);
   });
   $(".registerClassesButton").on('click',function(){
     registerClasses();
   });
 }
 
-function updateEntryFields(userName){
+function updateEntryFields(fancierName){
   jQuery.ajax({
-    type: 'POST',
-    url: my_ajax_obj.ajax_url,
+    type: 'GET',
+    url: getRoute("registrations"),
+    beforeSend: function ( xhr ) {
+      xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
+    },
     data: {
-      _ajax_nonce: my_ajax_obj.nonce,
-      action: 'updateRegistrationTables',
-      userName: userName,
+      fancierName: fancierName,
     },
     success: function (data) {
       console.log(data);

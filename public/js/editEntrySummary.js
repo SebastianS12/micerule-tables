@@ -14,19 +14,22 @@ function setAllAbsent(clickedBox){
   var userName = clickedBox.parents("div.fancier-entry-summary").find("p.fancier-name").text();
 
   jQuery.ajax({
-    type: 'POST',
-    url: my_ajax_obj.ajax_url,
-    data: {
-      _ajax_nonce: my_ajax_obj.nonce,
-      action: 'setAllAbsent',
-      userName: userName,
-      checkValue: clickedBox.prop('checked'),
+    type: 'PUT',
+    url: getRoute("setAllAbsent"),
+    beforeSend: function ( xhr ) {
+      xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
     },
+    contentType: 'application/json',
+    data: JSON.stringify({
+      userName: userName,
+      absent: clickedBox.prop('checked'), // Ensures boolean is preserved
+    }),
     success: function (data) {
       updateAdminTabs();
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
-      alert(errorThrown);
+      console.log(XMLHttpRequest.responseText);
+      console.log(errorThrown);
     }
   });
 }

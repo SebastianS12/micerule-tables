@@ -2,18 +2,19 @@
 
 class PrizeCardsController
 {
-    private PrizeCardsService $prizeCardsService;
-
-    public function __construct(PrizeCardsService $prizeCardsService)
+    public function printAll(array $prizeCardsToPrint): WP_REST_Response
     {
-        $this->prizeCardsService = $prizeCardsService;
+        $prizeCardsService = new PrizeCardsService(new PrizeCardsRepository());
+        $prizeCardsService->printAll($prizeCardsToPrint);
+
+        return new WP_REST_Response("");
     }
 
-    public function printAll(array $prizeCardsToPrint){
-        $this->prizeCardsService->printAll($prizeCardsToPrint);
-    }
+    public function moveToUnprinted(int $placementID, int $prizeID): WP_REST_Response
+    {
+        $prizeCardsService = new PrizeCardsService(new PrizeCardsRepository());
+        $prizeCardsService->moveToUnprinted($placementID, $prizeID);
 
-    public function moveToUnprinted(int $placementID, int $prizeID){
-        $this->prizeCardsService->moveToUnprinted($placementID, $prizeID);
+        return new WP_REST_Response("");
     }
 }

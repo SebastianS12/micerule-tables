@@ -54,7 +54,7 @@ class ShowOptions implements JsonSerializable{
         $locationIDs = $wpdb->get_col("SELECT post_id FROM sm1_postmeta WHERE meta_key = 'micerule_show_options'");
         foreach($locationIDs as $locationID){
             $showOptions = get_post_meta($locationID, "micerule_show_options");
-            $showOptionsModel = ShowOptionsModel::create($locationID, $showOptions->allowOnlineRegistrations, $showOptions->registrationFee, $showOptions->prizeMoney['firstPlace'], $showOptions->prizeMoney['secondPlace'], $showOptions->prizeMoney['thirdPlace'], $showOptions->optionalClasses['unstandardised'], $showOptions->optionalClasses['junior'], $showOptions->optionalClasses['auction'], 0.0, 0.0, 0.0, 0.0);
+            $showOptionsModel = ShowOptionsModel::create($locationID, $showOptions->allowOnlineRegistrations, $showOptions->registrationFee, $showOptions->prizeMoney['firstPlace'], $showOptions->prizeMoney['secondPlace'], $showOptions->prizeMoney['thirdPlace'], $showOptions->optionalClasses['unstandardised'], $showOptions->optionalClasses['junior'], $showOptions->optionalClasses['auction'], 0.0, 0.0, 0.0, 0.0, 0.0);
             $showOptionsRepository->saveShowOptions($showOptionsModel);
         }
     }

@@ -81,13 +81,15 @@ function printPrizeCards(){
     });
 
   jQuery.ajax({
-    type: 'POST',
-    url: my_ajax_obj.ajax_url,
-    data: {
-      _ajax_nonce: my_ajax_obj.nonce,
-      action: 'printAll',
-      prizeCardsData: prizeCardsToPrint,
+    type: 'PUT',
+    url: getRoute("printAll"),
+    beforeSend: function ( xhr ) {
+      xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
     },
+    contentType: 'application/json',
+    data: JSON.stringify({
+      prizeCardsData: prizeCardsToPrint,
+    }),
     success: function (data) {
       console.log(data);
       updateAdminTabs();
@@ -100,18 +102,20 @@ function printPrizeCards(){
 
 function moveToUnprinted(clickedCard){
 
-  var prizeID = clickedCard.parents(".class-card").data("prize-id");
+  var prizeID = clickedCard.parents(".class-card").data("prize");
   var placementID = clickedCard.parents(".class-card").data("placementId");
 
   jQuery.ajax({
-    type: 'POST',
-    url: my_ajax_obj.ajax_url,
-    data: {
-      _ajax_nonce: my_ajax_obj.nonce,
-      action: 'moveToUnprinted',
+    type: 'PUT',
+    url: getRoute("moveToUnprinted"),
+    beforeSend: function ( xhr ) {
+      xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
+    },
+    contentType: 'application/json',
+    data: JSON.stringify({
       placementID : placementID,
       prizeID : prizeID,
-    },
+    }),
     success: function (data) {
       console.log(data);
       updateAdminTabs();

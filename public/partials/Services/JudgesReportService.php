@@ -43,14 +43,14 @@ class JudgesReportService{
         $breedsService = new BreedsService(new BreedsRepository(), new ShowClassesRepository($locationID));
         foreach($showClassesCollection->whereNot("section", "optional") as $entryClassModel){
             foreach($entryClassModel->classIndices as $classIndexModel){
-                $commentID = (isset($classIndexModel->{ClassComment::class}) && $classIndexModel->comment !== null) ? $classIndexModel->comment->id : null;
-                $comment = (isset($classIndexModel->{ClassComment::class}) && $classIndexModel->comment !== null) ? $classIndexModel->comment->comment : "";
+                $commentID = ($classIndexModel->comment() !== null) ? $classIndexModel->comment()->id : null;
+                $comment = ($classIndexModel->comment() !== null) ? $classIndexModel->comment()->comment : "";
                 $judge = JudgeFormatter::getJudgeName($entryClassModel);
                 $viewModel->addClassReport($classIndexModel->id, $commentID, $judge, $classIndexModel->class_index, $comment, $entryClassModel->section, $entryClassModel->class_name, $classIndexModel->age, $classIndexModel->registrationCount);
                 foreach($classIndexModel->placements as $placementModel){
-                    $placementReportID = (isset($placementModel->{PlacementReport::class}) && $placementModel->report !== null) ? $placementModel->report->id : null;
-                    $gender = (isset($placementModel->{PlacementReport::class}) && $placementModel->report !== null) ? $placementModel->report->gender : null;
-                    $comment = (isset($placementModel->{PlacementReport::class}) && $placementModel->report !== null) ? $placementModel->report->comment : "";
+                    $placementReportID = ($placementModel->report() !== null) ? $placementModel->report()->id : null;
+                    $gender = ($placementModel->report() !== null) ? $placementModel->report()->gender : null;
+                    $comment = ($placementModel->report() !== null) ? $placementModel->report()->comment : "";
                     $userName = $placementModel->registration->user_name;
                     $showVarietySelect = (!$breedsService->isStandardBreed($entryClassModel->class_name));
                     $varietyOptions = ($showVarietySelect) ? $breedsService->getClassSelectOptionsHtml($entryClassModel->section, $placementModel->entry()->variety_name) : "";
@@ -197,10 +197,9 @@ class JudgesReportService{
 
     public function submitPlacementReports(?array $placementReports, int $eventPostID, int $indexID, PlacementReportsRepository $placementReportsRepository){
         foreach($placementReports as $placementReport){
-            $reportID = isset($placementReport->id) && $placementReport->id !== '' ? intval($placementReport->id) : null;
-            $gender = ($placementReport->buckChecked) ? "Buck" : "Doe";
-            
-            $placementReportModel = isset($reportID) ? PlacementReport::createWithID($reportID, $eventPostID, $indexID, $gender, $placementReport->comment, $placementReport->placement_id): PlacementReport::create($eventPostID, $indexID, $gender, $placementReport->comment, $placementReport->placement_id);
+            $gender = ($placementReport['buckChecked']) ? "Buck" : "Doe";
+
+            $placementReportModel = isset($placementReport['id']) ? PlacementReport::createWithID($placementReport['id'], $eventPostID, $indexID, $gender, $placementReport['comment'], $placementReport['placementID']): PlacementReport::create($eventPostID, $indexID, $gender, $placementReport['comment'], $placementReport['placementID']);
             $placementReportsRepository->save($placementReportModel);
         }
     }

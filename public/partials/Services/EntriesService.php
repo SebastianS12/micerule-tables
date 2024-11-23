@@ -67,4 +67,9 @@ class EntriesService{
     {
         $this->entryRepository->deleteEntry($entryID);
     }
+
+    public function editVarietyName(int $entryID, string $varietyName, EntryRepository $entryRepository): void
+    {
+        $entryRepository->updateVariety($entryID, $varietyName);
+    }
 }

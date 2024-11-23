@@ -16,14 +16,15 @@ function registerClasses(){
   $("#spinner-div").show();
   jQuery.ajax({
     type: 'POST',
-    url: my_ajax_obj.ajax_url,
-    data: {
-      _ajax_nonce: my_ajax_obj.nonce,
-      action: 'registerClasses',
+    url: getRoute("registrations"),
+    beforeSend: function ( xhr ) {
+      xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
+    },
+    contentType: 'application/json',
+    data: JSON.stringify({
       classRegistrations: classRegistrations,
       userName: $("#userSelectRegistration").val(),
-      locationID: $("#locationID").val(),
-    },
+    }),
     success: function (data) {
       $("#spinner-div").hide();
       displayRegisterModalHtml(data);

@@ -31,9 +31,10 @@ class EntrySummaryService{
         $showOptionsService = new ShowOptionsService();
         $showOptions = $showOptionsService->getShowOptions(new ShowOptionsRepository(), $this->locationID);
         $registrationFee = $showOptions->registration_fee;
+        $auctionFee = $showOptions->auction_fee;
 
         foreach($registrationCollection as $userName  => $userRegistrationCollection){
-            $userRegistrationCount = 0;
+            $userRegistrationFee = 0;
             $allEntriesAbsent = false;
             foreach($userRegistrationCollection as $userRegistrationModel){
                 $classIndexModel = $userRegistrationModel->classIndex();
@@ -44,12 +45,17 @@ class EntrySummaryService{
                     if(isset($entry)){
                         $viewModel->addUserEntry($userName, $showClassModel->class_name, $classIndexModel->class_index, $classIndexModel->age, $entry->pen_number);
                         $allEntriesAbsent = $allEntriesAbsent || $entry->absent;
-                        $userRegistrationCount++;
+
+                        if($showClassModel->class_name != "Auction"){
+                            $userRegistrationFee += $registrationFee;
+                        }else{
+                            $userRegistrationFee += $auctionFee;
+                        }
                     }
                 }
             }
 
-            $viewModel->addUserRegistrationFee($userName, $userRegistrationCount * $registrationFee);
+            $viewModel->addUserRegistrationFee($userName, $userRegistrationFee);
             $viewModel->addAllEntriesAbsent($userName, $allEntriesAbsent);
         }
 

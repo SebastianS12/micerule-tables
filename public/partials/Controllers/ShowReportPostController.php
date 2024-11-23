@@ -7,7 +7,7 @@ class ShowReportPostController{
         return $showReportPostService->prepareViewModel($locationID, $eventPostID);
     }
 
-    public static function createPost(ShowReportPostViewModel $viewModel): array
+    public function createPost(ShowReportPostViewModel $viewModel): WP_REST_Response
     {
         $post = array(
         'post_title' => $viewModel->postTitle,
@@ -16,6 +16,6 @@ class ShowReportPostController{
         'post_type' => array(1),
         );
 
-        return $post;
+        return new WP_REST_Response($post);
     }
 }

@@ -9,11 +9,12 @@ function assignMoveClassListener(){
 
     jQuery.ajax({
       type: 'POST',
-      url: my_ajax_obj.ajax_url,
+      url: getRoute("swapClasses"),
+      beforeSend: function ( xhr ) {
+        xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
+      },
       data: {
-        _ajax_nonce: my_ajax_obj.nonce,
-        action: 'moveClass',
-        id: $("#locationID").val(),
+        locationID: $("#locationID").val(),
         firstClassID: firstClassID,
         secondClassID: secondClassID,
       },

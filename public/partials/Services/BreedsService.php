@@ -17,12 +17,13 @@ class BreedsService{
       return $this->breedsByName->offsetExists($name);
     }
 
-    public function getSectionBreedNames(string $section): Collection{
+    public function getSectionBreedNames(string $section): Collection
+    {
       return $this->breeds->where("section", $section)->name;
     }
 
-    public function getClassSelectOptionsHtml($sectionName, $selectedVariety = ""){
-    
+    public function getClassSelectOptionsHtml($sectionName, $selectedVariety = ""): string
+    {
         $selectOptions = $this->getClassSelectOptions($sectionName);
         $optionsHtml = "";
         foreach($selectOptions as $selectOption){
@@ -33,10 +34,12 @@ class BreedsService{
         return $optionsHtml;
       }
     
-      private function getClassSelectOptions(string $sectionName){
+      private function getClassSelectOptions(string $sectionName): array
+      {
         $selectOptions = array();
         $sectionBreedNames = $this->getSectionBreedNames($sectionName);
         $showSectionClassNames = $this->showClasses->where("section", $sectionName)->groupByUniqueKey("class_name");
+
         foreach($sectionBreedNames as $breedName){
           if(!isset($showSectionClassNames[$breedName])){
             array_push($selectOptions, $breedName);

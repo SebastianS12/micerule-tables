@@ -14,8 +14,9 @@ class ShowOptionsModel extends Model{
     public float $pm_bosec;
     public float $pm_bis;
     public float $pm_boa;
+    public float $auction_fee;
 
-    private function __construct(int $location_id, bool $allow_online_registrations, float $registration_fee, float $pm_first_place, float $pm_second_place, float $pm_third_place, bool $allow_unstandardised, bool $allow_junior, bool $allow_auction, float $pm_bisec, float $pm_bosec, float $pm_bis, float $pm_boa)
+    private function __construct(int $location_id, bool $allow_online_registrations, float $registration_fee, float $pm_first_place, float $pm_second_place, float $pm_third_place, bool $allow_unstandardised, bool $allow_junior, bool $allow_auction, float $pm_bisec, float $pm_bosec, float $pm_bis, float $pm_boa, float $auction_fee)
     {
         $this->location_id = $location_id;
         $this->allow_online_registrations = $allow_online_registrations;
@@ -30,23 +31,24 @@ class ShowOptionsModel extends Model{
         $this->pm_bosec = $pm_bosec;
         $this->pm_bis = $pm_bis;
         $this->pm_boa = $pm_boa;
+        $this->auction_fee = $auction_fee;
     }
 
-    public static function create(int $location_id, bool $allow_online_registrations, float $registration_fee, float $pm_first_place, float $pm_second_place, float $pm_third_place, bool $allow_unstandardised, bool $allow_junior, bool $allow_auction, float $pm_bisec, float $pm_bosec, float $pm_bis, float $pm_boa): ShowOptionsModel
+    public static function create(int $location_id, bool $allow_online_registrations, float $registration_fee, float $pm_first_place, float $pm_second_place, float $pm_third_place, bool $allow_unstandardised, bool $allow_junior, bool $allow_auction, float $pm_bisec, float $pm_bosec, float $pm_bis, float $pm_boa, float $auction_fee): ShowOptionsModel
     {
-        return new self($location_id, $allow_online_registrations, $registration_fee, $pm_first_place, $pm_second_place, $pm_third_place, $allow_unstandardised, $allow_junior, $allow_auction, $pm_bisec, $pm_bosec, $pm_bis, $pm_boa);
+        return new self($location_id, $allow_online_registrations, $registration_fee, $pm_first_place, $pm_second_place, $pm_third_place, $allow_unstandardised, $allow_junior, $allow_auction, $pm_bisec, $pm_bosec, $pm_bis, $pm_boa, $auction_fee);
     }
 
-    public static function createWithID(int $id, int $location_id, bool $allow_online_registrations, float $registration_fee, float $pm_first_place, float $pm_second_place, float $pm_third_place, bool $allow_unstandardised, bool $allow_junior, bool $allow_auction, float $pm_bisec, float $pm_bosec, float $pm_bis, float $pm_boa): ShowOptionsModel
+    public static function createWithID(int $id, int $location_id, bool $allow_online_registrations, float $registration_fee, float $pm_first_place, float $pm_second_place, float $pm_third_place, bool $allow_unstandardised, bool $allow_junior, bool $allow_auction, float $pm_bisec, float $pm_bosec, float $pm_bis, float $pm_boa, $auction_fee): ShowOptionsModel
     {
-        $instance = self::create($location_id, $allow_online_registrations, $registration_fee, $pm_first_place, $pm_second_place, $pm_third_place, $allow_unstandardised, $allow_junior, $allow_auction, $pm_bisec, $pm_bosec, $pm_bis, $pm_boa);
+        $instance = self::create($location_id, $allow_online_registrations, $registration_fee, $pm_first_place, $pm_second_place, $pm_third_place, $allow_unstandardised, $allow_junior, $allow_auction, $pm_bisec, $pm_bosec, $pm_bis, $pm_boa, $auction_fee);
         $instance->id = $id;
         return $instance;
     }
 
     public static function getDefault(int $location_id): ShowOptionsModel
     {
-        return new self($location_id, false, 0.0, 0.0, 0.0, 0.0, false, false, false, 0.0, 0.0, 0.0, 0.0);
+        return new self($location_id, false, 0.0, 0.0, 0.0, 0.0, false, false, false, 0.0, 0.0, 0.0, 0.0, 0.0);
     }
 
     public function getPrizes(): array

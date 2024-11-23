@@ -16,6 +16,7 @@ $pmBiSec = $_POST['pmBiSec'];
 $pmBoSec = $_POST['pmBoSec'];
 $pmBIS = $_POST['pmBIS'];
 $pmBOA = $_POST['pmBOA'];
+$auctionFee = $_POST['auctionFee'] ?? 0.0;
 
-ShowOptionsController::saveShowOptions($id, $locationID, $allowOnlineRegistrations, $registrationFee, $firstPrize, $secondPrize, $thirdPrize, $allowUnstandardised, $allowJunior, $allowAuction, $pmBiSec, $pmBoSec, $pmBIS, $pmBOA);
+ShowOptionsController::saveShowOptions($id, $locationID, $allowOnlineRegistrations, $registrationFee, $firstPrize, $secondPrize, $thirdPrize, $allowUnstandardised, $allowJunior, $allowAuction, $pmBiSec, $pmBoSec, $pmBIS, $pmBOA, $auctionFee);
 wp_die();

@@ -31,6 +31,10 @@ class Micerule_Tables{
     $this->loader = new Micerule_Tables_Loader();
   }
 
+  public function my_update_cookie( $logged_in_cookie ){
+    $_COOKIE[LOGGED_IN_COOKIE] = $logged_in_cookie;
+  }
+
   private function define_admin_hooks(){
     $plugin_admin = new Micerule_Tables_Admin($this->get_plugin_name(), $this->get_version());
 
@@ -99,9 +103,22 @@ class Micerule_Tables{
     $this->loader->add_action('wp_ajax_submitReport', $plugin_public, 'submitReport');
     $this->loader->add_action('wp_ajax_createShowPost', $plugin_public, 'createShowPost');
     $this->loader->add_action('wp_ajax_getAdminTabsHtml', $plugin_public, 'getAdminTabsHtml');
+
+    // $this->loader->add_action('set_logged_in_cookie', $plugin_public, 'my_update_cookie');
+  }
+
+  public function initRouter(): void
+  {
+    require_once plugin_dir_path(dirname(__FILE__)).'public/core/Router/web.php';
+  }
+
+  private function registerRoutes():void
+  {
+    add_action('rest_api_init', [$this, 'initRouter']);
   }
 
   public function run() {
+    $this->registerRoutes();
     $this->loader->run();
   }
 

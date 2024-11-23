@@ -39,18 +39,6 @@ class PlacementsRowService{
     private function shouldShowPlacementInput(Prize $prize, int $placementNumber, EntryModel $entry, Collection $lowerPlacements, Collection $currentPlacements, bool $showPreviousPlacementInput, bool $isInSameClass) {
         $showPlacementInput = $prize == Prize::STANDARD || $showPreviousPlacementInput || $isInSameClass || PlacementsService::entryHasPlacement($entry, $prize, $placementNumber);
 
-        // if(count($lowerPlacements) == 0){
-        //     $showPlacementInput = true;
-        // }
-    
-        // if ($showPreviousPlacementInput) {
-        //     $showPlacementInput = true;
-        // }
-
-        // if($isInSameClass){
-        //     $showPlacementInput = true;
-        // }
-
         if($showPlacementInput){
             $showPlacementInput = PlacementsService::entryHasPlacement($entry, $prize, $placementNumber) || !PlacementsService::placementExists($currentPlacements, $placementNumber);
             $showPlacementInput = $showPlacementInput && $this->noOtherPlacementsForEntry($currentPlacements, $placementNumber, $entry);
@@ -69,9 +57,8 @@ class PlacementsRowService{
         return $noOtherPlacements;
     }
 
-    public function editPlacement(int $eventPostID, Prize $prize, int $indexID, int $placementNumber, int $entryID): void
+    public function editPlacement(PlacementsRepository $placementsRepository, Prize $prize, int $indexID, int $placementNumber, int $entryID): void
     {
-        $placementsRepository = new PlacementsRepository($eventPostID, PlacementDAOFactory::getPlacementDAO($prize->value));
         $placements = $placementsRepository->getIndexPlacements($indexID);
         if(PlacementsService::placementExists($placements, $placementNumber)){
             $placements = $placements->groupByUniqueKey("placement");

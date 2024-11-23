@@ -7,7 +7,7 @@ function assignAddClassListener(){
     var section = this.id.split("AddButton")[0];
 
     if($(".confirmClass").length == 0)
-      getSelectClassRowHtml(section, $("#locationID").val());
+      getSelectClassRowHtml(section);
     // convertPostMeta();
   });
 }
@@ -20,26 +20,26 @@ function getSelectHTML(selectOptionsHTML){
   return selectHTML;
 }
 
-function getSelectClassRowHtml(section, id){
+function getSelectClassRowHtml(section){
   jQuery.ajax({
-    type: 'POST',
-    url: my_ajax_obj.ajax_url,
+    type: 'GET',
+    url: getRoute("getClassSelectOptionsHtml"),
+    beforeSend: function ( xhr ) {
+      xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
+    },
     data: {
-      _ajax_nonce: my_ajax_obj.nonce,
-      action: 'getClassSelectOptions',
-      id: id,
-      section: section.toLowerCase(),
+      sectionName: section.toLowerCase(),
+      locationID: $("#locationID").val(),
     },
     success: function (selectOptionsHTML) {
-      console.log(selectOptionsHTML);
-      //var selectOptions = jQuery.parseJSON(data);
       var selectHTML = getSelectHTML(selectOptionsHTML);
       var tableID = '#table' + section + "-location" ;
       var position = $(tableID).find(".classRow-location").length;
       addSelectClassRowHtml(section, position, tableID, selectHTML);
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
-      alert(errorThrown);
+      console.log(XMLHttpRequest.responseText);
+      console.log(errorThrown);
     }
   });
 }
@@ -47,11 +47,10 @@ function getSelectClassRowHtml(section, id){
 function addClass(section, className){
   jQuery.ajax({
     type: 'POST',
-    url: my_ajax_obj.ajax_url,
+    url: getRoute("addClass"),
     data: {
-      _ajax_nonce: my_ajax_obj.nonce,
-      action: 'addClass',
-      id: $("#locationID").val(),
+      _wpnonce: miceruleApi.nonce,
+      locationID: $("#locationID").val(),
       section: section.toLowerCase(),
       className: className,
     },

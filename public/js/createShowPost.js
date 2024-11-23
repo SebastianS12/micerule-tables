@@ -4,11 +4,11 @@ jQuery(document).ready(function($){
 
     jQuery.ajax({
       type: 'POST',
-      url: my_ajax_obj.ajax_url,
-      data: {
-        _ajax_nonce: my_ajax_obj.nonce,
-        action: 'createShowPost',
+      url: getRoute("showPost"),
+      beforeSend: function ( xhr ) {
+        xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
       },
+      contentType: 'application/json',
       success: function (data) {
         if(data != ""){
           $("#create-show-post").after("<a href = '" + data + "'>Show Report Draft</a>")

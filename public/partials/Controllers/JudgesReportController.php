@@ -2,40 +2,22 @@
 
 class JudgesReportController
 {
-    private JudgesReportService $judgesReportService;
-    
-    public function __construct(JudgesReportService $judgesReportService)
+    public function submitClassReport(?int $commentID, int $indexID, string $comment, array $placementReports): WP_REST_Response
     {
-        $this->judgesReportService = $judgesReportService;
+        $eventPostID = EventHelper::getEventPostID();
+        $judgesReportService = new JudgesReportService();
+        $judgesReportService->submitClassComment($commentID, $eventPostID, $comment, $indexID, new ClassCommentsRepository($eventPostID));
+        $judgesReportService->submitPlacementReports($placementReports, $eventPostID, $indexID, new PlacementReportsRepository($eventPostID));
+
+        return new WP_REST_Response(Logger::getInstance()->getLogs());
     }
 
-    public function submit(string $submitType, int $eventPostID)
+    public function submitGeneralComment(?int $commentID, int $judgeID, string $comment): WP_REST_Response
     {
-        if ($submitType == "classReport") {
-            $this->submitClassReport($eventPostID);
-        }
-        if ($submitType == "generalComment") {
-            self::submitGeneralComment($eventPostID);
-        }
-    }
+        $eventPostID = EventHelper::getEventPostID();
+        $judgesReportService = new JudgesReportService();
+        $judgesReportService->submitGeneralComment($commentID, $judgeID, $comment, new GeneralCommentRepository($eventPostID));
 
-    private function submitClassReport(int $eventPostID)
-    {
-        $commentID = isset($_POST['commentID']) && $_POST['commentID'] !== '' ? intval($_POST['commentID']) : null;
-        $indexID = intval($_POST['indexID']);
-        $comment = $_POST['classComment'];
-        $placementReports = json_decode(html_entity_decode(stripslashes($_POST['placementReportData'])));
-
-        $this->judgesReportService->submitClassComment($commentID, $eventPostID, $comment, $indexID, new ClassCommentsRepository($eventPostID));
-        $this->judgesReportService->submitPlacementReports($placementReports, $eventPostID, $indexID, new PlacementReportsRepository($eventPostID));
-    }
-
-    private function submitGeneralComment(int $eventPostID)
-    {
-        $commentID = isset($_POST['commentID']) && $_POST['commentID'] !== '' ? intval($_POST['commentID']) : null;
-        $judgeID = intval($_POST['judgeID']);
-        $comment = $_POST['comment'];
-
-        $this->judgesReportService->submitGeneralComment($commentID, $judgeID, $comment, new GeneralCommentRepository($eventPostID));
+        return new WP_REST_Response("");
     }
 }

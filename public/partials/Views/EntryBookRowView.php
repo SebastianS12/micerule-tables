@@ -34,8 +34,8 @@ class EntryBookRowView{
         if($data['editVisibility']){
             $html .= "<div class='button-wrapper'><button class = 'moveEntry' id = '" . $data['penNumber'] . "&-&move'><img src='/wp-content/plugins/micerule-tables/admin/svg/move.svg'></button>
                   <button class = 'deleteEntry' id = '" . $data['penNumber'] . "&-&delete'><img src='/wp-content/plugins/micerule-tables/admin/svg/trash.svg'></button></div>";
-            $html .=  "<select class = 'classSelect-entryBook' id = '".$data['entryID']."&-&varietySelect' autocomplete='off' style='display:".$data['showVarietySelect']."'><option value = ''>Select a Variety</option>".$data['varietyOptions']."</select>";
         }
+        $html .=  "<select class = 'classSelect-entryBook' id = '".$data['entryID']."&-&varietySelect' autocomplete='off' style='display:".$data['showVarietySelect']."'><option value = ''>Select a Variety</option>".$data['varietyOptions']."</select>";
         $html .= "</td>";
 
         return $html;

@@ -10,18 +10,20 @@ function assignLocationSettingsListeners(){
     
     debounceTimeout = setTimeout(() => {
       updateOptionalSettings($(this));
-    }, 3000);
+    }, 1000);
   });
 }
 
 function updateOptionalSettings(settingElement){
   jQuery.ajax({
     type: 'POST',
-    url: my_ajax_obj.ajax_url,
-    data: {
-      _ajax_nonce: my_ajax_obj.nonce,
-      action: 'eventOptionalSettings',
-      id: $(".showsec-options").data("optionId"),
+    url: getRoute("locationSettings"),
+    beforeSend: function ( xhr ) {
+      xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
+    },
+    contentType: 'application/json',
+    data: JSON.stringify({
+      id: $(".showsec-options").data("optionId") || null,
       locationID: $("#locationID").val(),
       allowOnlineRegistrations: $("#enableOnlineRegistrations").prop('checked'),
       registrationFee: $("#registrationFeeInput").val(),
@@ -35,7 +37,8 @@ function updateOptionalSettings(settingElement){
       pmBoSec : $("#prizeMoney-boSec").val(),
       pmBIS: $("#prizeMoney-bis").val(),
       pmBOA: $("#prizeMoney-boa").val(),
-    },
+      auctionFee: $("#auctionFeeInput").val() || 0.0,
+    }),
     success: function (data) {
       console.log(data);
       if(settingElement.hasClass("optionalClasses")){
@@ -45,7 +48,8 @@ function updateOptionalSettings(settingElement){
       }
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
-      alert(errorThrown);
+      console.log(XMLHttpRequest.responseText);
+      console.log(errorThrown);
       assignLocationSettingsListeners();
     }
   });

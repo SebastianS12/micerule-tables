@@ -32,6 +32,8 @@ class ShowOptionsRepository{
         global $wpdb;
         if(isset($showOptionsModel->id)){
             $wpdb->update($wpdb->prefix.Table::SHOW_OPTIONS->value, get_object_vars($showOptionsModel), array('id' => $showOptionsModel->id));
+        }else{
+            $wpdb->insert($wpdb->prefix.Table::SHOW_OPTIONS->value, get_object_vars($showOptionsModel));
         }
     }
 }

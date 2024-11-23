@@ -1,12 +1,10 @@
-function updateAdminTabs(/*adminTabsHtml, activeTabClass*/){
+function updateAdminTabs(){
   console.log("Update Admin Tabs");
-  //adminTabsHtml = jQuery.parseJSON(adminTabsHtmlJson);
   jQuery.ajax({
-    type: 'POST',
-    url: my_ajax_obj.ajax_url,
-    data: {
-      _ajax_nonce: my_ajax_obj.nonce,
-      action: 'getAdminTabsHtml',
+    type: 'GET',
+    url: getRoute("adminTabs"),
+    beforeSend: function ( xhr ) {
+      xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
     },
     success: function (data) {
       $(".adminTabs").replaceWith(data);
