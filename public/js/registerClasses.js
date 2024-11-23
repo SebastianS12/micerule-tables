@@ -22,6 +22,7 @@ function registerClasses(){
     },
     contentType: 'application/json',
     data: JSON.stringify({
+      eventPostID: miceruleApi.eventPostID,
       classRegistrations: classRegistrations,
       userName: $("#userSelectRegistration").val(),
     }),

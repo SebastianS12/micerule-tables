@@ -81,6 +81,7 @@ async function openMoveModal(entryID){
       },
       contentType: 'application/json',
       data: JSON.stringify({
+        eventPostID: miceruleApi.eventPostID,
         newClassIndexID: $("#classSelect").find('option').filter(":selected").val(),
         entryID: entryID,
       }),
@@ -117,6 +118,7 @@ async function openAddModal(){
       },
       contentType: 'application/json',
       data: JSON.stringify({
+        eventPostID: miceruleApi.eventPostID,
         classIndexID: $("#classSelect").find('option').filter(":selected").val(),
         userName: $("#userSelect").find('option').filter(":selected").val(),
       }),
@@ -173,6 +175,9 @@ function getEditSelectOptions(){
         beforeSend: function ( xhr ) {
           xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
         },
+        data: {
+          eventPostID: miceruleApi.eventPostID
+        },
         success: function (data) {
             resolve(data); // Pass data when the call succeeds
         },
@@ -212,6 +217,7 @@ function deleteEntry(entryID){
     },
     contentType: 'application/json',
     data: JSON.stringify({
+      eventPostID: miceruleApi.eventPostID,
       entryID: entryID,
     }),
     success: function (data) {
@@ -235,6 +241,7 @@ function editPlacement(prize, placement, indexID, entryID){
     },
     contentType: 'application/json',
     data: JSON.stringify({
+      eventPostID: miceruleApi.eventPostID,
       placementNumber: placement,      
       indexID: indexID,
       entryID: entryID,
@@ -262,7 +269,7 @@ function editBIS(prizeID, challengeIndexID, oaChallengeIndexID){
     },
     contentType: 'application/json',
     data: JSON.stringify({
-      _ajax_nonce: my_ajax_obj.nonce,
+      eventPostID: miceruleApi.eventPostID,
       prizeID: prizeID,
       challengeIndexID: challengeIndexID,
       oaChallengeIndexID: oaChallengeIndexID,

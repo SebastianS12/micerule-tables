@@ -7,6 +7,7 @@ class ScriptLoader{
 
         if($createNonce){
             wp_localize_script($script->handle,'miceruleApi', array(
+                'eventPostID' => get_the_ID(),
                 'nonce'    => wp_create_nonce('wp_rest'),
             ));
         }

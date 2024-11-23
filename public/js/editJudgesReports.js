@@ -45,6 +45,7 @@ function submitReport(buttonElement){
     },
     contentType: 'application/json',
     data: JSON.stringify({
+      eventPostID: miceruleApi.eventPostID,
       commentID: commentID,
       indexID: indexID,
       comment: classComment,
@@ -76,6 +77,7 @@ function submitGeneralComment(buttonElement){
     },
     contentType: 'application/json',
     data: JSON.stringify({
+      eventPostID: miceruleApi.eventPostID,
       commentID: commentID,
       judgeID: judgeID,
       comment: comment,

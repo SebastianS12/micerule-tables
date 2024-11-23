@@ -1,15 +1,14 @@
 <?php
 
 class AdminTabsController{
-    public function prepareViewModel(): AdminTabsViewModel
+    public function prepareViewModel(int $eventPostID): AdminTabsViewModel
     {
-        $eventPostID = EventHelper::getEventPostID();
         $adminTabsService = new AdminTabsService();
         return $adminTabsService->prepareViewModel($eventPostID, new ShowOptionsService(), new JudgeDataLoader());
     }
 
-    public function getViewHtml(): string
+    public function getViewHtml(int $eventPostID): string
     {
-        return AdminTabsView::render($this->prepareViewModel());
+        return AdminTabsView::render($this->prepareViewModel($eventPostID));
     }
 }

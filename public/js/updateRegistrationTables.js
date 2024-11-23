@@ -21,6 +21,7 @@ function updateEntryFields(fancierName){
       xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
     },
     data: {
+      eventPostID: miceruleApi.eventPostID,
       fancierName: fancierName,
     },
     success: function (data) {

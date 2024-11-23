@@ -15,9 +15,8 @@ class RegistrationTablesController{
         return $allowOnlineRegistrations;
     }
 
-    public function register(array $classRegistrations, string $fancierName): WP_REST_Response
+    public function register(int $eventPostID, array $classRegistrations, string $fancierName): WP_REST_Response
     {
-        $eventPostID = EventHelper::getEventPostID();
         $userRegistrationsRepository = new UserRegistrationsRepository($eventPostID);
         $registrationOrderRepository = new RegistrationOrderRepository($eventPostID);
         $registrationCountRepository = new RegistrationCountRepository($eventPostID, LocationHelper::getIDFromEventPostID($eventPostID));
@@ -32,9 +31,8 @@ class RegistrationTablesController{
         return new WP_REST_Response(RegistrationTablesView::getUserRegistrationOverviewHtml($fancierName, $registrations));
     }
 
-    public function updateRegistrationTables(string $fancierName): WP_REST_Response
+    public function updateRegistrationTables(int $eventPostID, string $fancierName): WP_REST_Response
     {
-        $eventPostID = EventHelper::getEventPostID();
         return new WP_REST_Response(RegistrationTablesView::getRegistrationTablesHtml($eventPostID, $fancierName));
     }
 }

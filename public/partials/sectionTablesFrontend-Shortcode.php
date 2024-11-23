@@ -34,7 +34,7 @@ function sectionTablesFrontend($atts)
   }
 
   $adminTabsController = new AdminTabsController();
-  $html .= $adminTabsController->getViewHtml();
+  $html .= $adminTabsController->getViewHtml(EventHelper::getEventPostID());
 
   $html .= "<div id = 'spinner-div' style = 'display:none'><div class = 'spinner-wrapper'><img src = '" . get_stylesheet_directory_uri() . "/Assets/mouse-loader.svg'></div></div>";
 

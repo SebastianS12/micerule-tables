@@ -21,6 +21,7 @@ function setAllAbsent(clickedBox){
     },
     contentType: 'application/json',
     data: JSON.stringify({
+      eventPostID: miceruleApi.eventPostID,
       userName: userName,
       absent: clickedBox.prop('checked'), // Ensures boolean is preserved
     }),

@@ -6,6 +6,9 @@ function updateAdminTabs(){
     beforeSend: function ( xhr ) {
       xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
     },
+    data: {
+      eventPostID: miceruleApi.eventPostID,
+    },
     success: function (data) {
       $(".adminTabs").replaceWith(data);
       assignTabListeners();
