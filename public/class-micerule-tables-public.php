@@ -37,7 +37,6 @@ require_once plugin_dir_path(__FILE__) . 'partials/Helpers/EventHelper.php';
 
 include_once plugin_dir_path(__FILE__)."partials/Event/EventProperties.php";
 include_once plugin_dir_path(__FILE__)."partials/Event/EventUser.php";
-include_once plugin_dir_path(__FILE__)."partials/Event/AdminTabs.php";
 
 require_once plugin_dir_path(__FILE__) . 'partials/Leaderboard/LeaderboardController.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Leaderboard/LeaderboardModel.php';
