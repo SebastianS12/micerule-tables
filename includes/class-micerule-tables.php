@@ -21,6 +21,7 @@ class Micerule_Tables{
     define("BREED_ICONS_DIR_URL", plugin_dir_url("")."micerule-tables/res/breed-icons/");
     define("RES_DIR", ABSPATH."wp-content/plugins/micerule-tables/res/");
     define("RES_DIR_URL", plugin_dir_url("")."micerule-tables/res/");
+    define("SCRIPT_DIR", plugin_dir_url("")."micerule-tables/public/js/");
   }
 
   private function load_dependencies(){
@@ -29,10 +30,6 @@ class Micerule_Tables{
     require_once plugin_dir_path(dirname(__FILE__)).'public/class-micerule-tables-public.php';
 
     $this->loader = new Micerule_Tables_Loader();
-  }
-
-  public function my_update_cookie( $logged_in_cookie ){
-    $_COOKIE[LOGGED_IN_COOKIE] = $logged_in_cookie;
   }
 
   private function define_admin_hooks(){
@@ -76,35 +73,6 @@ class Micerule_Tables{
 
     $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
     $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
-    //add ajax actions
-    $this->loader->add_action('wp_ajax_lbTables',$plugin_public,'lbTables');
-    $this->loader->add_action('wp_ajax_nopriv_lbTables',$plugin_public,'lbTables');
-
-    $this->loader->add_action('wp_ajax_addClass',$plugin_public,'addClass');
-
-    $this->loader->add_action('wp_ajax_registerClasses',$plugin_public,'registerClasses');
-    $this->loader->add_action('wp_ajax_getClassSelectOptions',$plugin_public,'getClassSelectOptions');
-    $this->loader->add_action('wp_ajax_moveClass',$plugin_public,'moveClass');
-    $this->loader->add_action('wp_ajax_deleteClass',$plugin_public,'deleteClass');
-    $this->loader->add_action('wp_ajax_eventOptionalSettings', $plugin_public, 'eventOptionalSettings');
-    $this->loader->add_action('wp_ajax_updateRegistrationTables', $plugin_public, 'updateRegistrationTables');
-    $this->loader->add_action('wp_ajax_moveEntry', $plugin_public, 'moveEntry');
-    $this->loader->add_action('wp_ajax_addEntry', $plugin_public, 'addEntry');
-    $this->loader->add_action('wp_ajax_deleteEntry', $plugin_public, 'deleteEntry');
-    $this->loader->add_action('wp_ajax_editPlacement', $plugin_public, 'editPlacement');
-    $this->loader->add_action('wp_ajax_editBIS', $plugin_public, 'editBIS');
-    $this->loader->add_action('wp_ajax_getSelectOptions', $plugin_public, 'getSelectOptions');
-    $this->loader->add_action('wp_ajax_editAbsent', $plugin_public, 'editAbsent');
-    $this->loader->add_action('wp_ajax_setAllAbsent', $plugin_public, 'setAllAbsent');
-    $this->loader->add_action('wp_ajax_setCustomClassVariety', $plugin_public, 'setCustomClassVariety');
-    $this->loader->add_action('wp_ajax_printAll', $plugin_public, 'printAll');
-    $this->loader->add_action('wp_ajax_moveToUnprinted', $plugin_public, 'moveToUnprinted');
-    $this->loader->add_action('wp_ajax_submitReport', $plugin_public, 'submitReport');
-    $this->loader->add_action('wp_ajax_createShowPost', $plugin_public, 'createShowPost');
-    $this->loader->add_action('wp_ajax_getAdminTabsHtml', $plugin_public, 'getAdminTabsHtml');
-
-    // $this->loader->add_action('set_logged_in_cookie', $plugin_public, 'my_update_cookie');
   }
 
   public function initRouter(): void

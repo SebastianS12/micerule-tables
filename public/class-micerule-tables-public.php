@@ -25,6 +25,9 @@ require_once plugin_dir_path(__FILE__) . 'core/Router/Route.php';
 require_once plugin_dir_path(__FILE__) . 'core/Router/Router.php';
 require_once plugin_dir_path(__FILE__) . 'core/Router/Logger.php';
 
+require_once plugin_dir_path(__FILE__) . 'core/Utils/Script.php';
+require_once plugin_dir_path(__FILE__) . 'core/Utils/ScriptLoader.php';
+
 require_once plugin_dir_path(__FILE__) . 'partials/Helpers/JudgeFormatter.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Helpers/LocationHelper.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Helpers/PermissionHelper.php';
@@ -221,10 +224,6 @@ class Micerule_Tables_Public {
 	* @since    1.0.0
 	*/
 	public function enqueue_scripts() {
-
-		wp_enqueue_script('route',plugin_dir_url( __FILE__ ) . 'js/route.js',array('jquery'),$this->plugin_name, true);
-
-		//---------------------------lbTables------------------
 		wp_enqueue_script('lbTables', plugin_dir_url( __FILE__ ).'js/lbTables.js', array( 'jquery' ), $this->version, false );
 
 		$title_nonce = wp_create_nonce('lbTables');
@@ -233,219 +232,10 @@ class Micerule_Tables_Public {
 			'nonce'    => $title_nonce,
 
 		));
-		//--------------------------------------------
 
-		//---------------------------addBreed------------------
-		wp_enqueue_script('addClass', plugin_dir_url( __FILE__ ).'js/addClass.js', array( 'wp-api', 'jquery' ), $this->version, false );
-
-		// wp_localize_script('addClass','my_ajax_obj',array('wp-api'));
-		wp_localize_script('addClass','miceruleApi', array(
-			'nonce' => wp_create_nonce('wp_rest'),
-			'root' => esc_url_raw(rest_url()),
-		));
-		//--------------------------------------------
-
-		//---------------------------registerClasses------------------
-		wp_enqueue_script('registerClasses', plugin_dir_url( __FILE__ ).'js/registerClasses.js', array( 'jquery' ), $this->version, false );
-
-		wp_localize_script('registerClasses','miceruleApi',array(
-			'nonce'    => wp_create_nonce('wp_rest'),
-		));
-		//--------------------------------------------
-
-
-		//---------------------------moveClass------------------
-		wp_enqueue_script('moveClass', plugin_dir_url( __FILE__ ).'js/moveClass.js', array( 'wp-api', 'jquery' ), $this->version, false );
-
-		wp_localize_script('moveClass','miceruleApi',array(
-			'nonce' => wp_create_nonce('wp_rest'),
-        	'root' => esc_url_raw(rest_url()),
-		));
-		//--------------------------------------------
-
-
-		//--------------------editClass-----------------------------
-    	wp_enqueue_script('deleteClass',plugin_dir_url( __FILE__ ) . 'js/deleteClass.js',array('jquery'),$this->plugin_name, true);
-
-		wp_localize_script('deleteClass','miceruleApi',array(
-			'nonce'    => wp_create_nonce('wp_rest'),
-		));
-    //---------------------------------------------
-
-
-		//----------------------location settings-----------------
-		wp_enqueue_script('locationSettings',plugin_dir_url( __FILE__ ) . 'js/locationSettings.js',array('jquery'),$this->plugin_name, true);
-
-		wp_localize_script('locationSettings','miceruleApi',array(
-			'nonce'    => wp_create_nonce('wp_rest'),
-		));
-		//-----------------------------------------------------------
-
-
-		//--------------------editClass-----------------------------
-    wp_enqueue_script('updateRegistrationTables',plugin_dir_url( __FILE__ ) . 'js/updateRegistrationTables.js',array('jquery'),$this->plugin_name, true);
-
-	wp_localize_script('updateRegistrationTables','miceruleApi',array(
-		'nonce'    => wp_create_nonce('wp_rest'),
-	));
-    //---------------------------------------------
-
-		//--------------------editEntrySummary---------------------------------
-		wp_enqueue_script('editEntrySummary',plugin_dir_url( __FILE__ ) . 'js/editEntrySummary.js',array('jquery'),$this->plugin_name, true);
-
-		wp_localize_script('setAllAbsent','miceruleApi',array(
-			'nonce'    => wp_create_nonce('wp-rest'),
-		));
-		//--------------------------------------------------------------
-
-
-		//--------------------editEntryBook-----------------------------
-		wp_enqueue_script('editEntryBook', plugin_dir_url(__FILE__) . 'js/editEntryBook.js', array('jquery'), $this->plugin_name, true);
-
-		wp_localize_script('editEntryBook','miceruleApi',array(
-			'nonce'    => wp_create_nonce('wp-rest'),
-		));
-    //---------------------------------------------
-
-
-		//--------------------printPrizeCards---------------------------------
-		wp_enqueue_script('printPrizeCards',plugin_dir_url( __FILE__ ) . 'js/printPrizeCards.js',array('jquery'),$this->plugin_name, true);
-
-		wp_localize_script('printPrizeCards','miceruleApi', array(
-			'nonce'    => wp_create_nonce('wp_rest'),
-		));
-		//--------------------------------------------------------------
-
-		//--------------------editJudgesReports---------------------------------
-		wp_enqueue_script('editJudgesReports',plugin_dir_url( __FILE__ ) . 'js/editJudgesReports.js',array('jquery'),$this->plugin_name, true);
-
-		wp_localize_script('editJudgesReports','miceruleApi', array(
-			'nonce'    => wp_create_nonce('wp_rest'),
-		));
-		//--------------------------------------------------------------
-
-		//--------------------createShowPost---------------------------------
-		wp_enqueue_script('createShowPost',plugin_dir_url( __FILE__ ) . 'js/createShowPost.js',array('jquery'),$this->plugin_name, true);
-
-		wp_localize_script('createShowPost','miceruleApi', array(
-			'nonce'    => wp_create_nonce('wp_rest'),
-		));
-		//--------------------------------------------------------------
-
-		//--------------------setVariety---------------------------------
-		wp_enqueue_script('setVariety',plugin_dir_url( __FILE__ ) . 'js/setVariety.js',array('jquery'),$this->plugin_name, true);
-
-		wp_localize_script('setVariety','miceruleApi', array(
-			'nonce'    => wp_create_nonce('wp_rest'),
-		));
-		//--------------------------------------------------------------
-
-		//--------------------updateAdminTabs---------------------------------
-		wp_enqueue_script('updateAdminTabs',plugin_dir_url( __FILE__ ) . 'js/updateAdminTabs.js',array('jquery'),$this->plugin_name, true);
-
-		$title_nonce = wp_create_nonce('updateAdminTabs');
-		wp_localize_script('updateAdminTabs','my_ajax_obj',array(
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => $title_nonce,
-		));
-		//--------------------------------------------------------------
-
-		wp_enqueue_script('selectTabs',plugin_dir_url( __FILE__ ) . 'js/selectTabs.js',array('jquery'),$this->plugin_name, true);
-		//wp_enqueue_script('stickySidebar', plugin_dir_url( __FILE__ ).'js/stickySidebar.js', array( 'jquery' ), $this->version, false );
+		$scriptLoader = new ScriptLoader();
+		$scriptLoader->registerScripts();
 	}
-
-	public function lbTables(){
-		require_once plugin_dir_path(__FILE__) . 'partials/micerule-lbTables.php';
-	}
-
-	public function addClass(){
-		require_once plugin_dir_path(__FILE__) . 'partials/micerule-addClass.php';
-	}
-
-	public function registerClasses(){
-		require_once plugin_dir_path(__FILE__) . 'partials/micerule-registerClasses.php';
-	}
-
-	public function getClassSelectOptions(){
-		require_once plugin_dir_path(__FILE__) . 'partials/micerule-getClassSelectOptions.php';
-	}
-
-	public function moveClass(){
-		require_once plugin_dir_path(__FILE__) . 'partials/micerule-moveClass.php';
-	}
-
-	public function deleteClass(){
-		require_once plugin_dir_path(__FILE__) . 'partials/micerule-deleteClass.php';
-	}
-
-	public function eventOptionalSettings(){
-		require_once plugin_dir_path(__FILE__) . 'partials/micerule-eventOptionalSettings.php';
-	}
-
-	public function updateRegistrationTables(){
-		require_once plugin_dir_path(__FILE__) . 'partials/micerule-updateRegistrationTables.php';
-	}
-
-	public function moveEntry(){
-		require_once plugin_dir_path(__FILE__) . 'partials/micerule-moveEntry.php';
-	}
-
-	public function addEntry(){
-		require_once plugin_dir_path(__FILE__) . 'partials/micerule-addEntry.php';
-	}
-
-	public function deleteEntry(){
-		require_once plugin_dir_path(__FILE__) . 'partials/micerule-deleteEntry.php';
-	}
-
-	public function editPlacement(){
-		require_once plugin_dir_path(__FILE__) . 'partials/micerule-editPlacement.php';
-	}
-
-	public function editBIS(){
-		require_once plugin_dir_path(__FILE__) . 'partials/micerule-editBIS.php';
-	}
-
-	public function editAbsent(){
-		require_once plugin_dir_path(__FILE__) . 'partials/micerule-editAbsent.php';
-	}
-
-	public function setAllAbsent(){
-		require_once plugin_dir_path(__FILE__) . 'partials/micerule-setAllAbsent.php';
-	}
-
-	public function setCustomClassVariety(){
-		require_once plugin_dir_path(__FILE__) . 'partials/micerule-setCustomClassVariety.php';
-	}
-
-	public function printAll(){
-		require_once plugin_dir_path(__FILE__) . 'partials/micerule-printAll.php';
-	}
-
-	public function moveToUnprinted(){
-		require_once plugin_dir_path(__FILE__) . 'partials/micerule-moveToUnprinted.php';
-	}
-
-	public function submitReport(){
-		require_once plugin_dir_path(__FILE__) . 'partials/micerule-submitReport.php';
-	}
-
-	public function createShowPost(){
-		require_once plugin_dir_path(__FILE__) . 'partials/micerule-createShowPost.php';
-	}
-
-	public function getAdminTabsHtml(){
-		$url     = wp_get_referer();
-		$event_id = url_to_postid( $url );
-
-		wp_send_json(AdminTabs::getAdminTabsHtml($event_id));
-	}
-
-	public function getSelectOptions(){
-		$locationID = LocationHelper::getIDFromEventPostID(url_to_postid( wp_get_referer()));
-		EntryBookController::getSelectOptions(new ShowClassesRepository($locationID), new ClassIndexRepository($locationID));
-	}
-
 }
 
 //add shortcodes
