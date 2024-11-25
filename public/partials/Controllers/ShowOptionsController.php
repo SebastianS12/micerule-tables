@@ -11,6 +11,6 @@ class ShowOptionsController{
         $showOptionsService = new ShowOptionsService();
         $showOptionsService->saveShowOptions(new ShowOptionsRepository, $id, $locationID, $allowOnlineRegistrations, $registrationFee, $pmFirstPlace, $pmSecondPlace, $pmThirdPlace, $allowUnstandardised, $allowJunior, $allowAuction, $pmBiSec, $pmBoSec, $pmBIS, $pmBOA, $auctionFee);
 
-        return new WP_REST_Response("");
+        return new WP_REST_Response(Logger::getInstance()->getLogs());
     }
 }

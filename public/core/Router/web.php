@@ -19,7 +19,7 @@ Route::put(EntrySummaryController::class, "setAllAbsent", "setAllAbsent", ["even
 Route::post(JudgesReportController::class, "generalComment", "submitGeneralComment", ["eventPostID", "commentID", "judgeID", "comment"]);
 Route::post(JudgesReportController::class, "classReport", "submitClassReport", ["eventPostID", "commentID", "indexID", "comment", "placementReports"]);
 
-Route::post(ShowOptionsController::class, "locationSettings", "saveShowOptions", ["id", "locationID", "allowOnlineRegistrations", "registrationFee", "allowUnstandardised", "allowJunior", "allowAuction", "firstPrize", "secondPrize", "thirdPrize", "pmBiSec", "pmBoSec", "pmBIS", "pmBOA", "auctionFee"]);
+Route::post(ShowOptionsController::class, "locationSettings", "saveShowOptions", ["id", "locationID", "allowOnlineRegistrations", "registrationFee", "firstPrize", "secondPrize", "thirdPrize", "allowUnstandardised", "allowJunior", "allowAuction", "pmBiSec", "pmBoSec", "pmBIS", "pmBOA", "auctionFee"]);
 
 Route::put(PrizeCardsController::class, "moveToUnprinted", "moveToUnprinted", ["placementID", "prizeID"]);
 Route::put(PrizeCardsController::class, "printAll", "printAll", ["prizeCardsData"]);
