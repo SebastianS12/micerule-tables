@@ -1,27 +1,31 @@
 function updateAdminTabs(){
   console.log("Update Admin Tabs");
-  jQuery.ajax({
-    type: 'GET',
-    url: getRoute("adminTabs"),
-    beforeSend: function ( xhr ) {
-      xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
-    },
-    data: {
-      eventPostID: miceruleApi.eventPostID,
-    },
-    success: function (data) {
-      $(".adminTabs").replaceWith(data);
-      assignTabListeners();
-      assignEntrySummaryListeners();
-      assignEntryBookListeners();
-      assignPrizeCardsListeners();
-      assignJudgesReportsListeners();
-
-      selectTab();
-    },
-    error: function (XMLHttpRequest, textStatus, errorThrown) {
-      console.log(errorThrown);
-    }
+  return new Promise((resolve, reject) => {
+    jQuery.ajax({
+      type: 'GET',
+      url: getRoute("adminTabs"),
+      beforeSend: function ( xhr ) {
+        xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
+      },
+      data: {
+        eventPostID: miceruleApi.eventPostID,
+      },
+      success: function (data) {
+        $(".adminTabs").replaceWith(data);
+        assignTabListeners();
+        assignEntrySummaryListeners();
+        assignEntryBookListeners();
+        assignPrizeCardsListeners();
+        assignJudgesReportsListeners();
+  
+        selectTab();
+        resolve();
+      },
+      error: function (XMLHttpRequest, textStatus, errorThrown) {
+        console.log(errorThrown);
+        reject(errorThrown);
+      }
+    });
   });
 }
 

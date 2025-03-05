@@ -90,7 +90,7 @@ class ShowReportPostView{
 
         $html = "<h4>".$challengeReport['challengeName']." ".$challengeReport['age']." - ".$challengeReport['entryCount']."</h4>";
         foreach ($challengeReport['placements'] as $placementReport) {
-            $html .= "<div>".$displayedPlacements[$placementReport['placement']]." ".FancierNameFormatter::getShowReportFancierName($placementReport['userName'])." ".$challengeReport['varietyName']."</div>";
+            $html .= "<div>".$displayedPlacements[$placementReport['placement']]." ".FancierNameFormatter::getShowReportFancierName($placementReport['userName'])." ".$placementReport['varietyName']."</div>";
         }
 
         return $html;

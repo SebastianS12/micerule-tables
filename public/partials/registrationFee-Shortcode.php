@@ -4,12 +4,12 @@ function showRegistrationFee(){
   $showOptionsController = new ShowOptionsController();
   $showOptionsModel = $showOptionsController->getShowOptions(LocationHelper::getIDFromEventPostID($post->ID), new ShowOptionsService(), new ShowOptionsRepository());//get_post_meta($post->ID, 'micerule_data_event_optional_settings', true);
   $numberFormatter = new NumberFormatter('en_GB',  NumberFormatter::CURRENCY);
-  $numberFormatter->setAttribute(NumberFormatter::FRACTION_DIGITS, 0);
+  $numberFormatter->setAttribute(NumberFormatter::FRACTION_DIGITS, 2);
 
   $html = "<div class='entry-fee-wrapper'>";
   $html .= "<div class = 'entry-fee-wrapper'>";
   $html .= "<h1 class='blockentry' style= 'font-family: Bree Serif; color: #926939; display: flex; vertical-align: middle; text-align: center; font-size: 46px; font-weight: bold'>";
-  $html .= "£".$showOptionsModel->registration_fee;
+  $html .= $numberFormatter->formatCurrency((float)$showOptionsModel->registration_fee, "GBP");
   $html .= "</h1>";
   $html .= getAuctionFeeHtml($showOptionsModel, $numberFormatter);
   $html .= "<h1>PRIZE MONEY</h1>";

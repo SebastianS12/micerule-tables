@@ -4,7 +4,7 @@ class PrizeCardsView
 {
     public static function getHtml($eventPostID)
     {
-        $html = "<div class = 'prizeCards content' style = 'display : none'>";
+        $html = "<div id = 'prizeCards-content' class = 'prizeCards content' style = 'display : none'>";
         $prizeCardsRepository = new PrizeCardsRepository();
         $prizeCardsService = new PrizeCardsService($prizeCardsRepository);
         $viewModel = $prizeCardsService->prepareViewModel($eventPostID, LocationHelper::getIDFromEventPostID($eventPostID));

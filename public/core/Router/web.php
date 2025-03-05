@@ -27,6 +27,6 @@ Route::put(PrizeCardsController::class, "printAll", "printAll", ["prizeCardsData
 Route::post(RegistrationTablesController::class, "registrations", "register", ["eventPostID", "classRegistrations", "userName"]);
 Route::get(RegistrationTablesController::class, "registrations", "updateRegistrationTables", ["eventPostID", "fancierName"]);
 
-Route::post(ShowReportPostController::class, "showPost", "createPost", []);
+Route::post(ShowReportPostController::class, "showPost", "createPost", ["eventPostID"]);
 
 Route::get(AdminTabsController::class, "adminTabs", "getViewHtml", ["eventPostID"]);

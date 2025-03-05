@@ -18,7 +18,6 @@ class ShowOptionsView
     {
         $showOptions = ShowOptionsController::getShowOptions($locationID, new ShowOptionsService(), new ShowOptionsRepository);
         $html = "<div class='showsec-options' data-option-id = ".($showOptions->id ?? null).">";
-        $html .= "<div>".var_export(is_user_logged_in(), true)."</div>";
         if(PermissionHelper::canEditShowClasses($locationID)){
             $html .= "<h3>SHOW OPTIONS</h3>";
             //enable online registrations checkbox

@@ -80,6 +80,10 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable{
         return end($this->items);
     }
 
+    public function removeLast(): void {
+        array_pop($this->items);
+    }
+
     public function groupBy(string $attribute): Collection{
         $groupedCollection = new Collection();
         foreach($this as &$collectionItem){

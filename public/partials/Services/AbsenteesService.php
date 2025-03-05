@@ -35,11 +35,19 @@ class AbsenteesService{
             $viewModel->addJudge($judgeModel->judge_name);
             foreach($judgeModel->sections() as $judgeSectionModel){
                 foreach($judgeSectionModel->{EntryClassModel::class} as $entryClassModel){
-                    foreach($entryClassModel->classIndices as $classIndexModel){
-                        foreach($classIndexModel->registrations->order->entry->where("absent", true) as $entryModel){
+                    foreach($entryClassModel->classIndices() as $classIndexModel){
+                        foreach($classIndexModel->registrations()->{RegistrationOrderModel::class}->{EntryModel::class}->where("absent", true) as $entryModel){
                             $viewModel->addAbsentee($judgeModel->judge_name, $classIndexModel->class_index, $entryModel->pen_number);
                         }
                     }
+                }
+            }
+        }
+
+        foreach($showClassesCollection->where("section", Section::OPTIONAL->value) as $optionalClassModel){
+            foreach($optionalClassModel->classIndices() as $classIndexModel){
+                foreach($classIndexModel->registrations()->{RegistrationOrderModel::class}->{EntryModel::class}->where("absent", true) as $entryModel){
+                    $viewModel->addAbsenteeOptional($classIndexModel->class_index, $entryModel->pen_number);
                 }
             }
         }

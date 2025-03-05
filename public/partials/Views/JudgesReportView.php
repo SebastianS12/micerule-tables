@@ -45,21 +45,25 @@ class JudgesReportView
                             <li>Date: " . $date . "</li>
                             <li>Judge: <span class = 'jr-judge-name'>" . $judgeData['judgeName'] . "</span></li>
                           </ul>
-                          <div class='general-comments' data-comment-id = '".$judgeData['commentID']."' data-judge-id = ".$judgeData['judgeID'].">
-                            <h3>General Comments</h3>
-                            <div class='textarea-wrapper'>
-                            <textarea style='height: 60px; font-size: 16px' name='report'>" . $judgeData['comment'] . "</textarea>
-                            </div>
-                           <a class = 'button submitGeneralComment'>Submit Changes</a>
-                          </div>
                         <th>
                       </tr>
                     </thead>";
+        $html .= "<tr class = 'body-row'>
+                    <td>
+                    <div class='general-comments' data-comment-id = '".$judgeData['commentID']."' data-judge-id = ".$judgeData['judgeID'].">
+                        <h3>General Comments</h3>
+                        <div class='textarea-wrapper'>
+                            <textarea style='height: 60px; font-size: 16px' name='report'>" . $judgeData['comment'] . "</textarea>
+                        </div>
+                        <a class = 'button submitGeneralComment'>Submit Changes</a>
+                    </div>
+                    </td>
+                  </tr>";
 
         return $html;
     }
 
-    private static function getClassReportHtml(array $classData)
+    private static function getClassReportHtml(array $classData): string
     {
         $html = "";
         $html .= "<tr class='body-row'>
@@ -125,7 +129,7 @@ class JudgesReportView
                         </div>
                         <div>";
         //$classSelectOptions = ClassSelectOptions::getClassSelectOptionsHtml($entry->sectionName, $this->locationID, $entry->varietyName);
-        $html .= ($reportPlacementData['showVarietySelect']) ? "<select class='classSelect-judgesReports' id = '" . $reportPlacementData['entryID'] . "&-&varietySelect' autocomplete='off'><option value=''>Select a Variety</option>" . $reportPlacementData['varietyOptions'] . "</select>" : "";
+        $html .= (isset($reportPlacementData['showVarietySelect']) && $reportPlacementData['showVarietySelect']) ? "<select class='classSelect-judgesReports' id = '" . $reportPlacementData['entryID'] . "&-&varietySelect' autocomplete='off'><option value=''>Select a Variety</option>" . $reportPlacementData['varietyOptions'] . "</select>" : "";
         $html .=      "</div>
                     </div>
                     </td>";

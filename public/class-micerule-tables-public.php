@@ -3,8 +3,8 @@
 /**
 * The public-facing functionality of the plugin.
 */
-require_once plugin_dir_path(__FILE__) . 'partials/Enums/Prizes.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Enums/Awards.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Enums/Prizes.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Enums/Tables.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Enums/Sections.php';
 
@@ -234,6 +234,10 @@ class Micerule_Tables_Public {
 
 		$scriptLoader = new ScriptLoader();
 		$scriptLoader->registerScripts();
+	}
+
+	public function lbTables(){
+		require_once plugin_dir_path(__FILE__) . 'partials/micerule-lbTables.php';
 	}
 }
 

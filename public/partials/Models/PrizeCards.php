@@ -64,8 +64,10 @@ class JuniorPrizeCard extends PrizeCardModel{
         $this->prizeClass = "junior-challenge";
     }
 
-    public function getDisplayedPlacement(): string{
-        return "Best Junior";
+    public function getDisplayedPlacement(): string
+    {
+        $displayedPlacements = array(1 => "Best Junior", 2 => "2nd Junior", 3 => "3rd Junior");
+        return $displayedPlacements[$this->placement];
     }
 }
 

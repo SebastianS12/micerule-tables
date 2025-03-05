@@ -70,18 +70,17 @@ class JudgesReportService{
             }
         }
 
-        foreach($showClassesCollection->where("section", "optional")->whereNot("class_name", "Junior") as $entryClassModel){
+        foreach($showClassesCollection->where("section", "optional") as $entryClassModel){
             foreach($entryClassModel->classIndices as $classIndexModel){
-                $commentID = (isset($classIndexModel->{ClassComment::class}) && $classIndexModel->comment !== null) ? $classIndexModel->comment->id : null;
-                $comment = (isset($classIndexModel->{ClassComment::class}) && $classIndexModel->comment !== null) ? $classIndexModel->comment->comment : "";
-                $viewModel->addOptionalClassReport($classIndexModel->id, $commentID, $classIndexModel->class_index, $comment, $entryClassModel->section, $entryClassModel->class_name, $classIndexModel->age, $classIndexModel->registrationCount);
+                $commentID = ($classIndexModel->comment() !== null) ? $classIndexModel->comment->id : null;
+                $comment = ($classIndexModel->comment() !== null) ? $classIndexModel->comment->comment : "";
+                $viewModel->addOptionalClassReport($classIndexModel->id, $commentID, $classIndexModel->class_index, $comment, "", $entryClassModel->class_name, $classIndexModel->age, $classIndexModel->registrationCount);
                 foreach($classIndexModel->placements as $placementModel){
-                    $placementReportModel = $placementModel->report();
-                    $placementReportID = (isset($placementModel->{PlacementReport::class}) && $placementModel->report !== null) ? $placementModel->report->id : null;
-                    $gender = (isset($placementModel->{PlacementReport::class}) && $placementModel->report !== null) ? $placementModel->report->gender : null;
-                    $comment = (isset($placementModel->{PlacementReport::class}) && $placementModel->report !== null) ? $placementModel->report->comment : "";
-                    $userName = $placementModel->registration->user_name;
-                    $viewModel->addOptionalClassPlacementReport($placementReportID, $entryClassModel->section, $classIndexModel->class_index, $placementModel->id, $placementModel->placement, $userName, $gender, $comment);
+                    $placementReportID = ($placementModel->report() !== null) ? $placementModel->report->id : null;
+                    $gender = ($placementModel->report() !== null) ? $placementModel->report->gender : null;
+                    $comment = ($placementModel->report() !== null) ? $placementModel->report->comment : "";
+                    $userName = $placementModel->registration()->user_name;
+                    $viewModel->addOptionalClassPlacementReport($placementReportID, $classIndexModel->class_index, $placementModel->id, $placementModel->placement, $userName, $gender, $comment);
                 }
             }
         }

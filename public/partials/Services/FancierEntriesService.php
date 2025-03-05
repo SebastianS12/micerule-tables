@@ -48,12 +48,14 @@ class FancierEntriesService{
 
                 foreach($registrationOrder as $registrationOrderModel){
                     $entry = $registrationOrderModel->entry();
-                    foreach($entry->placements() as $placementModel){
-                        $prizeMoney += $this->getPrizeMoneyFromPlacement($placementModel, $showOptions);
+                    if($entry !== null){
+                        foreach($entry->placements() as $placementModel){
+                            $prizeMoney += $this->getPrizeMoneyFromPlacement($placementModel, $showOptions);
+                        }
                     }
                 }
 
-                if(isset($userRegistrationModel->juniorRegistrations)){
+                if($userRegistrationModel->juniorRegistrations() !== null){
                     $juniorRegistrationCount += count($userRegistrationModel->juniorRegistrations);
                 }
             }

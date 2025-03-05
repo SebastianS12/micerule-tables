@@ -73,6 +73,8 @@ class Micerule_Tables{
 
     $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
     $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+    $this->loader->add_action('wp_ajax_lbTables',$plugin_public,'lbTables');
+    $this->loader->add_action('wp_ajax_nopriv_lbTables',$plugin_public,'lbTables');
   }
 
   public function initRouter(): void

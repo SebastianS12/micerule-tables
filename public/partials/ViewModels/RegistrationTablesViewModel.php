@@ -7,7 +7,8 @@ class RegistrationTablesViewModel{
     public bool $beforeDeadline;
     public bool $isLoggedIn;
     public bool $isMember;
-    public bool $isAdmin;
+    public bool $showRegistrationInput;
+    public bool $showRegistrationCount;
 
     public function __construct()
     {

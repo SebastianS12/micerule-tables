@@ -31,6 +31,9 @@ function sectionTablesFrontend($atts)
     if ($showReportPostID != "")
       $html .= "<a href = '" . get_post_permalink($showReportPostID) . "'>Show Report Draft</a>";
     $html .= "</div>";
+
+    $html .= "<div class = 'show-report-gen'><button type ='button' id = 'show-prize-cards-modal'>Show Prize Cards</button></div>";
+    $html .= "<div id = 'prizeCards-modal' class = 'prizeCards content'></div>";
   }
 
   $adminTabsController = new AdminTabsController();

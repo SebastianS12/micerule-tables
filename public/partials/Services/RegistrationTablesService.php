@@ -20,7 +20,9 @@ class RegistrationTablesService{
         $viewModel->beforeDeadline = time() < EventDeadlineService::getEventDeadline($eventPostID);
         $viewModel->isLoggedIn = is_user_logged_in();
         $viewModel->isMember = EventUser::isMember($userName);
-        $viewModel->isAdmin = current_user_can('administrator');
+        $viewModel->showRegistrationInput = ($viewModel->beforeDeadline && $viewModel->isLoggedIn && $viewModel->isMember) || PermissionHelper::isLocSecOrAdmin($locationID);
+        $viewModel->showRegistrationCount = $viewModel->allowOnlineRegistrations && !$viewModel->showRegistrationInput;
+
 
         $challengeIndexModelCollection = $this->challengeIndexRepository->getAll();
 
@@ -30,7 +32,7 @@ class RegistrationTablesService{
 
         $showClassesModels = $this->showClassesRepository->getAll()->with([ClassIndexModel::class], ["id"], ['class_id'], [$this->classIndexRepository]);
 
-        $registrationCountCollection = ($viewModel->beforeDeadline) ? $this->registrationCountRepository->getUserRegistrationCounts($userName) : $this->registrationCountRepository->getAll();
+        $registrationCountCollection = ($viewModel->showRegistrationInput) ? $this->registrationCountRepository->getUserRegistrationCounts($userName) : $this->registrationCountRepository->getAll();
 
         ModelHydrator::mapAttribute($showClassesModels->{ClassIndexModel::class}, $registrationCountCollection, "registrationCount", "class_index", "index_number","entry_count", 0);
         ModelHydrator::mapAttribute($challengeIndexModelCollection, $registrationCountCollection, "registrationCount", "challenge_index", "index_number", "entry_count", 0);

@@ -18,12 +18,11 @@ class EntryBookController{
         $challengeRowService = new ChallengeRowService($eventPostID);
         $challengeRowService->editAwards($placementsRepository, $awardsRepository, $prizeID, $bisChallengeIndexID, $boaChallengeIndexID);
 
-        return new WP_REST_Response("");
+        return new WP_REST_Response(Logger::getInstance()->getLogs());
     }
 
     public static function addEntry(int $eventPostID, string $userName, int $classIndexID): WP_REST_Response
     {
-        $eventPostID = EventHelper::getEventPostID();
         $locationID = LocationHelper::getIDFromEventPostID($eventPostID);
         $entryBookService = new EntryBookService();
         $entryBookService->addEntry($eventPostID, $classIndexID, $userName, new ClassIndexRepository($locationID), new UserRegistrationsRepository($eventPostID), new RegistrationOrderRepository($eventPostID), new EntryRepository($eventPostID));
@@ -56,13 +55,14 @@ class EntryBookController{
         return new WP_REST_Response("");
     }
 
-    public static function editVarietyName(int $eventPostID, int $entryID, string $varietyName): WP_REST_Response{
+    public static function editVarietyName(int $eventPostID, int $entryID, string $varietyName): WP_REST_Response
+    {
         $entryRepository = new EntryRepository($eventPostID);
         $entryService = new EntriesService($entryRepository);
         if($varietyName != "")
             $entryService->editVarietyName($entryID, $varietyName, $entryRepository);
 
-        return new WP_REST_Response("");
+        return new WP_REST_Response(Logger::getInstance()->getLogs());
     }
 
     public static function getSelectOptions(int $eventPostID): WP_REST_Response

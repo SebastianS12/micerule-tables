@@ -118,7 +118,6 @@ class ShowReportPostViewModel{
 
     public function addGrandChallengePlacementReport(int $challengeIndex, int $placement, string $userName, string $varietyName): void
     {
-
         $placementReport = array();
         $placementReport['userName'] = $userName;
         $placementReport['placement'] = $placement;

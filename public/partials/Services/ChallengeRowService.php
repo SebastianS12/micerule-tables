@@ -78,6 +78,7 @@ class ChallengeRowService{
     }
 
     private function addOrRemoveAward(AwardsRepository $awardsRepository, int $prizeID, ChallengePlacementModel $placementModel, Award $award){
+        
         $awardModel = $placementModel->award();
         if(isset($awardModel)){
             $awardsRepository->removeAward($awardModel->id);

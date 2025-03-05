@@ -9,6 +9,9 @@ jQuery(document).ready(function($){
         xhr.setRequestHeader( 'X-WP-Nonce', miceruleApi.nonce );
       },
       contentType: 'application/json',
+      data: JSON.stringify({
+        eventPostID: miceruleApi.eventPostID,
+      }),
       success: function (data) {
         if(data != ""){
           $("#create-show-post").after("<a href = '" + data + "'>Show Report Draft</a>")

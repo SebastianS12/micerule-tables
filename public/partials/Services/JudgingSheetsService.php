@@ -22,6 +22,7 @@ class JudgingSheetsService{
         $userRegistrationsRepository = new UserRegistrationsRepository($this->eventPostID);
         $registrationOrderRepository = new RegistrationOrderRepository($this->eventPostID);
         $entryRepository = new EntryRepository($this->eventPostID);
+        $breedsService = new BreedsService(new BreedsRepository(), $showClassRepository);
 
         $challengeIndexRepository = new ChallengeIndexRepository($this->locationID);
 
@@ -39,15 +40,17 @@ class JudgingSheetsService{
             foreach($judgeModel->sections() as $judgeSectionModel){
                 foreach($judgeSectionModel->{EntryClassModel::class} as $entryClassModel){
                     foreach($entryClassModel->classIndices() as $classIndexModel){
-                        $viewModel->addClassSheet($judgeModel->judge_name, $judgeSectionModel->section, $entryClassModel->class_name, $classIndexModel->age, $classIndexModel->class_index);
-                        foreach($classIndexModel->registrations->order->entry as $entryModel){
+                        $showVarietyPrompt = (!$breedsService->isStandardBreed($entryClassModel->class_name));
+                        $viewModel->addClassSheet($judgeModel->judge_name, $judgeSectionModel->section, $entryClassModel->class_name, $classIndexModel->age, $classIndexModel->class_index, $showVarietyPrompt);
+                        foreach($classIndexModel->registrations()->{RegistrationOrderModel::class}->{EntryModel::class} as $entryModel){
                             $viewModel->addPenNumber($judgeModel->judge_name, $judgeSectionModel->section, $classIndexModel->class_index, $entryModel->pen_number);
                         }
                     }
                 }
 
                 foreach($judgeSectionModel->{ChallengeIndexModel::class} as $challengeIndexModel){
-                    $viewModel->addSectionSheet($judgeModel->judge_name, $challengeIndexModel->challenge_name, $challengeIndexModel->challenge_index, $challengeIndexModel->age, $challengeIndexModel->section);
+                    $addSectionBestSheet = $challengeIndexModel->age == "U8";
+                    $viewModel->addSectionSheet($judgeModel->judge_name, $challengeIndexModel->challenge_name, $challengeIndexModel->challenge_index, $challengeIndexModel->age, $challengeIndexModel->section, $addSectionBestSheet);
                 }
             }
         }
@@ -55,7 +58,8 @@ class JudgingSheetsService{
         //grand challenge sheets
         $judges = JudgeFormatter::getJudgesString($judgeCollection);
         foreach($challengeIndexCollection->where("challenge_name", EventProperties::GRANDCHALLENGE) as $challengeIndexModel){
-            $viewModel->addGrandChallengeSheet($judges, $challengeIndexModel->challenge_name, $challengeIndexModel->challenge_index, $challengeIndexModel->age, $challengeIndexModel->section);
+            $addSectionBestSheet = $challengeIndexModel->age == "U8";
+            $viewModel->addGrandChallengeSheet($judges, $challengeIndexModel->challenge_name, $challengeIndexModel->challenge_index, $challengeIndexModel->age, $challengeIndexModel->section, $addSectionBestSheet);
         }
 
         // //optional
@@ -65,7 +69,8 @@ class JudgingSheetsService{
         ModelHydrator::mapExistingCollections($registrationOrderCollection, $juniorCollection, JuniorRegistrationModel::class,"id", "registration_order_id");
         foreach($showClassesCollection->groupBy("section")['optional'] as $optionalClassModel){
             foreach($optionalClassModel->classIndices as $classIndexModel){
-                $viewModel->addOptionalClassSheet($optionalClassModel->class_name, $classIndexModel->age, $classIndexModel->class_index);
+                $showVarietyPrompt = true;//($optionalClassModel->class_name != "Junior");
+                $viewModel->addOptionalClassSheet($optionalClassModel->class_name, $classIndexModel->age, $classIndexModel->class_index, $showVarietyPrompt);
 
                 if($optionalClassModel->class_name == "Junior"){
                     foreach($juniorCollection as $juniorRegistrationModel){
@@ -75,7 +80,7 @@ class JudgingSheetsService{
                         }
                     }
                 }else{
-                    foreach($classIndexModel->registrations->order->entry as $entryModel){
+                    foreach($classIndexModel->registrations()->{RegistrationOrderModel::class}->{EntryModel::class} as $entryModel){
                         $viewModel->addOptionalClassPenNumber($classIndexModel->class_index, $entryModel->pen_number);
                     }
                 }

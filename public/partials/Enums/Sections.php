@@ -48,7 +48,7 @@ enum Section : string{
             self::SELF => 'SELF CHALLENGE',
             self::TAN => 'TAN CHALLENGE',
             self::MARKED => 'MARKED CHALLENGE',
-            self::SATIN => 'SATING CHALLENGE',
+            self::SATIN => 'SATIN CHALLENGE',
             self::AOVS => 'AOV CHALLENGE',
             self::GRAND_CHALLENGE => 'GRAND CHALLENGE',
             self::OPTIONAL => 'Optional',

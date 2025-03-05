@@ -79,8 +79,8 @@ class RegistrationTablesView
   {
     $html = "<td class = 'positionCell Ad'>" . $classData['Ad']['index_number'] . "</td>";
     if ($viewModel->allowOnlineRegistrations) {
-      $html .= (!$viewModel->beforeDeadline) ? "<td class='entries-count-Ad'>(" . $classData['Ad']['entry_count'] .")</td>" : "";
-      $html .= ($viewModel->beforeDeadline && $viewModel->isLoggedIn && ($viewModel->isMember || $viewModel->isAdmin)) ? "<td id = '" . $className . "&-&Ad&-&RegistrationInput' class = 'registrationInput' data-class-index = ".$classData["Ad"]["index_number"]."><input type = 'number' min = '0' value = '" . $classData["Ad"]["entry_count"] . "'></input></td>" : "";
+      $html .= ($viewModel->showRegistrationCount) ? "<td class='entries-count-Ad'>(" . $classData['Ad']['entry_count'] .")</td>" : "";
+      $html .= ($viewModel->showRegistrationInput) ? "<td id = '" . $className . "&-&Ad&-&RegistrationInput' class = 'registrationInput' data-class-index = ".$classData["Ad"]["index_number"]."><input type = 'number' min = '0' value = '" . $classData["Ad"]["entry_count"] . "'></input></td>" : "";
       $html .= ($viewModel->beforeDeadline && !$viewModel->isLoggedIn) ? "<td></td>" : "";
     } else {
       $html .= "<td class = 'registrationsDisabled Ad-Registrations'></td>";
@@ -93,9 +93,9 @@ class RegistrationTablesView
   {
     $html = "";
     if ($viewModel->allowOnlineRegistrations) {
-      $html .= ($viewModel->beforeDeadline && $viewModel->isLoggedIn && ($viewModel->isMember || $viewModel->isAdmin)) ? "<td id = '" . $className . "&-&U8&-&RegistrationInput' class = 'registrationInput' data-class-index = ".$classData["U8"]["index_number"]."><input type = 'number' min = '0' value = '" . $classData['U8']['entry_count'] . "'></input></td>" : "";
+      $html .= ($viewModel->showRegistrationInput) ? "<td id = '" . $className . "&-&U8&-&RegistrationInput' class = 'registrationInput' data-class-index = ".$classData["U8"]["index_number"]."><input type = 'number' min = '0' value = '" . $classData['U8']['entry_count'] . "'></input></td>" : "";
       $html .= ($viewModel->beforeDeadline && !$viewModel->isLoggedIn) ? "<td></td>" : "";
-      $html .= (!$viewModel->beforeDeadline) ? "<td class='entries-count-U8'>(" . $classData['U8']['entry_count'] . ")</td>" : "";
+      $html .= ($viewModel->showRegistrationCount) ? "<td class='entries-count-U8'>(" . $classData['U8']['entry_count'] . ")</td>" : "";
     } else {
       $html .= "<td class = 'registrationsDisabled U8Registrations'></td>";
     }
@@ -204,9 +204,9 @@ class RegistrationTablesView
   {
     $html = "<td class = 'positionCell AA'>" . $classData['AA']['index_number'] . "</td>";
     if ($viewModel->allowOnlineRegistrations) {
-      $html .= ($viewModel->beforeDeadline && $viewModel->isLoggedIn && ($viewModel->isMember || $viewModel->isAdmin)) ? "<td id = '" . $className . "&-&AA&-&RegistrationInput' class = 'registrationInput' data-class-index = ".$classData["AA"]["index_number"]."><input type = 'number' min = '0' value = '" . $classData['AA']['entry_count'] . "'></input></td>" : "";
+      $html .= ($viewModel->showRegistrationInput) ? "<td id = '" . $className . "&-&AA&-&RegistrationInput' class = 'registrationInput' data-class-index = ".$classData["AA"]["index_number"]."><input type = 'number' min = '0' value = '" . $classData['AA']['entry_count'] . "'></input></td>" : "";
       $html .= ($viewModel->beforeDeadline && !$viewModel->isLoggedIn) ? "<td></td>" : "";
-      $html .= (!$viewModel->beforeDeadline) ? "<td class='entries-count-AA'>(" . $classData['AA']['entry_count'] . ")</td>" : "";
+      $html .= ($viewModel->showRegistrationCount) ? "<td class='entries-count-AA'>(" . $classData['AA']['entry_count'] . ")</td>" : "";
     } else {
       $html .= "<td class = 'registrationsDisabled'></td>";
     }
@@ -221,9 +221,9 @@ class RegistrationTablesView
     $allowOnlineRegistrations = RegistrationTablesController::getAllowOnlineRegistrations($eventLocationID);
     $registrationDeadline = EventDeadlineService::getEventDeadline($eventPostID);
     $html = "<div class='update-button-wrapper'>";
-    $html .= ($allowOnlineRegistrations && time() < $registrationDeadline && is_user_logged_in() && (EventUser::isMember($userName) || current_user_can('administrator'))) ? "<button type ='button' class = 'registerClassesButton'>Update Entries</button>" : "";
+    $html .= ($allowOnlineRegistrations && (time() < $registrationDeadline && is_user_logged_in()) || PermissionHelper::isLocSecOrAdmin($eventLocationID)) ? "<button type ='button' class = 'registerClassesButton'>Update Entries</button>" : "";
 
-    $html .= "<div style = " . (($allowOnlineRegistrations && is_user_logged_in() && time() < $registrationDeadline && $allowOnlineRegistrations && (current_user_can('administrator') || in_array(wp_get_current_user()->display_name, LocationSecretariesService::getLocationSecretaries($eventLocationID)))) ? '' : 'visibility:hidden') . ">";
+    $html .= "<div style = " . (($allowOnlineRegistrations && PermissionHelper::isLocSecOrAdmin($eventLocationID)) ? '' : 'visibility:hidden') . ">";
     //Get all user names
     //TODO: User Helper Class
     $users = (array) $wpdb->get_results("SELECT display_name, id FROM " . $wpdb->prefix . "users ORDER BY display_name;");

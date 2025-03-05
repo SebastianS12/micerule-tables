@@ -7,6 +7,7 @@ function setCustomClassVariety(entryID, varietyName, tab){
     },
     contentType: 'application/json',
     data: JSON.stringify({
+      eventPostID: miceruleApi.eventPostID,
       entryID: entryID,
       varietyName: varietyName,
     }),

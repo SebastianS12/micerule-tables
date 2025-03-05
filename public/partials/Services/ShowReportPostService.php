@@ -57,7 +57,6 @@ class ShowReportPostService{
                 $judge = JudgeFormatter::getJudgeName($entryClassModel);
                 $viewModel->addClassReport($judge, $entryClassModel->section, $entryClassModel->class_name, $classIndexModel->class_index, $classIndexModel->age, $classIndexModel->registrationCount, $comment);
                 foreach($classIndexModel->placements() as $placementModel){
-                    echo(var_dump($placementModel));
                     $gender = ($placementModel->report() !== null) ? $placementModel->report()->gender : null;
                     $comment = ($placementModel->report() !== null) ? $placementModel->report()->comment : "";
                     $userName = $placementModel->registration()->user_name;
@@ -79,7 +78,7 @@ class ShowReportPostService{
             foreach($challengeIndexModel->placements as $placementModel){
                 $fancierName = $placementModel->registration->user_name;
                 $varietyName = $placementModel->entry->variety_name;
-                if( $challengeIndexModel->section != Section::GRAND_CHALLENGE){
+                if( $challengeIndexModel->section != Section::GRAND_CHALLENGE->value){
                     $viewModel->addChallengePlacementReport($judge, $challengeIndexModel->section, $challengeIndexModel->challenge_index, $placementModel->placement, $fancierName, $varietyName);
                 }else{
                     $viewModel->addGrandChallengePlacementReport($challengeIndexModel->challenge_index, $placementModel->placement, $fancierName, $varietyName);
@@ -101,5 +100,29 @@ class ShowReportPostService{
         }
 
         return $viewModel;
+    }
+
+    public function createPost(int $locationID, int $eventPostID): array
+    {
+        $viewModel = $this->prepareViewModel($locationID, $eventPostID);
+        $post = array(
+            'post_title' => $viewModel->postTitle,
+            'post_content' => html_entity_decode(ShowReportPostView::render($viewModel)),
+            'post_status' => 'draft',
+            'post_type' => array(1),
+            );
+
+        return $post;
+    }
+
+    public function insertPost(array $post, int $eventPostID): string
+    {
+        $postID = wp_insert_post($post);
+        if($postID != 0){
+            update_post_meta($eventPostID, "show_report_post_id", $postID);
+            return get_post_permalink($postID);
+        }
+
+        return "";
     }
 }

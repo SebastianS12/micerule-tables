@@ -7,15 +7,12 @@ class ShowReportPostController{
         return $showReportPostService->prepareViewModel($locationID, $eventPostID);
     }
 
-    public function createPost(ShowReportPostViewModel $viewModel): WP_REST_Response
+    public function createPost(int $eventPostID): WP_REST_Response
     {
-        $post = array(
-        'post_title' => $viewModel->postTitle,
-        'post_content' => html_entity_decode(ShowReportPostView::render($viewModel)),
-        'post_status' => 'draft',
-        'post_type' => array(1),
-        );
+        $showReportPostService = new ShowReportPostService();
+        $post = $showReportPostService->createPost(LocationHelper::getIDFromEventPostID($eventPostID), $eventPostID);
+        $postLink = $showReportPostService->insertPost($post, $eventPostID);
 
-        return new WP_REST_Response($post);
+        return new WP_REST_Response($postLink);
     }
 }

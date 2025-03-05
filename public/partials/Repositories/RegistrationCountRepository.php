@@ -134,7 +134,7 @@ class RegistrationCountRepository implements IRepository{
                                     ->select(["COUNT(*)"])
                                     ->from(Table::REGISTRATIONS)
                                     ->join("INNER", Table::REGISTRATIONS_ORDER, [Table::REGISTRATIONS], ["registration_id"], ["id"])
-                                    ->join("INNER", Table::REGISTRATIONS_JUNIOR, [Table::REGISTRATIONS_ORDER], ["id"], ["id"])
+                                    ->join("INNER", Table::REGISTRATIONS_JUNIOR, [Table::REGISTRATIONS_ORDER], ["registration_order_id"], ["id"])
                                     ->where(Table::REGISTRATIONS->getAlias(), "event_post_id", "=", $this->eventPostID)
                                     ->build();
 

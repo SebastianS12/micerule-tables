@@ -3,7 +3,7 @@
 class PlacementsRowService{
     public function prepareEntryPlacementData(EntryModel $entry, Prize $prize, Collection $lowerPlacements, Collection $currentPlacements, Prize $higherPrize, int $indexID, string $age, Prize $lowerPrice = null){
         $entryPlacementData = array();
-        // echo(var_dump($entry));
+
         $entryPlacementData['sectionBestDisabled'] = (PlacementsService::entryInPlacements($entry, $higherPrize)) ? "disabled" : "";
         $entryPlacementData['firstPlaceChecked'] = (PlacementsService::entryHasPlacement($entry, $prize, 1)) ? "checked" : "";
         $entryPlacementData['secondPlaceChecked'] = (PlacementsService::entryHasPlacement($entry, $prize, 2)) ? "checked" : "";
@@ -37,7 +37,7 @@ class PlacementsRowService{
     }
 
     private function shouldShowPlacementInput(Prize $prize, int $placementNumber, EntryModel $entry, Collection $lowerPlacements, Collection $currentPlacements, bool $showPreviousPlacementInput, bool $isInSameClass) {
-        $showPlacementInput = $prize == Prize::STANDARD || $showPreviousPlacementInput || $isInSameClass || PlacementsService::entryHasPlacement($entry, $prize, $placementNumber);
+        $showPlacementInput = ($prize == Prize::STANDARD || $showPreviousPlacementInput || $isInSameClass || PlacementsService::entryHasPlacement($entry, $prize, $placementNumber)) && !$entry->absent;
 
         if($showPlacementInput){
             $showPlacementInput = PlacementsService::entryHasPlacement($entry, $prize, $placementNumber) || !PlacementsService::placementExists($currentPlacements, $placementNumber);

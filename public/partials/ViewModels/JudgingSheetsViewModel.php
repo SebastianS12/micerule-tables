@@ -14,7 +14,7 @@ class JudgingSheetsViewModel{
         $this->optionalClassSheets = array();
     }
 
-    public function addClassSheet(string $judgeName, string $section, string $className, string $age, int $classIndex): void
+    public function addClassSheet(string $judgeName, string $section, string $className, string $age, int $classIndex, bool $showVarietyPrompt): void
     {
         if(!isset($this->classSheets[$judgeName])){
             $this->classSheets[$judgeName] = array();
@@ -28,6 +28,7 @@ class JudgingSheetsViewModel{
         $classSheetData['age'] = $age;
         $classSheetData['classIndex'] = $classIndex;
         $classSheetData['judgeName'] = $judgeName;
+        $classSheetData['showVarietyPrompt'] = $showVarietyPrompt;
         $classSheetData['penNumbers'] = array();
 
         $this->classSheets[$judgeName][$section][$classIndex] = $classSheetData;
@@ -35,12 +36,12 @@ class JudgingSheetsViewModel{
 
     public function addPenNumber(string $judgeName, string $section, int $classIndex, int $penNumber): void
     {
-        if(isset($this->classSheets[$judgeName][$classIndex])){
+        if(isset($this->classSheets[$judgeName][$section][$classIndex])){
             $this->classSheets[$judgeName][$section][$classIndex]['penNumbers'][] = $penNumber;
         }
     }
 
-    public function addSectionSheet(string $judgeName, string $challengeName, int $challengeIndex, string $age, string $section): void
+    public function addSectionSheet(string $judgeName, string $challengeName, int $challengeIndex, string $age, string $section, bool $addSectionBestSheet): void
     {
         if(!isset($this->sectionChallengeSheets[$judgeName])){
             $this->sectionChallengeSheets[$judgeName] = array();
@@ -55,11 +56,12 @@ class JudgingSheetsViewModel{
         $sectionSheetData['challengeIndex'] = $challengeIndex;
         $sectionSheetData['judgeName'] = $judgeName;
         $sectionSheetData['section'] = $section;
+        $sectionSheetData['addSectionBestSheet'] = $addSectionBestSheet;
 
         $this->sectionChallengeSheets[$judgeName][$section][$challengeIndex] = $sectionSheetData;
     }
 
-    public function addGrandChallengeSheet(string $judgeName, string $challengeName, int $challengeIndex, string $age, string $section): void
+    public function addGrandChallengeSheet(string $judgeName, string $challengeName, int $challengeIndex, string $age, string $section, bool $addSectionBestSheet): void
     {
         $grandChallengeSheetData = array();
         $grandChallengeSheetData['challengeName'] = $challengeName;
@@ -67,17 +69,19 @@ class JudgingSheetsViewModel{
         $grandChallengeSheetData['challengeIndex'] = $challengeIndex;
         $grandChallengeSheetData['judgeName'] = $judgeName;
         $grandChallengeSheetData['section'] = $section;
+        $grandChallengeSheetData['addSectionBestSheet'] = $addSectionBestSheet;
 
         $this->grandChallengeSheets[$challengeIndex] = $grandChallengeSheetData;
     }
 
-    public function addOptionalClassSheet(string $className, string $age, int $classIndex):void
+    public function addOptionalClassSheet(string $className, string $age, int $classIndex, bool $showVarietyPrompt):void
     {
         $classSheetData = array();
         $classSheetData['className'] = $className;
         $classSheetData['age'] = $age;
         $classSheetData['classIndex'] = $classIndex;
         $classSheetData['judgeName'] = "";
+        $classSheetData['showVarietyPrompt'] = $showVarietyPrompt;
         $classSheetData['penNumbers'] = array();
 
         $this->optionalClassSheets[$classIndex] = $classSheetData;

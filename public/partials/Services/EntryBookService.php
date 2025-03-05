@@ -41,6 +41,10 @@ class EntryBookService{
         ModelHydrator::mapExistingCollections($showClassesCollection->{ClassIndexModel::class}->{UserRegistrationModel::class}->{RegistrationOrderModel::class}->{EntryModel::class}, $showClassesCollection->{ClassIndexModel::class}->{ClassPlacementModel::class}, ClassPlacementModel::class, "id", "entry_id");
         ModelHydrator::mapExistingCollections($showClassesCollection->{ClassIndexModel::class}->{UserRegistrationModel::class}->{RegistrationOrderModel::class}->{EntryModel::class}, $challengeIndexModelCollection->{ChallengePlacementModel::class}, ChallengePlacementModel::class, "id", "entry_id");
 
+        $juniorRegistrationRepository = new JuniorRegistrationRepository($eventPostID);
+        $juniorRegistrationCollection = $juniorRegistrationRepository->getAll();
+        ModelHydrator::mapExistingCollections($showClassesCollection->{ClassIndexModel::class}->{UserRegistrationModel::class}->{RegistrationOrderModel::class}, $juniorRegistrationCollection, JuniorRegistrationModel::class,"id", "registration_order_id");
+
         $showClassesCollection = $showClassesCollection->groupBy("section");
         $classData = array();
         foreach(EventProperties::SECTIONNAMES as $sectionName){
@@ -71,13 +75,9 @@ class EntryBookService{
         }
         $viewModel->classData = $classData;
 
-        $juniorRegistrationRepository = new JuniorRegistrationRepository($eventPostID);
-        $juniorRegistrationCollection = $juniorRegistrationRepository->getAll();
-        ModelHydrator::mapExistingCollections($showClassesCollection->{ClassIndexModel::class}->{UserRegistrationModel::class}->{RegistrationOrderModel::class}, $juniorRegistrationCollection, JuniorRegistrationModel::class,"id", "registration_order_id");
-
         $optionalClassData = array();
         $optionalClassRowService = new OptionalClassRowService(new PlacementsRowService());
-        $juniorClassRowService = new JuniorRowService($optionalClassRowService);
+        $juniorClassRowService = new JuniorRowService($optionalClassRowService, new PlacementsRowService());
         $section = "optional";
         foreach($showClassesCollection[$section] as $showClassModel){
             $className = $showClassModel->class_name;
@@ -91,7 +91,7 @@ class EntryBookService{
                 if($className != "Junior"){
                     foreach($classIndexModel->registrations() as $userRegistration){
                         foreach($userRegistration->registrationOrder() as $registrationOrder){
-                            if(isset($registrationOrder->{EntryModel::class})){
+                            if($registrationOrder->entry() !== null){
                                 $rowPlacementData = new RowPlacementData($classIndexModel->id, $classIndexModel->placements, 0, new Collection(), 0, new Collection());
                                 $optionalClassData[$className]['entries'][] = $optionalClassRowService->prepareRowData($registrationOrder->entry, $userRegistration->user_name, $rowPlacementData, $age, $section, $viewModel->pastDeadline);
                             }
@@ -99,11 +99,11 @@ class EntryBookService{
                     }
                 }else{
                     foreach($juniorRegistrationCollection as $juniorRegistration){
-                        if(isset($juniorRegistration->{RegistrationOrderModel::class})){
-                            if(isset($juniorRegistration->registrationOrder()->{EntryModel::class}) && isset($juniorRegistration->registrationOrder()->{UserRegistrationModel::class})){
-                                $registrationOrder = $juniorRegistration->registrationOrder();
+                        if($juniorRegistration->order() !== null){
+                            if($juniorRegistration->order()->registration() !== null){
+                                $registrationOrder = $juniorRegistration->order();
                                 $rowPlacementData = new RowPlacementData($classIndexModel->id, $classIndexModel->placements, 0, new Collection(), 0, new Collection());
-                                $optionalClassData[$className]['entries'][] = $juniorClassRowService->prepareRowData($registrationOrder->entry, $registrationOrder->registration()->user_name, $rowPlacementData, $age, $section, $viewModel->pastDeadline);
+                                $optionalClassData[$className]['entries'][] = $juniorClassRowService->prepareRowData($registrationOrder->entry(), $registrationOrder->registration()->user_name, $rowPlacementData, $age, $section, $viewModel->pastDeadline);
                             }
                         }
                     }

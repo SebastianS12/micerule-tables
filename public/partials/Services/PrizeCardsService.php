@@ -320,8 +320,10 @@ class PrizeCardsService{
         $viewModel->addPrizeCard($prizeCard);
         
         if (isset($placementModel->{AwardModel::class}) && $placementModel->award !== null) {
+            $prizeCardData['placement_id'] = $placementModel->award->id;
             $prizeCardData['award'] = $placementModel->award->award->value;
             $prizeCardData['prize'] = $placementModel->award->prize;
+            $prizeCardData['printed'] = $placementModel->award->printed;
             $prizeCard = PrizeCardFactory::getPrizeCardModel($prizeCardData);
             $viewModel->addPrizeCard($prizeCard);
         }

@@ -12,9 +12,12 @@ class ShowClassesViewModel{
         $this->standardClasses = array();
         $this->challenges = array();
         foreach(Section::standardClasses() as $section){
+            $this->standardClasses = $this->initializeSection($this->standardClasses, $section);
             $this->challenges = $this->initializeSection($this->challenges, $section);
             $this->initializeChallenge($section);
         }
+        $this->challenges = $this->initializeSection($this->challenges, Section::GRAND_CHALLENGE);
+        $this->initializeChallenge(Section::GRAND_CHALLENGE);
         $this->optionalClasses = array();
     }
 

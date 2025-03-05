@@ -22,7 +22,9 @@ class EntryBookRowView{
     private static function getAbsentCell($data)
     {
         $html = "<td class = 'absent-td' data-entry-id = ".$data['entryID'].">";
-        $html .= "<input type = 'checkbox' class = 'absentCheck' id = '" . $data['penNumber'] . "&-&absent&-&check' " . $data['absentChecked'] . " visibility = '".$data['absentVisibility']."'></input><label for='" . $data['penNumber'] . "&-&absent&-&check'><img src='/wp-content/plugins/micerule-tables/admin/svg/absent-not.svg'></label>";
+        if($data['absentVisibility']){
+            $html .= "<input type = 'checkbox' class = 'absentCheck' id = '" . $data['penNumber'] . "&-&absent&-&check' " . $data['absentChecked'] . "></input><label for='" . $data['penNumber'] . "&-&absent&-&check'><img src='/wp-content/plugins/micerule-tables/admin/svg/absent-not.svg'></label>";
+        }
         $html .= "</td>";
 
         return $html;

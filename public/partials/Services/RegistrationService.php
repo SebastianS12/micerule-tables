@@ -67,6 +67,7 @@ class RegistrationService{
                 }
                 for($i = $userRegistrationCount; $i > $registrationCount; $i--){
                     $this->registrationOrderRepository->removeRegistration($userRegistrationsByIndex[$classIndex]->registrationOrder->last()->id);
+                    $userRegistrationsByIndex[$classIndex]->registrationOrder->removeLast();
                 }
             }  
         }

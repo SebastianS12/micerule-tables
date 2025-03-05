@@ -2,10 +2,12 @@
 
 class AbsenteesViewModel{
     public array $absentees;
+    public array $absenteesOptional;
 
     public function __construct()
     {
         $this->absentees = array();
+        $this->absenteesOptional = array();
     }
 
     public function addJudge(string $judgeName): void
@@ -22,5 +24,14 @@ class AbsenteesViewModel{
         }
 
         $this->absentees[$judgeName][$classIndex][] = $penNumber;
+    }
+
+    public function addAbsenteeOptional(int $classIndex, int $penNumber): void
+    {
+        if(!isset($this->absenteesOptional[$classIndex])){
+            $this->absenteesOptional[$classIndex] = array();
+        }
+
+        $this->absenteesOptional[$classIndex][] = $penNumber;
     }
 }
