@@ -32,8 +32,15 @@ function sectionTablesFrontend($atts)
       $html .= "<a href = '" . get_post_permalink($showReportPostID) . "'>Show Report Draft</a>";
     $html .= "</div>";
 
-    $html .= "<div class = 'show-report-gen'><button type ='button' id = 'show-prize-cards-modal'>Show Prize Cards</button></div>";
-    $html .= "<div id = 'prizeCards-modal' class = 'prizeCards content'></div>";
+    $html .= "<div class = 'fixed-div'>";
+    $html .= "<button type ='button' id = 'show-prize-cards-btn'>Show Prize Cards</button>";
+    $html .= "<button type ='button' id = 'show-selfs-section-btn'>Show Selfs</button>";
+    $html .= "<button type ='button' id = 'show-tans-section-btn'>Show Tans</button>";
+    $html .= "<button type ='button' id = 'show-marked-section-btn'>Show Marked</button>";
+    $html .= "<button type ='button' id = 'show-satins-section-btn'>Show Satins</button>";
+    $html .= "<button type ='button' id = 'show-aovs-section-btn'>Show AOVs</button>";
+    $html .= "</div>";
+
   }
 
   $adminTabsController = new AdminTabsController();

@@ -46,7 +46,6 @@ function assignPrizeCardsListeners(){
   });
 
   $('.move-to-unprinted').on('click', function(){
-    console.log("Move");
     moveToUnprinted($(this));
   });
 
@@ -91,7 +90,7 @@ function printPrizeCards(){
     }),
     success: function (data) {
       console.log(data);
-      updateAdminTabs().then(() => updatePrizeCardsModal());
+      updateAdminTabs();
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
       console.log(errorThrown);
@@ -100,7 +99,6 @@ function printPrizeCards(){
 }
 
 function moveToUnprinted(clickedCard){
-
   var prizeID = clickedCard.parents(".class-card").data("prize");
   var placementID = clickedCard.parents(".class-card").data("placementId");
 
@@ -117,7 +115,7 @@ function moveToUnprinted(clickedCard){
     }),
     success: function (data) {
       console.log(data);
-      updateAdminTabs().then(() => updatePrizeCardsModal());
+      updateAdminTabs();
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
       console.log(errorThrown);

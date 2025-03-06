@@ -17,7 +17,7 @@ class EntryBookView
         // echo(var_dump($viewModel));
         foreach(EventProperties::SECTIONNAMES as $sectionName){
             $sectionName = strtolower($sectionName);
-            $html .= "<div class = '" . $sectionName . "-div'>";
+            $html .= "<div id = 'eb-section-".$sectionName."' class = '" . $sectionName . "-div'>";
 
             foreach($viewModel->classData[$sectionName] as $className => $classData){
                 $html .= "<div class = 'class-pairing'>";

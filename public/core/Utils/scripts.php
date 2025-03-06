@@ -15,4 +15,4 @@ Script::register(true, 'createShowPost','createShowPost',array('wp-api', 'jquery
 Script::register(true, 'setVariety','setVariety',array('wp-api', 'jquery'));
 Script::register(true, 'updateAdminTabs','updateAdminTabs',array('wp-api', 'jquery'));
 Script::register(false, 'selectTabs','selectTabs',array('jquery'));
-Script::register(false, "showPrizeCardsModal", 'showPrizeCardsModal', array('jquery'));
+Script::register(false, "shortCuts", 'shortCuts', array('jquery'));
