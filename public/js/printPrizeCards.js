@@ -55,7 +55,6 @@ function assignPrizeCardsListeners(){
   // Add click event listener to the document to remove .expanded class when clicked outside
   document.addEventListener('click', function(event) {
       if (!event.target.closest('.prize-card')) {
-        console.log("Click2");
           document.querySelectorAll('.prize-card').forEach(function(card) {
               if (hasAncestorWithClass(card, 'prize-cards-sent')) {
                   card.classList.remove('expanded');

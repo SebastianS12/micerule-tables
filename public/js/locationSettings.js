@@ -3,18 +3,13 @@ jQuery(document).ready(function($){
 });
 
 
-let debounceTimeout;
 function assignLocationSettingsListeners(){
-  $(".optionalSettings").on('input', function(){
-    clearTimeout(debounceTimeout);
-    
-    debounceTimeout = setTimeout(() => {
-      updateOptionalSettings($(this));
-    }, 1000);
+  $("#update-show-options-btn").on('click', function(){
+      updateOptionalSettings();
   });
 }
 
-function updateOptionalSettings(settingElement){
+function updateOptionalSettings(){
   jQuery.ajax({
     type: 'POST',
     url: getRoute("locationSettings"),
@@ -41,28 +36,12 @@ function updateOptionalSettings(settingElement){
     }),
     success: function (data) {
       console.log(data);
-      if(settingElement.hasClass("optionalClasses")){
-        addOrDeleteOptionalClass(settingElement);
-      }else{
-        assignLocationSettingsListeners();
-      }
+      location.reload();
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
       console.log(XMLHttpRequest.responseText);
       console.log(errorThrown);
-      assignLocationSettingsListeners();
+      alert("Something went wrong");
     }
   });
-}
-
-function addOrDeleteOptionalClass(element){
-  var optionalClassName = element.prop("id").split("allow-")[1];
-  if(optionalClassName != null){
-    if(element.prop('checked')){
-      addClass("optional", optionalClassName);
-    }else{
-      const classID = $("#"+optionalClassName+"-tr-location").data("classId");
-      deleteClass(classID, "optional");
-    }
-  }
 }

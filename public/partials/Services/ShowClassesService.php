@@ -73,4 +73,22 @@ class ShowClassesService{
             $showClassesRepository->save($secondClassModel);
         }
     }
+
+    public function saveOptionalClasses(int $locationID, bool $allowUnstandardised, bool $allowJunior, bool $allowAuction, ShowClassesRepository $showClassesRepository): void
+    {
+        $optionalClasses = $showClassesRepository->getAll()->where("section", "optional")->groupByUniqueKey("class_name");
+        $this->updateOptionalClass($locationID, $allowUnstandardised, OptionalClass::UNSTANDARDISED, $optionalClasses, $showClassesRepository);
+        $this->updateOptionalClass($locationID, $allowJunior, OptionalClass::JUNIOR, $optionalClasses, $showClassesRepository);
+        $this->updateOptionalClass($locationID, $allowAuction, OptionalClass::AUCTION, $optionalClasses, $showClassesRepository);
+    }
+
+    private function updateOptionalClass(int $locationID, bool $allowOptionalClass, OptionalClass $optionalClass, Collection $optionalClasses, ShowClassesRepository $showClassesRepository): void
+    {
+        if($allowOptionalClass && $optionalClasses[$optionalClass->value] === null){
+            $this->addClass($locationID, $optionalClass->value, Section::OPTIONAL->value, $showClassesRepository);
+        }
+        if(!$allowOptionalClass && $optionalClasses[$optionalClass->value] !== null){
+            $this->delete($optionalClasses[$optionalClass->value]->id, $showClassesRepository);
+        }
+    }
 }

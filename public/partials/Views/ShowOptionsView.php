@@ -84,6 +84,8 @@ class ShowOptionsView
                 $html .= "<input type = 'number' min = '0' step= '0.01' value = '" . $showOptions->auction_fee . "' class = 'optionalSettings' id = 'auctionFeeInput'></input>";
                 $html .= "</div>";
             }
+
+            $html .= "<button id = 'update-show-options-btn'>Update</button>";
         }
         $html .= "</div>";
 

@@ -7,6 +7,7 @@ require_once plugin_dir_path(__FILE__) . 'partials/Enums/Awards.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Enums/Prizes.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Enums/Tables.php';
 require_once plugin_dir_path(__FILE__) . 'partials/Enums/Sections.php';
+require_once plugin_dir_path(__FILE__) . 'partials/Enums/OptionalClasses.php';
 
 require_once plugin_dir_path(__FILE__) . 'core/database/Collection.php';
 require_once plugin_dir_path(__FILE__) . 'core/database/Model.php';
