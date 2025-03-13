@@ -19,7 +19,7 @@ class LabelView
                 </li>";
             foreach ($userLabelData as $userLabel) {
                     $absentClass = ($userLabel['absent']) ? "absent" : "";
-                    $html .= self::getUserLabelHtml($absentClass, $userLabel['classIndex'], $userLabel['penNumber']);
+                    $html .= self::getUserLabelHtml($absentClass, $userLabel['classIndex'], $userLabel['penNumber'], $userLabel['className'], $userLabel['age'], $userLabel['section']);
             }
             $html .= "</ul>";
             $html .= "</div>";
@@ -30,15 +30,20 @@ class LabelView
         return $html;
     }
 
-    private static function getUserLabelHtml(string $absentClass, int $classIndex, int $penNumber){
+    private static function getUserLabelHtml(string $absentClass, int $classIndex, int $penNumber, string $className, string $age, string $section){
       $html = "<li class='pen-label " . $absentClass . "'>
                 <div class='label-class'>
                   <span class='label-header'>CLASS</span>
-                  <span class='label-class-no'>" .$classIndex. "</span>
+                  <div class='label-class-no'>
+                    <span class='label-no'>".$classIndex."</span>
+                    <span class='label-class-age'>".$age."</span>
+                  </div>
+                    <span class='label-class-desc'>".$className."</span>
                 </div>
                 <div class='label-pen'>
                   <span class='label-header'>PEN</span>
                   <span  class='label-pen-no'>" .$penNumber. "</span>
+                  <span class='label-section'>".$section."</span>
                 </div>
               </li>";
 
