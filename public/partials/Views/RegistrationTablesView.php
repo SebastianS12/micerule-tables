@@ -52,10 +52,9 @@ class RegistrationTablesView
     $html  = "<tr class = 'headerRow'>";
     $html .= "<td class = 'headerCell Ad'>Ad</td>";
     if ($viewModel->allowOnlineRegistrations) {
-      $html .= (!$viewModel->beforeDeadline) ? "<td class='entries-count-Ad'>Entries</td><td></td><td class='entries-count-U8'>Entries</td>" : "";
-      $html .= ($viewModel->beforeDeadline) ? "<td class='test' colspan='5'></td>" : "";
+      $html .= (!$viewModel->beforeDeadline) ? "<td class='entries-count-Ad'>Entries</td><td></td><td class='entries-count-U8'>Entries</td>" : "<td class='test' colspan='3'></td>";
     } else {
-      $html .= "<td class = 'registrationsDisabled'></td><td class = 'registrationsDisabled'></td><td class = 'registrationsDisabled'></td>";
+      $html .= "<td class = 'registrationsDisabled' colspan='3'></td>";
     }
     $html .= "<td class = 'headerCell U8'>u8</td>";
     $html .= "</tr>";
@@ -81,9 +80,9 @@ class RegistrationTablesView
     if ($viewModel->allowOnlineRegistrations) {
       $html .= ($viewModel->showRegistrationCount) ? "<td class='entries-count-Ad'>(" . $classData['Ad']['entry_count'] .")</td>" : "";
       $html .= ($viewModel->showRegistrationInput) ? "<td id = '" . $className . "&-&Ad&-&RegistrationInput' class = 'registrationInput' data-class-index = ".$classData["Ad"]["index_number"]."><input type = 'number' min = '0' value = '" . $classData["Ad"]["entry_count"] . "'></input></td>" : "";
-      $html .= ($viewModel->beforeDeadline && !$viewModel->isLoggedIn) ? "<td></td>" : "";
-    } else {
-      $html .= "<td class = 'registrationsDisabled Ad-Registrations'></td>";
+      $html .= (!$viewModel->showRegistrationCount && !$viewModel->showRegistrationInput) ? "<td></td>" : "";
+    }else{
+      $html .= "<td></td>";
     }
 
     return $html;
@@ -93,11 +92,11 @@ class RegistrationTablesView
   {
     $html = "";
     if ($viewModel->allowOnlineRegistrations) {
-      $html .= ($viewModel->beforeDeadline && !$viewModel->isLoggedIn) ? "<td></td>" : "";
+      $html .= (!$viewModel->showRegistrationCount && !$viewModel->showRegistrationInput) ? "<td></td>" : "";
       $html .= ($viewModel->showRegistrationInput) ? "<td id = '" . $className . "&-&U8&-&RegistrationInput' class = 'registrationInput' data-class-index = ".$classData["U8"]["index_number"]."><input type = 'number' min = '0' value = '" . $classData['U8']['entry_count'] . "'></input></td>" : "";
       $html .= ($viewModel->showRegistrationCount) ? "<td class='entries-count-U8'>(" . $classData['U8']['entry_count'] . ")</td>" : "";
-    } else {
-      $html .= "<td class = 'registrationsDisabled U8Registrations'></td>";
+    }else{
+      $html .= "<td></td>";
     }
     $html .= "<td class = 'positionCell U8'>" . $classData['U8']['index_number'] . "</td>";
 
@@ -109,9 +108,13 @@ class RegistrationTablesView
     $html  = "<tr class='classRowMobile'><td  colspan='7f' class = 'classNameCell challenge'>" . $challengeName . "</td></tr>";
     $html .= "<tr class = 'classRow challenge' id = '" . $challengeName . "-tr'>";
     $html .= "<td class = 'positionCell ad'>" . $challengeData["Ad"]->challenge_index . "</td>";
-    $html .= (!$viewModel->beforeDeadline && $viewModel->allowOnlineRegistrations) ? "<td class='entries-count-Ad' id = '" . $challengeName . "&-&Ad'>(" . $challengeData['Ad']->registrationCount . ")</td>" : "<td class = 'registrationsDisabled'></td>";
-    $html .= ($viewModel->beforeDeadline && !$viewModel->isLoggedIn) ? "<td class = 'classNameCell challenge' colspan='3'><span>" . $challengeName . "</span></td>" : "<td class = 'classNameCell challenge'><span>" . $challengeName . "</span></td>";
-    $html .= (!$viewModel->beforeDeadline && $viewModel->allowOnlineRegistrations) ? "<td class='entries-count-U8' id = '" . $challengeName . "&-&U8'>(" . $challengeData['U8']->registrationCount . ")</td>" : "<td class = 'registrationsDisabled'></td>";
+    if($viewModel->allowOnlineRegistrations){
+      $html .= ($viewModel->showRegistrationCount) ? "<td class='entries-count-Ad' id = '" . $challengeName . "&-&Ad'>(" . $challengeData['Ad']->registrationCount . ")</td>" : "<td></td>";
+      $html .= "<td class = 'classNameCell challenge'><span>" . $challengeName . "</span></td>";
+      $html .= ($viewModel->showRegistrationCount) ? "<td class='entries-count-U8' id = '" . $challengeName . "&-&U8'>(" . $challengeData['U8']->registrationCount . ")</td>" : "<td></td>";
+    }else{
+      $html .= "<td class = 'classNameCell challenge' colspan='3'><span>" . $challengeName . "</span></td>";
+    }
     $html .= "<td class = 'positionCell u8'>" . $challengeData["U8"]->challenge_index . "</td>";
     $html .= "</tr>";
 
@@ -178,11 +181,7 @@ class RegistrationTablesView
   private static function getJuniorRegistrationCellHtml(array $classData, RegistrationTablesViewModel $viewModel)
   {
     $html = "<td class = 'positionCell AA'>" . $classData['AA']['index_number'] . "</td>";
-    if ($viewModel->allowOnlineRegistrations) {
-      $html .= (!$viewModel->beforeDeadline) ? "<td id = 'entries-count-AA'>(" . $classData['AA']['entry_count'] . ")</td>" : "<td></td>";
-    } else {
-      $html .= "<td class = 'registrationsDisabled'></td>";
-    }
+    $html .= ($viewModel->showRegistrationCount || $viewModel->showRegistrationInput) ? "<td id = 'entries-count-AA'>(" . $classData['AA']['entry_count'] . ")</td>" : "<td></td>";
 
     return $html;
   }
@@ -204,11 +203,11 @@ class RegistrationTablesView
   {
     $html = "<td class = 'positionCell AA'>" . $classData['AA']['index_number'] . "</td>";
     if ($viewModel->allowOnlineRegistrations) {
-      $html .= ($viewModel->showRegistrationInput) ? "<td id = '" . $className . "&-&AA&-&RegistrationInput' class = 'registrationInput' data-class-index = ".$classData["AA"]["index_number"]."><input type = 'number' min = '0' value = '" . $classData['AA']['entry_count'] . "'></input></td>" : "";
-      $html .= ($viewModel->beforeDeadline && !$viewModel->isLoggedIn) ? "<td></td>" : "";
       $html .= ($viewModel->showRegistrationCount) ? "<td class='entries-count-AA'>(" . $classData['AA']['entry_count'] . ")</td>" : "";
-    } else {
-      $html .= "<td class = 'registrationsDisabled'></td>";
+      $html .= ($viewModel->showRegistrationInput) ? "<td id = '" . $className . "&-&AA&-&RegistrationInput' class = 'registrationInput' data-class-index = ".$classData["AA"]["index_number"]."><input type = 'number' min = '0' value = '" . $classData['AA']['entry_count'] . "'></input></td>" : "";
+      $html .= (!$viewModel->showRegistrationCount && !$viewModel->showRegistrationInput) ? "<td></td>" : "";
+    }else{
+      $html .= "<td></td>";
     }
 
     return $html;

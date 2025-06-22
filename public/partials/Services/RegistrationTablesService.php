@@ -20,8 +20,8 @@ class RegistrationTablesService{
         $viewModel->beforeDeadline = time() < EventDeadlineService::getEventDeadline($eventPostID);
         $viewModel->isLoggedIn = is_user_logged_in();
         $viewModel->isMember = EventUser::isMember($userName);
-        $viewModel->showRegistrationInput = ($viewModel->beforeDeadline && $viewModel->isLoggedIn && $viewModel->isMember) || PermissionHelper::isLocSecOrAdmin($locationID);
-        $viewModel->showRegistrationCount = $viewModel->allowOnlineRegistrations && !$viewModel->showRegistrationInput;
+        $viewModel->showRegistrationInput = ($viewModel->allowOnlineRegistrations && $viewModel->beforeDeadline && $viewModel->isLoggedIn && $viewModel->isMember) || PermissionHelper::isLocSecOrAdmin($locationID);
+        $viewModel->showRegistrationCount = $viewModel->allowOnlineRegistrations && !$viewModel->beforeDeadline && $viewModel->isLoggedIn && !$viewModel->showRegistrationInput;
 
 
         $challengeIndexModelCollection = $this->challengeIndexRepository->getAll();
