@@ -39,7 +39,7 @@ class ShowReportPostViewModel{
 
     public function addClassReport(string $judge, string $section, string $className, int $classIndex, string $age, int $entryCount, string $comment): void
     {
-        $this->initializeClassReportIfNotSet($judge, $section, $classIndex);
+        $this->initializeJudgeSectionIfNotSet($judge, $section, $classIndex);
 
         $reportData = array();
         $reportData['className'] = $className;
@@ -51,10 +51,10 @@ class ShowReportPostViewModel{
         $this->classReports[$judge][$section][$classIndex] = $reportData;
     }
 
-    private function initializeClassReportIfNotSet(string $judge, string $section, int $classIndex): void
+    private function initializeJudgeSectionIfNotSet(string $judge, string $section): void
     {
-        if (!isset($this->classReports[$judge][$section][$classIndex])) {
-            $this->classReports[$judge][$section][$classIndex] = array();
+        if (!isset($this->classReports[$judge][$section])) {
+            $this->classReports[$judge][$section] = array();
         }
     }
 
@@ -72,9 +72,18 @@ class ShowReportPostViewModel{
         $this->classReports[$judge][$section][$classIndex]['placements'][$placement] = $placementReport;
     }
 
+    private function initializeClassReportIfNotSet(string $judge, string $section, int $classIndex): void
+    {
+        if (!isset($this->classReports[$judge][$section][$classIndex])) {
+            $this->classReports[$judge][$section][$classIndex] = array();
+        }
+    }
+
     public function addSectionChallengeReport(string $judge, string $section, int $challengeIndex, $challengeName, string $age, int $entryCount): void
     {
-        $this->initializeSectionChallengeReportIfNotSet($judge, $section, $challengeIndex);
+        if (!isset($this->challengeReports[$judge][$section])) {
+            $this->challengeReports[$judge][$section] = array();
+        }
 
         $challengeReport = array();
         $challengeReport['challengeName'] = $challengeName;
@@ -87,7 +96,7 @@ class ShowReportPostViewModel{
 
     public function addChallengePlacementReport(string $judge, string $section, int $challengeIndex, int $placement, string $userName, string $varietyName): void
     {
-        $this->initializeClassReportIfNotSet($judge, $section, $challengeIndex);
+        $this->initializeSectionChallengeReportIfNotSet($judge, $section, $challengeIndex);
 
         $placementReport = array();
         $placementReport['userName'] = $userName;
