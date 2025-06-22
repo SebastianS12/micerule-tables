@@ -76,9 +76,9 @@ class EntryBookView
         $html .= "<td class = 'absent-td'>Abs</td>";
         $html .= "<td class='breed-class'>" . $className . " " . $age . "</td>";
         $html .= "<td class='age'></td>";
-        $html .= "<td class = 'placement-" . $age . "'><img src='/wp-content/plugins/micerule-tables/admin/svg/class-ranking.svg'></td>";
-        $html .= "<td class = 'sectionBest-" . $age . "'><img src='/wp-content/plugins/micerule-tables/admin/svg/section-first.svg'></td>";
-        $html .= "<td class = 'ageBest-" . $age . "'><img src='/wp-content/plugins/micerule-tables/admin/svg/challenge-first.svg'></td>";
+        $html .= "<td class = 'placement-" . $age . "'><img src='/wp-content/themes/Divi-child/Assets/Icons/class-ranking.svg'></td>";
+        $html .= "<td class = 'sectionBest-" . $age . "'><img src='/wp-content/themes/Divi-child/Assets/Icons/section-first.svg'></td>";
+        $html .= "<td class = 'ageBest-" . $age . "'><img src='/wp-content/themes/Divi-child/Assets/Icons/challenge-first.svg'></td>";
         $html .= "</tr>";
 
         return $html;
