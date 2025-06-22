@@ -35,7 +35,7 @@ class EntrySummaryService{
 
         foreach($registrationCollection as $userName  => $userRegistrationCollection){
             $userRegistrationFee = 0;
-            $allEntriesAbsent = false;
+            $allEntriesAbsent = true;
             foreach($userRegistrationCollection as $userRegistrationModel){
                 $classIndexModel = $userRegistrationModel->classIndex();
                 $showClassModel = $classIndexModel->showClass();
@@ -44,7 +44,7 @@ class EntrySummaryService{
                     $entry = $registrationOrderModel->entry();
                     if(isset($entry)){
                         $viewModel->addUserEntry($userName, $showClassModel->class_name, $classIndexModel->class_index, $classIndexModel->age, $entry->pen_number);
-                        $allEntriesAbsent = $allEntriesAbsent || $entry->absent;
+                        $allEntriesAbsent = $allEntriesAbsent && $entry->absent;
 
                         if($showClassModel->class_name != "Auction"){
                             $userRegistrationFee += $registrationFee;
