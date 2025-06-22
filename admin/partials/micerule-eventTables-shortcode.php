@@ -34,7 +34,7 @@ function micerule_shortcode_table($atts){
     //TODO: There should be a better way to handle this -> add field to db?, helper class?
     $section = Section::from($sectionResultData['section'])->getDisplayString();
     $displayedAwards = array("BIS" => "Best in Show", "BOA" => "Best Opposite Age in Show", "BISec" => "Best ".$section, "BOSec" => "Best Opposite Age ".$section);
-    $html .= "<td class='eventCell2'>".$displayedAwards[$sectionResultData['award']]."</td>";
+    $html .= "<td class='eventCell2 ".mapAwardsToSVGClass($sectionResultData['award'])."'>".$displayedAwards[$sectionResultData['award']]."</td>";
     $html .= getFancierCellHtml($sectionResultData['fancier_name']);
     $html .= getVarietyCellHtml($sectionResultData['variety_name']);
     $html .= "<td class='eventCell'>".$sectionResultData['age']."</td>";
@@ -108,5 +108,17 @@ function getVarietyCellHtml($varietyName){
   }
   
   return "<td class='eventCell'><div class='variety-icon' style='background:url(".$iconURL.");background-repeat:no-repeat;background-color:".$iconColour."'></div>".$breedName."</td>";
+}
+
+function mapAwardsToSVGClass(string $award): string
+{
+  $mapping = array(
+    "BIS" => "bis",
+    "BOA" => "boa",
+    "BISec" => "bisec",
+    "BOSec" => "bosec",
+  );
+
+  return $mapping[$award];
 }
 ?>
