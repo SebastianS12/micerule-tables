@@ -42,10 +42,11 @@ class LazyLoader{
         if($relationQueryResults){
             foreach($relationQueryResults as $row){
                 $relationModel = $relationClass::createWithID(...$row);
-                if(!isset($relationModel->$modelClass)) $relationModel->setRelation($modelClass, new Collection());
                 if(!isset($model->$relationClass))$model->setRelation($relationClass, new Collection());
                 $model->{$relationClass}->add($relationModel);
-                $relationModel->{$modelClass}->add($model);
+                // inverse relation can't be set: in case of several belongs to, cache is blocked
+                // if(!isset($relationModel->$modelClass)) $relationModel->setRelation($modelClass, new Collection());
+                // $relationModel->{$modelClass}->add($model);
             }
 
             return true;

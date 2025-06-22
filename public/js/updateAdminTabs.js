@@ -11,6 +11,7 @@ function updateAdminTabs(){
         eventPostID: miceruleApi.eventPostID,
       },
       success: function (data) {
+        console.log(data);
         $(".adminTabs").replaceWith(data);
         assignTabListeners();
         assignEntrySummaryListeners();

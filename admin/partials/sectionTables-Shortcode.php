@@ -1,13 +1,10 @@
 <?php
 
-function sectionTables($atts){
+function sectionTables(){
   global $post;
 
-  $sectionData_atts = shortcode_atts(array(
-    'id' => ''
-  ), $atts);
-
-  return ShowOptionsView::getSectionTablesHtml($sectionData_atts['id']);
+  $locationID = LocationHelper::getIDFromLocationPostID($post->ID);
+  return ShowOptionsView::getSectionTablesHtml($locationID);
 }
 
 add_shortcode('sectionTables','sectionTables');

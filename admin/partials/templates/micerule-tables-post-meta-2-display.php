@@ -15,7 +15,7 @@ function getJudgesHtml()
     for ($judgeNo = 1; $judgeNo <= 3; $judgeNo++) {
         $judgeName = $wpdb->get_row("SELECT judge_name FROM " . $wpdb->prefix . "micerule_event_judges WHERE event_post_id = " . $post->ID . " AND judge_no = " . $judgeNo, ARRAY_A);
         $html .= "<strong>Judge " . $judgeNo . "</strong><br>
-                  <select name= 'judge_data[" . $judgeNo . "][name]' autocomplete='off'>
+                  <select class = 'judge-select' name= 'judge_data[" . $judgeNo . "][name]' autocomplete='off'>
                     <option value=''>" . (($judgeNo == 1) ? 'Please Select' : 'None') . "</option>";
         foreach ($users as $user) {
             $html .= "<option value='" . $user->display_name . "' " . ((isset($judgeName) && $judgeName['judge_name'] == $user->display_name) ? 'selected="selected"' : '') . ">";
@@ -44,7 +44,7 @@ function getJudgePartnershipHtml($eventPostID, $judgeNo, $users)
                 <input type='checkbox' class='pCheck' " . (isset($judgePartnerName) ? 'checked="on"' : '') . ">
                 <label for='partnership" . $judgeNo . "'>Partnership</label>";
 
-    $html .= "<select name= 'judge_data[" . $judgeNo . "][partnership]' style='display:" . (isset($judgePartnerName) ? 'inline' : 'none') . "' class='partnership-select' autocomplete='off'>
+    $html .= "<select class = 'judge-partnership-select' name= 'judge_data[" . $judgeNo . "][partnership]' style='display:" . (isset($judgePartnerName) ? 'inline' : 'none') . "' class='partnership-select' autocomplete='off'>
                 <option value=''>Please Select</option>";
     foreach ($users as $user) {
         $html .= "<option value='" . $user->display_name . "' " . ((isset($judgePartnerName) && $judgePartnerName['partner_name'] == $user->display_name) ? 'selected="selected"' : '') . ">";

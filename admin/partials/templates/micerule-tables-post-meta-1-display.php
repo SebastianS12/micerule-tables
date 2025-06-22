@@ -31,13 +31,13 @@ $scCheck = get_post_meta($post->ID, 'micerule_data_scCheck', true);
   <tr>
   <?php 
   $BISData = $wpdb->get_row("SELECT * FROM ".$wpdb->prefix."micerule_event_results WHERE event_post_id = ".$post->ID." AND award = 'BIS'", ARRAY_A);
-  echo getTableRowHtml("BIS", "Best in Show", $BISData, $breedsAllSections, "grand challenge", 4);
+  echo getTableRowHtml("BIS", "Best in Show", $BISData, $breedsAllSections, "grand challenge", 4, false);
   ?>
   </tr>
   <tr>
   <?php
    $BOAData = $wpdb->get_row("SELECT * FROM ".$wpdb->prefix."micerule_event_results WHERE event_post_id = ".$post->ID." AND award = 'BOA'", ARRAY_A);
-   echo getTableRowHtml("BOA", "Best Opposite Age", $BOAData, $breedsAllSections, "grand challenge", 3); 
+   echo getTableRowHtml("BOA", "Best Opposite Age", $BOAData, $breedsAllSections, "grand challenge", 3, true); 
   ?>
   </tr>
   <?php 
@@ -45,8 +45,8 @@ $scCheck = get_post_meta($post->ID, 'micerule_data_scCheck', true);
     $BISecData = $wpdb->get_row("SELECT * FROM ".$wpdb->prefix."micerule_event_results WHERE event_post_id = ".$post->ID." AND award = 'BISec' AND section = '".strtolower($section)."'", ARRAY_A);
     $BOSecData = $wpdb->get_row("SELECT * FROM ".$wpdb->prefix."micerule_event_results WHERE event_post_id = ".$post->ID." AND award = 'BOSec' AND section = '".strtolower($section)."'", ARRAY_A);
     $sectionBreeds = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."micerule_breeds WHERE upper(section) = '".$section."'", ARRAY_A);
-    echo "<tr>".getTableRowHtml("BISec", "Best ".$section, $BISecData, $sectionBreeds, strtolower($section), 2)."</tr>";
-    echo "<tr>".getTableRowHtml("BOSec", "Best Opposite Age ".$section, $BOSecData, $sectionBreeds, strtolower($section), 1)."</tr>";
+    echo "<tr>".getTableRowHtml("BISec", "Best ".$section, $BISecData, $sectionBreeds, strtolower($section), 2, false)."</tr>";
+    echo "<tr>".getTableRowHtml("BOSec", "Best Opposite Age ".$section, $BOSecData, $sectionBreeds, strtolower($section), 1, true)."</tr>";
   }
 
   $juniorData = $wpdb->get_row("SELECT * FROM ".$wpdb->prefix."micerule_event_results_optional WHERE event_post_id = ".$post->ID." AND class_name = 'junior'", ARRAY_A);
@@ -57,14 +57,19 @@ $scCheck = get_post_meta($post->ID, 'micerule_data_scCheck', true);
 </table>
 
 <?php
-function getTableRowHtml($award, $displayedAward, $rowData, $breeds, $section, $points){
+function getTableRowHtml($award, $displayedAward, $rowData, $breeds, $section, $points, bool $ageDisabled){
   $fancierName = (isset($rowData['fancier_name'])) ? $rowData['fancier_name'] : "";
   $varietyName = (isset($rowData['variety_name'])) ? $rowData['variety_name'] : "";
-  $age = (isset($rowData['age'])) ? $rowData['age'] : "";
+  $defaultAge = ($ageDisabled) ? "U8" : "Ad";
+  $age = (isset($rowData['age']) && $rowData['age'] != "") ? $rowData['age'] : $defaultAge;
   $html = "<td>".$displayedAward."</td>";
   $html .= "<td>".getFancierSelectHtml($fancierName, "micerule_table_data[".$section."][".$award."][fancier_name]")."</td>";
   $html .= "<td>".getVarietySelectHtml($breeds, $varietyName, "micerule_table_data[".$section."][".$award."][variety_name]")."</td>";
-  $html .= "<td>".getAgeSelectHtml($age, "micerule_table_data[".$section."][".$award."][age]")."</td>";
+  $html .= (!$ageDisabled) ?
+    "<td>".getAgeSelectHtml($age, "micerule_table_data[".$section."][".$award."][age]", $ageDisabled, $section)."</td>"
+    :
+    "<td>".getOAAgeHtml($age, "micerule_table_data[".$section."][".$award."][age]", $section)."</td>";
+  // $html .= "<td>".getAgeSelectHtml($age, "micerule_table_data[".$section."][".$award."][age]", $ageDisabled, $section)."</td>";
   $html .= "<input type='hidden' name='micerule_table_data[".$section."][".$award."][data_id]' value='".((isset($rowData['id'])) ? $rowData['id'] : "")."'>";  
   $html .= "<td><input type='hidden' name='micerule_table_data[".$section."][".$award."][points]' value='".$points."'>".$points."</td>";
 
@@ -89,7 +94,7 @@ function getFancierSelectHtml($fancierName, $selectName){
   global $wpdb;
   $users = (array) $wpdb->get_results("SELECT display_name FROM " . $wpdb->prefix . "users ORDER BY display_name;");
 
-  $html = "<select name='".$selectName."' autocomplete='off'>
+  $html = "<select class = 'fancier-select' name='".$selectName."' autocomplete='off'>
               <option value=''>Please Select</option>";
   foreach($users as $user){
     $html .= "<option value='".$user->display_name."' ".((isset($fancierName) && $fancierName == $user->display_name) ? 'selected="selected"' : '').">";
@@ -102,7 +107,7 @@ function getFancierSelectHtml($fancierName, $selectName){
 }
 
 function getVarietySelectHtml($breeds, $varietyName, $selectName){
-  $html = "<select name='".$selectName."' style='width:200px' autocomplete='off'>
+  $html = "<select class = 'variety-select' name='".$selectName."' style='width:200px' autocomplete='off'>
                 <option value='No Record'>No Record</option>";
   foreach ($breeds as $breed) {
     $html .= "<option value='".$breed['name']."' ".((isset($varietyName) && $varietyName == $breed['name']) ? 'selected="selected"' : '').">";
@@ -114,13 +119,24 @@ function getVarietySelectHtml($breeds, $varietyName, $selectName){
   return $html;
 }
 
-function getAgeSelectHtml($selectedAge, $selectName){
-  $html = "<select id='ageBIS1' name='".$selectName."' autocomplete='off'>";
+function getAgeSelectHtml($selectedAge, $selectName, bool $ageDisabled, string $section){
+  $selectDisabled = ($ageDisabled) ? "disabled" : "";
+  $selectID = (!$ageDisabled) ? $section."-age-select" : $section."-age-select-oa";
+  $html = "<select id='".$selectID."' class = 'age-select' name='".$selectName."' autocomplete='off' ".$selectDisabled.">";
   foreach (EventProperties::AGESECTIONS as $age) {
     $html .= "<option value='".$age."' ".((isset($selectedAge) && $selectedAge == $age) ? 'selected="selected"' : '').">";
     $html .= $age;
     $html .= "</option>";
   }
+  $html .= "</select>";
+
+  return $html;
+}
+
+function getOAAgeHtml($selectedAge, $selectName, string $section): string 
+{
+  $selectID = $section."-age-select-oa";
+  $html = "<input type='text' id='".$selectID."' class = 'age-select age-select-disabled' name='".$selectName."' value='".$selectedAge."' readonly>";
   $html .= "</select>";
 
   return $html;

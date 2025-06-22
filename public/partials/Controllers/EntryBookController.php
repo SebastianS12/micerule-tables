@@ -52,7 +52,7 @@ class EntryBookController{
         $entryBookService = new EntryBookService();
         $entryBookService->moveEntry($entryID, $newClassIndexID, new EntryRepository($eventPostID), new ClassIndexRepository($locationID), new UserRegistrationsRepository($eventPostID), new RegistrationOrderRepository($eventPostID));
 
-        return new WP_REST_Response("");
+        return new WP_REST_Response(Logger::getInstance()->getLogs());
     }
 
     public static function editVarietyName(int $eventPostID, int $entryID, string $varietyName): WP_REST_Response

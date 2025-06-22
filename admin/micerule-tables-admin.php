@@ -257,6 +257,7 @@ class Micerule_Tables_Admin{
 
       if(isset($post->ID)){
           ResultTable::saveTableData($post->ID, $_POST['micerule_table_data']);
+          echo(var_dump($_POST['micerule_table_data']));
           ResultTable::saveOptionalTableData($post->ID, $_POST['micerule_table_data_optional']);
           
           $judgesService = new JudgesService(new JudgesRepository($post->ID), new JudgesSectionsRepository($post->ID));
