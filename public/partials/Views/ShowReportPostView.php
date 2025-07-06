@@ -68,7 +68,7 @@ class ShowReportPostView{
         foreach ($classReport['placements'] as $placementReport) {
             $displayedGender = ($placementReport['gender'] != "" && $placementReport['gender'] == "Buck") ? "B" : "D";
             $displayedVariety = ($classReport['className'] != $placementReport['varietyName']) ? $placementReport['varietyName'] : "";
-            $html .= "<div>".$displayedPlacements[$placementReport['placement']]." ".FancierNameFormatter::getShowReportFancierName($placementReport['userName'])." ".$displayedVariety." ".$displayedGender." ".$placementReport['comment']."</div>";
+            $html .= "<div>".$displayedPlacements[$placementReport['placement']]." [priv]".FancierNameFormatter::getShowReportFancierName($placementReport['userName'])."[/priv] ".$displayedVariety." ".$displayedGender." ".$placementReport['comment']."</div>";
         }
     
         return $html;
@@ -90,7 +90,7 @@ class ShowReportPostView{
 
         $html = "<h4>".$challengeReport['challengeName']." ".$challengeReport['age']." - ".$challengeReport['entryCount']."</h4>";
         foreach ($challengeReport['placements'] as $placementReport) {
-            $html .= "<div>".$displayedPlacements[$placementReport['placement']]." ".FancierNameFormatter::getShowReportFancierName($placementReport['userName'])." ".$placementReport['varietyName']."</div>";
+            $html .= "<div>".$displayedPlacements[$placementReport['placement']]." [priv]".FancierNameFormatter::getShowReportFancierName($placementReport['userName'])."[/priv] ".$placementReport['varietyName']."</div>";
         }
 
         return $html;
