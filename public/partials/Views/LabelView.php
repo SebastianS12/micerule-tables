@@ -36,7 +36,7 @@ class LabelView
                   <span class='label-header'>CLASS</span>
                   <div class='label-class-no'>
                     <span class='label-no'>".$classIndex."</span>
-                    <span class='label-class-age'>".$age."</span>
+                    <span class='label-class-age age-" . $age . "'>".$age."</span>
                   </div>
                     <span class='label-class-desc'>".$className."</span>
                 </div>
