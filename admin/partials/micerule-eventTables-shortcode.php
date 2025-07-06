@@ -45,7 +45,7 @@ function micerule_shortcode_table($atts){
   $optionalResultTableData = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."micerule_event_results_optional WHERE event_post_id = ".$micerule_settings['id'], ARRAY_A);
   foreach($optionalResultTableData as $optionalClassResult){
     $html .= "<tr>";
-    $html .= "<td class='eventCell2'>Best ".strtoupper($optionalClassResult['class_name'])."</td>";
+    $html .= "<td class='eventCell2 ".strtolower($optionalClassResult['class_name'])."'>Best ".strtoupper($optionalClassResult['class_name'])."</td>";
     $html .= getFancierCellHtml($optionalClassResult['fancier_name']);
     $html .= getVarietyCellHtml($optionalClassResult['variety_name']);
     $html .= "<td class='eventCell'>AA</td>";
