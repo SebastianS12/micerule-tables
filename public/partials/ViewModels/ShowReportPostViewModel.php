@@ -85,6 +85,9 @@ class ShowReportPostViewModel{
             $this->challengeReports[$judge][$section] = array();
         }
 
+        Logger::getInstance()->log($judge);
+        Logger::getInstance()->log($section);
+
         $challengeReport = array();
         $challengeReport['challengeName'] = $challengeName;
         $challengeReport['age'] = $age;
@@ -108,7 +111,7 @@ class ShowReportPostViewModel{
 
     private function initializeSectionChallengeReportIfNotSet(string $judge, string $section, int $challengeIndex): void
     {
-        if (!isset($this->classReports[$judge][$section][$challengeIndex])) {
+        if (!isset($this->challengeReports[$judge][$section][$challengeIndex])) {
             $this->challengeReports[$judge][$section][$challengeIndex] = array();
         }
     }
