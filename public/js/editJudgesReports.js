@@ -12,12 +12,11 @@ function assignJudgesReportsListeners(){
   });
 
   $(".classSelect-judgesReports").on('change', function(){
-    /*
-    var penNumber = this.id.split("&-&")[0];
-    var selectValue = $(this).val();
-
-    setCustomClassVariety(penNumber, selectValue, ".judgesReport.content");
-    */
+    var entryID = $(this).data('entry-id');
+    console.log(entryID);
+    if($(this).val() !== '' && entryID != undefined && entryID != ''){
+      setCustomClassVariety(entryID, $(this).val())
+    }
   });
 }
 

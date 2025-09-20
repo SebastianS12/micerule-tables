@@ -129,7 +129,7 @@ class JudgesReportView
                         </div>
                         <div>";
         //$classSelectOptions = ClassSelectOptions::getClassSelectOptionsHtml($entry->sectionName, $this->locationID, $entry->varietyName);
-        $html .= (isset($reportPlacementData['showVarietySelect']) && $reportPlacementData['showVarietySelect']) ? "<select class='classSelect-judgesReports' id = '" . $reportPlacementData['entryID'] . "&-&varietySelect' autocomplete='off'><option value=''>Select a Variety</option>" . $reportPlacementData['varietyOptions'] . "</select>" : "";
+        $html .= (isset($reportPlacementData['showVarietySelect']) && $reportPlacementData['showVarietySelect']) ? "<select class='classSelect-judgesReports' data-entry-id = '".$reportPlacementData['entryID']."' autocomplete='off'><option value=''>Select a Variety</option>" . $reportPlacementData['varietyOptions'] . "</select>" : "";
         $html .=      "</div>
                     </div>
                     </td>";
