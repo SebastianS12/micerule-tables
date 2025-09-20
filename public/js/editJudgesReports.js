@@ -13,7 +13,6 @@ function assignJudgesReportsListeners(){
 
   $(".classSelect-judgesReports").on('change', function(){
     var entryID = $(this).data('entry-id');
-    console.log(entryID);
     if($(this).val() !== '' && entryID != undefined && entryID != ''){
       setCustomClassVariety(entryID, $(this).val())
     }
